@@ -1,0 +1,703 @@
+#! /usr/bin/env 
+
+################################################################################
+#                                                                              #
+# WMAControl: the swiss army knife for central requests submissions.           #
+# Several pieces were imported from the WMAgent infrastructure.                #
+# The name is clearly inspired to GridControl.                                 #
+#                                                                              #
+# Danilo Piparo, CERN                                                          #
+#                                                                              #
+################################################################################
+
+import os
+import urllib
+import sys
+import subprocess
+import time
+import random
+import optparse
+import json
+import pprint
+import ConfigParser
+
+sys.path.append(os.path.join(sys.path[0], 'modules'))
+from modules import wma # here u have all the components to interact with the wma
+
+#-------------------------------------------------------------------------------
+
+
+#couch_db_address = wma.COUCH_DB_ADDRESS
+dbs_url_g = wma.DBS_URL
+phedex_addr_g = wma.PHEDEX_ADDR
+WMAgent_url_g = wma.WMAGENT_URL
+
+test_mode = False # Put True not to upload the requests
+
+default_parameters = {
+'dbsurl':dbs_url_g,
+'keep_step1':False,
+'keep_step2':False,
+'priority':181983,
+'request_type':'ReReco',
+'scramarch':'slc5_amd64_gcc462', 
+  }
+
+if os.getenv('SCRAM_ARCH'):
+    default_parameters['scramarch']=os.getenv('SCRAM_ARCH')
+    
+#-------------------------------------------------------------------------------
+
+class Configuration:
+    '''
+    A class that offers a common interface to get parameters out of a 
+    optionParser (command line) or a ConfigParser (ini cfg).
+    The key is to build a ConfigParser object with a single section out 
+    of the option parser.
+    '''
+    default_section= '__OptionParser__'
+    def __init__ (self, parser):
+        self.configparser=ConfigParser.SafeConfigParser()
+
+        options,args = parser.parse_args()
+        global test_mode
+        test_mode=options.test
+
+        if options.req_file != '' and options.req_file !=None:
+            cfg_filename=options.req_file
+            print "We have a configfile: %s." %cfg_filename
+            self.configparser.read(cfg_filename)
+        else: #we have to convert an option parser to a cfg
+            print "We have a commandline."
+            self.__fill_configparser(options)
+
+    def __fill_configparser(self,options):
+        '''
+        Convert the option parser into a configparser.
+        '''
+        # loop on all option parser parameters and fille the cp
+        self.configparser.add_section(self.__class__.default_section)
+        for param,param_value in options.__dict__.items():
+          if param_value == None: 
+            param_value = "__NOT-DEFINED__"
+          #print "Setting params in cfg: %s with default %s" %(param,param_value)
+          self.configparser.set(self.__class__.default_section, param, str(param_value))
+        #with open('example.cfg', 'wb') as configfile:
+            #self.ConfigParser.write(configfile)
+
+    def get_param(self,name,default=None,section=default_section,verbose=False):
+        '''
+        I am astonished that such function does not exist in Python!!
+        '''
+        ret_val=None
+        if verbose:
+          print "I am looking for section %s and option %s, the default is #%s#" %(name, section, default)
+        if self.configparser.has_section(section):
+          if self.configparser.has_option(section,name): 
+            #print "Getting %s %s" %(section,name)
+            ret_val = self.configparser.get(section,name)
+            # We had a cfg file and the default was not given
+            if ret_val == "__NOT-DEFINED__":
+              if verbose:
+                print "I was reading parameter %s and I put the default %s" %(name, default)
+              ret_val = default
+            # we have both: read and return!
+            else:
+              pass   
+          else:
+            # We don't have the option, try to return the default            
+            if default!=None:
+              # Case 1, we have the default
+              ret_val = default              
+            else:
+              # Case 2, we do not have the default, exception
+              raise Exception ("Parameter %s cannot be found in section %s and no default is given." %(name,section))
+        else:
+          # No section found, just rais e an exception
+          raise Exception ("No section %s found in configuration." %section)
+        
+        if verbose:
+          print "I am returning the value #%s#" %(ret_val)
+        return ret_val
+        
+#-------------------------------------------------------------------------------
+
+def get_runs(dset_name,minrun=-1,maxrun=-1):
+  '''
+  Get the runs from the DBS via the DBS interface
+  '''
+  print "Looking for runs in DBS for %s" %dset_name
+  minrun=int(minrun)
+  maxrun=int(maxrun)
+
+  dbs_cmd = 'dbs search --query="find run where dataset=\'%s\'"' %dset_name
+  p = subprocess.Popen(dbs_cmd, shell=True, 
+                       stdin=subprocess.PIPE, 
+                       stdout=subprocess.PIPE, 
+                       stderr=subprocess.STDOUT, 
+                       close_fds=True)
+  dbs_output = p.stdout.read()
+
+  run_list=[]
+  for line in dbs_output.split("\n"):
+    if line.isdigit():
+      run_list.append(int(line))
+
+  if minrun >= 0:
+    run_list = filter(lambda n: n > minrun,run_list)
+  if maxrun >= 0:
+    run_list = filter(lambda n: n < maxrun,run_list)
+
+  return sorted(run_list)
+
+#-------------------------------------------------------------------------------
+
+def custodial(datasetpath):
+
+   allSites = 1
+
+#   datasetpath = None
+#   lfn = None
+#    allSites = 0
+#   try:
+#       opts, args = getopt.getopt(sys.argv[1:], "", ["lfn=","dataset=","allSites"])
+#   except getopt.GetoptError:
+#       print 'Please specify dataset with --dataset'
+#       print 'Specify --allSites to show all site location, otherwise show only T1 sites'
+#       sys.exit(2)
+
+   # check command line parameter
+#   for opt, arg in opts :
+#       if opt == "--dataset" :
+#           datasetpath = arg
+#       if opt == "--lfn" :
+#           lfn = arg
+#       if opt == "--allSites" :
+#           allSites = 1
+
+#   if datasetpath == None and lfn == None:
+#       print 'Please specify dataset with --dataset'
+#       sys.exit(2)
+
+
+   custodial = {}
+   non_custodial = {}
+
+#   if lfn == None :
+   url=phedex_addr_g %datasetpath
+   result = json.load(urllib.urlopen(url))
+   try:
+           for block in result['phedex']['block']:
+               name = block['name']
+               for replica in block['replica']:
+                   files = replica['files']
+                   site = str(replica['node'])
+                   is_custodial = replica['custodial']
+                   if allSites == 1 or ( site[0:2] == 'T1' or site[0:2] == 'T0') :
+                       if is_custodial == 'y' :
+                           if site not in custodial.keys() :
+                               custodial[site] = int(files)
+                           else :
+                               custodial[site] += int(files)
+                       else :
+                           if site not in non_custodial.keys() :
+                               non_custodial[site] = int(files)
+                           else :
+                               non_custodial[site] += int(files)
+   except:
+           print 'Problems with dataset:',datasetpath
+
+   custodial_sites = custodial.keys()
+   non_custodial_sites = non_custodial.keys()
+
+   custodial_sites.sort()
+   non_custodial_sites.sort()
+
+   if len(custodial_sites) == 0 :
+       custodial['NONE'] = 0
+   if len(non_custodial_sites) == 0 :
+       non_custodial['NONE'] = 0
+   if len(custodial_sites) == 1 and custodial_sites[0].count('T0') > 0 :
+       custodial['NONE'] = 0
+   if len(non_custodial_sites) == 1 and non_custodial_sites[0].count('T0') > 0 :
+       non_custodial['NONE'] = 0
+
+   sites = ''
+   custsites = ''
+   for site in non_custodial_sites :
+       if site not in custodial_sites :
+           sites = sites + site + '(' + str(non_custodial[site]) + '),'
+   if sites[-1:] == ',' :
+       sites = sites[:-1]
+   for custsite in custodial_sites :
+#       custsites = custsites + custsite + '(' + str(custodial[custsite]) + '),'
+       custsites = custsites + custsite   
+   if custsites[-1:] == ',' :
+       custsites = custsites[:-1]
+
+#   if lfn == None :
+   print 'dataset:',datasetpath,'custodial:',custsites,'non-custodial:',sites
+#   else :
+#   print 'lfn:',lfn,'custodial:',custsites,'non-custodial:',sites
+
+   return custsites
+
+#-------------------------------------------------------------------------------
+
+def random_sleep(min_sleep=1,sigma=1):
+    """
+    Sleep for a random time in order not to choke the server submitting too many 
+    requests in a small time interval
+    """
+    rnd=abs(random.gauss(0,sigma))
+    sleep_time=min_sleep+rnd
+    print "Sleeping %s seconds" %sleep_time
+    time.sleep(sleep_time)
+
+#-------------------------------------------------------------------------------
+
+def get_dset_nick(dataset):
+    """
+    Create a nickname out of a dataset name. Some heuristic tricks are used to 
+    make the nicks shorter.
+    """
+    #print dataset
+    nick=dataset
+    if "/" in dataset:
+      c1,c2,c3=dataset[1:].split('/')
+      nick="%s_%s_%s" %(c1,c2,c3)
+      nick=nick.replace("Electron","El")
+      nick=nick.replace("Single","Sing")
+      nick=nick.replace("Double","Dbl")
+    
+    return nick
+
+
+
+#-------------------------------------------------------------------------------
+
+def get_dataset_runs_dict(section,cfg):
+      '''
+      If present, eval it, if not just use the plain dataset name input and [] !
+      '''
+      dataset_runs_dict={}
+      try:
+        dataset_runs_dict = eval(cfg.get_param('dset_run_dict','',section))
+      except:
+        dataset_runs_dict[cfg.get_param('input_name','',section)]=[]
+      return  dataset_runs_dict
+      
+#-------------------------------------------------------------------------------
+
+def make_request_string(params,service_params,request):
+    identifier=''
+    dataset=params['InputDataset']
+    # Make a string a la prep if needed:
+    if request == Configuration.default_section:
+        # Request ID string
+        joinString = ""
+        if custodial(params['InputDataset']):
+            joinString = "_v"
+        identifier = "%s_%s%s%s" %(params['PrepID'],
+                                   custodial(dataset),
+                                   joinString,
+                                   service_params['version'])
+    else:
+        dset_nick = get_dset_nick(dataset)
+        cmssw_version=params["CMSSWVersion"]
+        cmssw_version=cmssw_version.replace("CMSSW","")
+        cmssw_version=cmssw_version.replace("_","")
+        cmssw_version=cmssw_version.replace("patch","p")
+        
+        identifier = "%s_%s_%s" %(service_params["section"],cmssw_version,dset_nick)
+        if len(identifier)>20:
+            identifier="%s_%s"%(service_params["section"],cmssw_version)
+        
+    return identifier
+
+#-------------------------------------------------------------------------------
+
+def loop_and_submit(cfg):
+  '''
+  Loop on all the sections of the configparser, build and submit the request.
+  '''
+  pp = pprint.PrettyPrinter(indent=4)
+
+  
+  for section in cfg.configparser.sections():
+    print '---> Processing request "%s"\n' %section
+    # build the dictionary for the request
+    params,service_params = build_params_dict(section,cfg)
+    dataset_runs_dict = get_dataset_runs_dict (section,cfg)
+    # Submit request!
+    for dataset in sorted(dataset_runs_dict.keys()):      
+      params['InputDataset']=dataset
+      runs=[]
+      blocks=[]
+      for item in dataset_runs_dict[dataset]:
+          if isinstance(item,str) and '#' in item:
+              if item.startswith('#'):                  blocks.append(dataset+item)
+              else:                  blocks.append(item)
+          else:              runs.append(item)
+      params['RunWhitelist']=runs
+      params['BlockWhitelist']=blocks
+      params['RequestString']= make_request_string(params,service_params,section)
+      if service_params['request_type'] == 'MonteCarlo':
+          params.pop('InputDataset')
+      if test_mode: # just print the parameters of the request you would have injected
+        pp.pprint(params)
+        print WMAgent_url_g
+      else: # do it for real!
+        workflow = wma.makeRequest(WMAgent_url_g,params)
+        wma.approveRequest(WMAgent_url_g,workflow)      
+        random_sleep()
+
+#-------------------------------------------------------------------------------
+
+def make_cfg_docid_dict(filename):
+  '''
+  opens the file if there and reads its parameters
+  Skip lines beginning with #
+  returns a dictionary with the cfgnames as keys and the docids as values
+  Example config:
+   config_0_1_cfg.py 8216d7bbd56664bc2a5853fb4f0aa36e
+   config_0_2_cfg.py 8216d7bb57e664bc2a5853fb4a0aeb28
+   config_0_3_cfg.py 8216d7bbd5bc64bc2a5853fb4f0aed61
+  '''
+  if filename =='':
+    return {}
+  
+  print "Building a cfg-docID dictionary.."
+  
+  cfg_db_file=None
+  try:
+    cfg_db_file=open(filename,'r')
+  except:
+    raise Exception ('Problems in opening %s: does it exist? is it corrupted? do you have the right permissions?' %filename)
+  # at this point we have the file, let's interpret it!
+  cfg_docid_dict={}
+  for line in cfg_db_file:
+    # remove a trailing comment if there and skip the lines
+    line = line[:line.find('#')]
+    line = line.strip()
+    if line == '' or line[0]=='#':
+      continue # this is a comment line
+    # small sanity check, one could add regexp
+    if line.count(' ') > 1:
+      raise Exception('Could not interpret line %s. Too many spaces.' %line)
+    # split the line
+    cfg_name,docid = line.split(' ')
+    if test_mode: 
+      print "Name, DocID in file %s: %s %s"%(filename, cfg_name,docid)
+    cfg_docid_dict[cfg_name] = docid
+  cfg_db_file.close()
+  return cfg_docid_dict
+
+#-------------------------------------------------------------------------------
+
+def get_user_group(cfg,section):
+  # try to use the environment variables if nothing provided  
+  user_env_name ='WMCONTROL_USER'
+  group_env_name='WMCONTROL_GROUP'
+  user_default =''
+  group_default=''
+  if os.environ.has_key(user_env_name):
+    user_default=os.environ[user_env_name]
+  if os.environ.has_key(group_env_name):
+    group_default=os.environ[group_env_name]    
+  #print os.environ.has_key(user_env_name)
+  #print "*", user_default, "*", group_default
+  user = cfg.get_param('user',user_default,section)
+  group = cfg.get_param('group',group_default,section)
+  
+  print "*", user, "*", group
+  
+  return user, group
+  
+#-------------------------------------------------------------------------------
+
+def build_params_dict(section,cfg):
+  global couch_pass
+  '''
+  Build the parameters dictionary for the request.
+  For the moment the defaults of the parameters are stored here.
+  Put a dictionary on top?
+  '''
+  
+  # fetch some important parameters
+  #this trick is to make the uniformation smoother and be able to read old cfgfiles
+  doc_id = step1_docID = ''
+  doc_id = step1_docID = cfg.get_param('docID','',section)
+  dummy = cfg.get_param('step1_docID','',section)
+  if dummy!='':
+    doc_id = step1_docID = dummy
+  step2_docid = cfg.get_param('step2_docID','',section)
+  print step2_docid
+  step3_docid = cfg.get_param('step3_docID','',section)
+  print step3_docid
+  # elaborate the file containing the name docid pairs
+  cfg_db_file = cfg.get_param('cfg_db_file','',section)
+  print cfg_db_file
+  cfg_docid_dict = make_cfg_docid_dict(cfg_db_file)
+  
+  release = cfg.get_param('release','',section)
+  globaltag = cfg.get_param('globaltag','',section)
+  pileup_dataset = cfg.get_param('pu_dataset','',section)
+  primary_dataset = cfg.get_param('primary_dataset','',section)
+  time_event = cfg.get_param('time_event','',section)
+  filter_eff = cfg.get_param('filter_eff','',section)
+  number_events = cfg.get_param('number_events','',section)
+  version = cfg.get_param('version','',section)
+  
+  # parameters with fallback  
+  scramarch = cfg.get_param('scramarch',default_parameters['scramarch'],section)
+  #group = cfg.get_param('group',default_parameters['group'],section)
+  #requestor = cfg.get_param('requestor',default_parameters['requestor'],section)
+  identifier = cfg.get_param('identifier','',section)
+  dbsurl = cfg.get_param('dbsurl',default_parameters['dbsurl'],section)
+
+  
+  # for the user and group
+  user,group = get_user_group(cfg,section)
+  
+  # for the skims
+  skim_docid = cfg.get_param('skim_docID','',section)
+  skim_name = cfg.get_param('skim_name','',section)
+  skim_input = cfg.get_param('skim_input','RECOoutput',section)
+  
+  # priority
+  priority = cfg.get_param('priority',181983,section)
+  
+  # Now the service ones
+  # Service
+  step1_cfg = cfg_path = ''
+  step1_cfg = cfg_path = cfg.get_param('cfg_path','',section)  
+  dummy = cfg.get_param('step1_cfg','',section)
+  if dummy != '':
+    step1_cfg = cfg_path = dummy
+  
+  step1_output = cfg.get_param('step1_output','',section)
+  keep_step1 = cfg.get_param('keep_step1',False,section)
+  
+  step2_cfg = cfg.get_param('step2_cfg','',section)
+  step2_output = cfg.get_param('step2_output','',section)
+  keep_step2 = cfg.get_param('keep_step2',False,section)
+  
+  step3_cfg = cfg.get_param('step3_cfg','',section)
+  step3_output = cfg.get_param('step3_output','',section)
+  
+  request_type = cfg.get_param('request_type',default_parameters['request_type'],section)
+  request_id = cfg.get_param('request_id','',section)
+
+  # Upload to couch if needed or check in the cfg dict if there
+  step2_docID = ''
+  step3_docID = ''
+  docIDs=[step1_docID,step2_docID,step3_docID]
+  cfgs=[step1_cfg,step2_cfg,step3_cfg]
+  for step in xrange(3):
+    step_cfg_name= cfgs[step]
+    step_docid = docIDs[step]
+    print step_cfg_name, step_docid
+    
+    if step_cfg_name!='' and step_docid=='' :
+      print step_cfg_name, step_docid
+      # try to see if it is in the cfg name dict
+      if cfg_docid_dict.has_key(step_cfg_name):
+        print "Using the one in the cfg-docid dictionary." 
+        docIDs[step] = cfg_docid_dict[step_cfg_name]
+      else:
+        print "No DocId found for section %s. Uploading the cfg to the couch." %section
+        docIDs[step]= wma.upload_to_couch(step_cfg_name, section, user, group,test_mode)
+
+  step1_docID,step2_docID,step3_docID=docIDs
+  
+  # check if the request is valid
+  if step1_docID=='':
+    print "Invalid request, no docID configuration specified."
+    sys.exit(0)
+  
+  
+  service_params={"section": section,
+                  "version": version,
+                  "request_type": request_type,
+                  "step1_cfg": step1_cfg,
+                  "step1_output": step1_output,
+                  "keep_step1":keep_step1,
+#
+                  "step2_cfg": step2_cfg,
+                  "step2_output": step2_output,
+                  "keep_step2":keep_step2,
+#
+                  "step3_cfg": step3_cfg,
+                  "step3_output": step3_output,
+                  #
+                  'cfg_docid_dict' : cfg_docid_dict}
+
+  # According to the rerquest type, cook a request!
+  params={"CMSSWVersion": release,
+          "ScramArch": scramarch,
+          "RequestPriority": priority,
+          "RunWhitelist": ['Will Be replaced'],
+          "InputDataset": 'Will Be replaced',
+          "RunBlacklist": [],
+          "BlockWhitelist": [],
+          "BlockBlacklist": [],
+          "DbsUrl": dbsurl,
+          "RequestType": request_type,
+          "GlobalTag": globaltag,
+          "inputMode": "couchDB",
+          "RequestString": "Will Be dynamically created",
+          "Group": group,
+          "Requestor": user
+          }
+
+  if request_type == "ReReco":
+    params.update({"ProcConfigCacheID": step1_docID,
+                              "Scenario": "pp"})
+
+
+    if skim_docid != '':
+      print "This is a skim"
+      params.update({"SkimName1" : skim_name,
+                      "SkimInput1" : skim_input,
+                      "Skim1ConfigCacheID" : skim_docid,
+                      "nskims" : 1})
+
+
+  elif request_type == 'MonteCarlo':
+    params.update({"RequestString": identifier,
+                  "TimePerEvent": time_event,
+                  "FilterEfficiency": filter_eff,
+                  "RequestSizeEvents": number_events,
+                  "ProcConfigCacheID": step1_docID,
+                  "PrimaryDataset": primary_dataset,
+                  "DataPileup": "",
+                  "MCPileup": "",
+                  "PrepID": request_id,
+                  "TotalTime": 28800 })
+
+    params.pop('BlockBlacklist')
+    params.pop('BlockWhitelist')
+    params.pop('InputDataset')
+    params.pop('RunBlacklist')
+
+  elif request_type == 'MonteCarloFromGEN':
+    params.update({"TimePerEvent": time_event,
+                "FilterEfficiency": filter_eff,
+                "ProcConfigCacheID": step1_docID,
+                "PrepID": request_id,
+                "TotalTime": 28800 })
+
+  elif request_type == 'ReDigi':
+    params.update({"RequestString": identifier,
+                "StepOneConfigCacheID": step1_docID,
+                "KeepStepOneOutput": keep_step1,
+                "StepOneOutputModuleName": step1_output,
+                "DataPileup": "",
+                "MCPileup": pileup_dataset,
+                #"Scenario": "pp",
+                "PrepID": request_id})
+
+    if step2_cfg != '':
+        params.update({"StepTwoConfigCacheID": step2_docID,
+                       "KeepStepTwoOutput": keep_step2,
+                       "StepTwoOutputModuleName": step2_output})
+
+        if step3_cfg != '':
+            params['StepThreeConfigCacheID'] = step3_docID
+        else:
+            if not keep_step2:
+                print 'Request not keeping its step 2 output'
+                raise Exception("The request has a second step, no third step and not keeping it's second output")
+    else:
+        if not keep_step1:
+            print 'Request not keeping anything'
+            raise Exception('The request has one step and not keeping anything')
+
+  else:
+      print "Request type chose: "+str(request_type)
+      raise Exception('Unknown request type, aborting')
+
+  return params,service_params
+
+#-------------------------------------------------------------------------------
+
+def build_parser():
+  '''
+  No defaults given here,but set them in build_params_dict .
+  '''
+  # Example cfg
+  example_cfg = "\n[MyDescriptionOfTheRequest]\n"
+  example_cfg+= "dset_run_dict = {\"/DoubleElectron/Run2011B-v1/RAW\" : get_runs('/MinimumBias/Run2011B-v1/RAW',maxrun=177718)}\n"
+  example_cfg+= "docID = 8216d7bbd56664bc2a5853fb4f02d0f9\n"  
+  example_cfg+= "release = CMSSW_4_2_8_patch3\n"
+  example_cfg+= "globaltag = GR_R_42_V20::All\n"
+  example_cfg+= "\n[MyDescriptionOfTheRequest2]\n"
+  example_cfg+= "# The second request!\n"
+  example_cfg+= "dset_run_dict = {\"/DoubleElectron/Run2011B-v1/RAW\" : get_runs('/MinimumBias/Run2011B-v1/RAW')}\n"
+  example_cfg+= "cfg_path = /my/abs/path/my_rereco_pp.py"
+  example_cfg+= "release = CMSSW_4_2_8_patch3\n"
+  example_cfg+= "globaltag = GR_R_42_V20::All\n"
+  example_cfg+= "\n  --> For more help please see the example_requests.conf file!\n"
+  # Here we define an option parser to handle commandline options..
+  usage = 'usage: %prog <options>\n'
+  usage+= '\n\nExample cfg:\n'
+  usage+= example_cfg    
+  
+  parser = optparse.OptionParser(usage)
+  
+  parser.add_option('--release', help='Production release', dest='release')
+  parser.add_option('--request-type', help='Request type: "MonteCarlo","MonteCarloFromGEN","ReDigi"' , dest='request_type')
+  parser.add_option('--conditions', help='Conditions Global Tag' , dest='globaltag')
+  parser.add_option('--request-id', help='Request identifier' , dest='request_id')
+  parser.add_option('--input-ds', help='Input Data Set name' , dest='input_name')
+  #parser.add_option('--block-whitelist', help='While list blocks in input. Coma separated numbers, no need for the DS name', dest='block_whitelist', default=[])
+  parser.add_option('--pileup-ds', help='Pile-Up input Data Set name' , dest='pu_dataset')
+  parser.add_option('--step1-cfg', help='step 1 configuration' , dest='step1_cfg')
+  parser.add_option('--step1-output', help='step 1 output' , dest='step1_output')
+  parser.add_option('--keep-step1', help='step1 output keeping flag'  ,action='store_true', dest='keep_step1')
+  parser.add_option('--step1-docID', help='step 1 configuration' , dest='step1_docID')
+  parser.add_option('--cfg_path', help='Alias for step 1 configuration' , dest='cfg_path')
+  parser.add_option('--step2-cfg',help='step 2 configuration' ,dest='step2_cfg')
+  parser.add_option('--step2-output',help='step 2 output' ,dest='step2_output')
+  parser.add_option('--keep-step2',help='step2 output keeping flag',  action='store_true',dest='keep_step2')
+  parser.add_option('--step2-docID',help='step 2 configuration' ,dest='step2_docID')
+  parser.add_option('--step3-cfg',help='step 3 configuration' ,dest='step3_cfg')
+  parser.add_option('--step3-docID',help='step 3 configuration' ,dest='step3_docID')
+  parser.add_option('--priority',help='priority flag' ,dest='priority')
+  parser.add_option('--primary-dataset',help='primary dataset name' ,dest='primary_dataset')
+  parser.add_option('--time-event',help='time per event' , dest='time_event')
+  parser.add_option('--filter-eff',help='filter efficiency' ,dest='filter_eff')
+  parser.add_option('--number-events',help='number of events' ,dest='number_events')
+  parser.add_option('--version', help='submission version' , dest='version')
+  parser.add_option('--cfg_db_file', help='File containing the cfg name docid pairs' , dest='cfg_db_file')
+  parser.add_option('--user', help='The registered username' , dest='user')
+  parser.add_option('--group', help='The group to which the user belong' , dest='group')
+
+  parser.add_option('--test', help='To test things', action='store_true' , dest='test')
+  # The config file
+  parser.add_option('--req_file', help='The ini configuration to launch requests' , dest='req_file')
+  
+  return parser
+  
+#-------------------------------------------------------------------------------
+
+banner=\
+'###########################################################################\n'\
+'#                                                                         #\n'\
+'#    WMAControl: the swiss army knife for central requests submission     #\n'\
+'#                                                                         #\n'\
+'###########################################################################\n'
+
+if __name__ == "__main__":
+
+    print banner
+
+    # Build a parser
+    parser = build_parser()
+    
+    # here we have all parameters, taken from commandline or config
+    config = Configuration(parser)
+
+    # loop on the requests and submit them
+    loop_and_submit(config)
