@@ -1,0 +1,109 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: TKCosmics_ReReco_18042012.conf.
+---> Processing request "TKCosmicsP10DECO"
+
+
+
+
+* casarsa * PREP
+/afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p10_DECO_CosmicsReco_RERECO_cfg.py 
+/afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p10_DECO_CosmicsReco_RERECO_cfg.py 
+No DocId found for section TKCosmicsP10DECO. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p10_DECO_CosmicsReco_RERECO_cfg.py.couchID
+
+/afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p10_DECO_CosmicsReco_RERECO_cfg.py already uploaded with ID 5ac1404692818e1a11e0d959d0e74139 from /afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p10_DECO_CosmicsReco_RERECO_cfg.py.couchID
+ 
+ 
+Injected workflow: casarsa_TKCosmicsP10DECO_428p7_120418_224213_8439
+Approved workflow: casarsa_TKCosmicsP10DECO_428p7_120418_224213_8439
+Sleeping 1.97818261617 seconds
+---> Processing request "TKCosmicsP100DECO"
+
+
+
+
+* casarsa * PREP
+/afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p100_DECO_CosmicsReco_RERECO_cfg.py 
+/afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p100_DECO_CosmicsReco_RERECO_cfg.py 
+No DocId found for section TKCosmicsP100DECO. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p100_DECO_CosmicsReco_RERECO_cfg.py.couchID
+
+/afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p100_DECO_CosmicsReco_RERECO_cfg.py already uploaded with ID a2c9095b44b07a1a2754fc516283dc44 from /afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p100_DECO_CosmicsReco_RERECO_cfg.py.couchID
+ 
+ 
+Injected workflow: casarsa_TKCosmicsP100DECO_428p7_120418_224220_4443
+Approved workflow: casarsa_TKCosmicsP100DECO_428p7_120418_224220_4443
+Sleeping 1.91858886335 seconds
+---> Processing request "TKCosmicsP10PEAK"
+
+
+
+
+* casarsa * PREP
+/afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p10_PEAK_CosmicsReco_RERECO_cfg.py 
+/afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p10_PEAK_CosmicsReco_RERECO_cfg.py 
+No DocId found for section TKCosmicsP10PEAK. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p10_PEAK_CosmicsReco_RERECO_cfg.py.couchID
+
+/afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p10_PEAK_CosmicsReco_RERECO_cfg.py already uploaded with ID a2c9095b44b07a1a2754fc516283e1cb from /afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p10_PEAK_CosmicsReco_RERECO_cfg.py.couchID
+ 
+ 
+Injected workflow: casarsa_TKCosmicsP10PEAK_428p7_120418_224224_9317
+Approved workflow: casarsa_TKCosmicsP10PEAK_428p7_120418_224224_9317
+Sleeping 1.87296755251 seconds
+---> Processing request "TKCosmicsP100PEAK"
+
+
+
+
+* casarsa * PREP
+/afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p100_PEAK_CosmicsReco_RERECO_cfg.py 
+/afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p100_PEAK_CosmicsReco_RERECO_cfg.py 
+No DocId found for section TKCosmicsP100PEAK. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p100_PEAK_CosmicsReco_RERECO_cfg.py.couchID
+
+/afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p100_PEAK_CosmicsReco_RERECO_cfg.py already uploaded with ID a2c9095b44b07a1a2754fc516283e9a4 from /afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p100_PEAK_CosmicsReco_RERECO_cfg.py.couchID
+ 
+ 
+Injected workflow: casarsa_TKCosmicsP100PEAK_428p7_120418_224228_8797
+Approved workflow: casarsa_TKCosmicsP100PEAK_428p7_120418_224228_8797
+Sleeping 1.64625349353 seconds
+---> Processing request "TKCosmicsP500PEAK"
+
+
+
+
+* casarsa * PREP
+/afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p500_PEAK_CosmicsReco_RERECO_cfg.py 
+/afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p500_PEAK_CosmicsReco_RERECO_cfg.py 
+No DocId found for section TKCosmicsP500PEAK. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p500_PEAK_CosmicsReco_RERECO_cfg.py.couchID
+
+/afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p500_PEAK_CosmicsReco_RERECO_cfg.py already uploaded with ID a2c9095b44b07a1a2754fc516283ea54 from /afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p500_PEAK_CosmicsReco_RERECO_cfg.py.couchID
+ 
+ 
+Injected workflow: casarsa_TKCosmicsP500PEAK_428p7_120418_224232_6659
+Approved workflow: casarsa_TKCosmicsP500PEAK_428p7_120418_224232_6659
+Sleeping 1.80629259271 seconds
+---> Processing request "TKCosmicsP500DECO"
+
+
+
+
+* casarsa * PREP
+/afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p500_DECO_CosmicsReco_RERECO_cfg.py 
+/afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p500_DECO_CosmicsReco_RERECO_cfg.py 
+No DocId found for section TKCosmicsP500DECO. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p500_DECO_CosmicsReco_RERECO_cfg.py.couchID
+
+/afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p500_DECO_CosmicsReco_RERECO_cfg.py already uploaded with ID a2c9095b44b07a1a2754fc516283f6dd from /afs/cern.ch/user/c/casarsa/w0/prep/wmcontrol2/python/TKCosmics_step2_p500_DECO_CosmicsReco_RERECO_cfg.py.couchID
+ 
+ 
+Injected workflow: casarsa_TKCosmicsP500DECO_428p7_120418_224236_3346
+Approved workflow: casarsa_TKCosmicsP500DECO_428p7_120418_224236_3346
+Sleeping 1.06000704084 seconds

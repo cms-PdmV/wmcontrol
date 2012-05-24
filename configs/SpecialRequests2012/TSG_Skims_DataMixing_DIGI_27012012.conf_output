@@ -1,0 +1,28 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: TSG_Skims_DataMixing_DIGI_27012012.conf.
+---> Processing request "TSGSkimDMDigi"
+
+
+
+
+* dpiparo * ppd
+/build/dani/TSG_DataMixing_DIGI_27012012/DMPreProcess_RAW2DIGI.py 
+/build/dani/TSG_DataMixing_DIGI_27012012/DMPreProcess_RAW2DIGI.py 
+No DocId found for section TSGSkimDMDigi. Uploading the cfg to the couch.
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    d7450b2f57b580e906d3340b8d22607d
+  Revision: 3-fa91109bb8d2626b80dc1f1a2c4bc6b9
+ 
+ 
+Injected workflow: dpiparo_TSGSkimDMDigi_443_MinimumBias_Run2011B-HLTPHYSSD-TSGSkim-v1_RAW_120128_184445
+Approved workflow: dpiparo_TSGSkimDMDigi_443_MinimumBias_Run2011B-HLTPHYSSD-TSGSkim-v1_RAW_120128_184445
+Sleeping 2.30231612999 seconds
+Injected workflow: dpiparo_TSGSkimDMDigi_443_MinimumBias_Run2011B-HLTZEROBIASSD-TSGSkim-v1_RAW_120128_184450
+Approved workflow: dpiparo_TSGSkimDMDigi_443_MinimumBias_Run2011B-HLTZEROBIASSD-TSGSkim-v1_RAW_120128_184450
+Sleeping 1.35170212597 seconds

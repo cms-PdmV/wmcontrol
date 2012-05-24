@@ -1,0 +1,25 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: TSG_Skims_DataMixing_24012012.conf.
+---> Processing request "TSGSkimForDataMixing"
+
+
+
+
+* dpiparo * ppd
+/build/dani/TSG_DataMixing_24012012/skims_TSG_DataMixer_expanded.py 
+/build/dani/TSG_DataMixing_24012012/skims_TSG_DataMixer_expanded.py 
+No DocId found for section TSGSkimForDataMixing. Uploading the cfg to the couch.
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    afcd7b08ecb4c32cb01c0779c23d0760
+  Revision: 3-0ecf98ccb77f8411cd78d4f92017571d
+ 
+ 
+Injected workflow: dpiparo_TSGSkimForDataMixing_442p10_MinimumBias_Run2011B-v1_RAW_120124_140232
+Approved workflow: dpiparo_TSGSkimForDataMixing_442p10_MinimumBias_Run2011B-v1_RAW_120124_140232
+Sleeping 1.45717534696 seconds

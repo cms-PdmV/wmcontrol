@@ -1,0 +1,47 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: HCalGTComparison_07032012.conf.
+---> Processing request "GT_GR_R_52_V4B"
+
+
+
+
+* dpiparo * ppd
+/build/dani/Hcal_07022012/reco_hcal.py 
+/build/dani/Hcal_07022012/reco_hcal.py 
+No DocId found for section GT_GR_R_52_V4B. Uploading the cfg to the couch.
+/build/dani/Hcal_07022012/reco_hcal.py.couchID
+
+/build/dani/Hcal_07022012/reco_hcal.py already uploaded with ID 1468e1cd7f36e327597533f16c913e1a from /build/dani/Hcal_07022012/reco_hcal.py.couchID
+ 
+ 
+Injected workflow: dpiparo_GT_GR_R_52_V4B_520_120307_190053
+Approved workflow: dpiparo_GT_GR_R_52_V4B_520_120307_190053
+Sleeping 1.70505681597 seconds
+Injected workflow: dpiparo_GT_GR_R_52_V4B_520_120307_190057
+Approved workflow: dpiparo_GT_GR_R_52_V4B_520_120307_190057
+Sleeping 2.45193968545 seconds
+---> Processing request "GT_GR_R_52_V4"
+
+
+
+
+* dpiparo * ppd
+/build/dani/Hcal_07022012/reco_hcal.py 
+/build/dani/Hcal_07022012/reco_hcal.py 
+No DocId found for section GT_GR_R_52_V4. Uploading the cfg to the couch.
+/build/dani/Hcal_07022012/reco_hcal.py.couchID
+
+/build/dani/Hcal_07022012/reco_hcal.py already uploaded with ID 1468e1cd7f36e327597533f16c913e1a from /build/dani/Hcal_07022012/reco_hcal.py.couchID
+ 
+ 
+Injected workflow: dpiparo_GT_GR_R_52_V4_520_120307_190101
+Approved workflow: dpiparo_GT_GR_R_52_V4_520_120307_190101
+Sleeping 1.78623198774 seconds
+Injected workflow: dpiparo_GT_GR_R_52_V4_520_120307_190105
+Approved workflow: dpiparo_GT_GR_R_52_V4_520_120307_190105
+Sleeping 2.03498539639 seconds

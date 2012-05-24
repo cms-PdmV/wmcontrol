@@ -1,0 +1,55 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: HiggsReprocessing_16012012_v2.conf.
+---> Processing request "16Jan2011Repro2011B"
+
+
+
+
+* dpiparo * ppd
+/build/dani/16JanHiggsRerecoRequest_16012012/rereco_higgs_v2.py 
+/build/dani/16JanHiggsRerecoRequest_16012012/rereco_higgs_v2.py 
+No DocId found for section 16Jan2011Repro2011B. Uploading the cfg to the couch.
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    1e5aaf8e8a46f4a071f5a4ccaa9b0325
+  Revision: 3-7e8b36c7d62d370dc05f4d0cde3bba64
+ 
+ 
+Injected workflow: dpiparo_16Jan2011Repro2011B_428p7_DblEl_Run2011B-v1_RAW_120117_214002
+Approved workflow: dpiparo_16Jan2011Repro2011B_428p7_DblEl_Run2011B-v1_RAW_120117_214002
+Sleeping 3.01489679463 seconds
+Injected workflow: dpiparo_16Jan2011Repro2011B_428p7_DblMu_Run2011B-v1_RAW_120117_214009
+Approved workflow: dpiparo_16Jan2011Repro2011B_428p7_DblMu_Run2011B-v1_RAW_120117_214009
+Sleeping 1.01348358805 seconds
+Injected workflow: dpiparo_16Jan2011Repro2011B_428p7_Photon_Run2011B-v1_RAW_120117_214012
+Approved workflow: dpiparo_16Jan2011Repro2011B_428p7_Photon_Run2011B-v1_RAW_120117_214012
+Sleeping 1.24670934317 seconds
+---> Processing request "16Jan2011Repro2011A"
+
+
+
+
+* dpiparo * ppd
+/build/dani/16JanHiggsRerecoRequest_16012012/rereco_higgs_v2.py 
+/build/dani/16JanHiggsRerecoRequest_16012012/rereco_higgs_v2.py 
+No DocId found for section 16Jan2011Repro2011A. Uploading the cfg to the couch.
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    1e5aaf8e8a46f4a071f5a4ccaa9b174c
+  Revision: 3-ceadd24a30277530134da634cb7c0881
+ 
+ 
+Injected workflow: dpiparo_16Jan2011Repro2011A_428p7_DblEl_Run2011A-v1_RAW_120117_214018
+Approved workflow: dpiparo_16Jan2011Repro2011A_428p7_DblEl_Run2011A-v1_RAW_120117_214018
+Sleeping 2.61904957417 seconds
+Injected workflow: dpiparo_16Jan2011Repro2011A_428p7_DblMu_Run2011A-v1_RAW_120117_214023
+Approved workflow: dpiparo_16Jan2011Repro2011A_428p7_DblMu_Run2011A-v1_RAW_120117_214023
+Sleeping 1.45035919555 seconds
+Injected workflow: dpiparo_16Jan2011Repro2011A_428p7_Photon_Run2011A-v1_RAW_120117_214027
+Approved workflow: dpiparo_16Jan2011Repro2011A_428p7_Photon_Run2011A-v1_RAW_120117_214027
+Sleeping 1.6306559694 seconds

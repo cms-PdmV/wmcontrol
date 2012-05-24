@@ -1,0 +1,20 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: AlCa_Nov7Repro_patch_v2.conf.
+---> Processing request "AlCaNo7ReRecoPatch"
+
+
+
+
+* dpiparo * ppd
+ 8216d7bbd56664bc2a5853fb4f1222db
+ 
+ 
+Injected workflow: dpiparo_CMSSW_4_4_2_patch2_AlCaNo7ReRecoPatch_MinimumBias_Commissioning11-v1_RAW_111216_091712
+Approved workflow: dpiparo_CMSSW_4_4_2_patch2_AlCaNo7ReRecoPatch_MinimumBias_Commissioning11-v1_RAW_111216_091712
+Sleeping 2.77944018077 seconds
+

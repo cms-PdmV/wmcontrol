@@ -1,0 +1,86 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: HiggsReprocessing30112011.conf.
+---> Processing request "HiggsRepro2011A_v2"
+
+
+
+
+* dpiparo * ppd
+/build/dani/HiggsReprocessingRequest30112011/rereco_higgs.py 
+/build/dani/HiggsReprocessingRequest30112011/rereco_higgs.py 
+No DocId found for section HiggsRepro2011A_v2. Uploading the cfg to the couch.
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    6cb4393a59d87965bfa70295c8d4b4b9
+  Revision: 3-384faf3fd3c4d1a47e384200d727241c
+ 
+ 
+Injected workflow: dpiparo_CMSSW_4_2_8_patch7_HiggsRepro2011A_v2_DblMu_Run2011A-v1_RAW_111130_193251
+Approved workflow: dpiparo_CMSSW_4_2_8_patch7_HiggsRepro2011A_v2_DblMu_Run2011A-v1_RAW_111130_193251
+Sleeping 1.25410440158 seconds
+Injected workflow: dpiparo_CMSSW_4_2_8_patch7_HiggsRepro2011A_v2_Photon_Run2011A-v1_RAW_111130_193254
+Approved workflow: dpiparo_CMSSW_4_2_8_patch7_HiggsRepro2011A_v2_Photon_Run2011A-v1_RAW_111130_193254
+Sleeping 1.41519069887 seconds
+---> Processing request "HiggsRepro2011B_v2"
+
+
+
+
+* dpiparo * ppd
+/build/dani/HiggsReprocessingRequest30112011/rereco_higgs.py 
+/build/dani/HiggsReprocessingRequest30112011/rereco_higgs.py 
+No DocId found for section HiggsRepro2011B_v2. Uploading the cfg to the couch.
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    6cb4393a59d87965bfa70295c8d4bf10
+  Revision: 3-38ce05026251f5685a06bab799ebe809
+ 
+ 
+Injected workflow: dpiparo_CMSSW_4_2_8_patch7_HiggsRepro2011B_v2_DblMu_Run2011B-v1_RAW_111130_193257
+Approved workflow: dpiparo_CMSSW_4_2_8_patch7_HiggsRepro2011B_v2_DblMu_Run2011B-v1_RAW_111130_193257
+Sleeping 2.03866343571 seconds
+Injected workflow: dpiparo_CMSSW_4_2_8_patch7_HiggsRepro2011B_v2_Photon_Run2011B-v1_RAW_111130_193301
+Approved workflow: dpiparo_CMSSW_4_2_8_patch7_HiggsRepro2011B_v2_Photon_Run2011B-v1_RAW_111130_193301
+Sleeping 1.50086224547 seconds
+---> Processing request "HiggsRepro2011A_highpriority_v2"
+
+
+
+
+* dpiparo * ppd
+/build/dani/HiggsReprocessingRequest30112011/rereco_higgs.py 
+/build/dani/HiggsReprocessingRequest30112011/rereco_higgs.py 
+No DocId found for section HiggsRepro2011A_highpriority_v2. Uploading the cfg to the couch.
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    6cb4393a59d87965bfa70295c8d4c32f
+  Revision: 3-74ee67464bb4fae00d72371942ba060c
+ 
+ 
+Injected workflow: dpiparo_CMSSW_4_2_8_patch7_HiggsRepro2011A_highpriority_v2_DblEl_Run2011A-v1_RAW_111130_193306
+Approved workflow: dpiparo_CMSSW_4_2_8_patch7_HiggsRepro2011A_highpriority_v2_DblEl_Run2011A-v1_RAW_111130_193306
+Sleeping 2.95911530882 seconds
+---> Processing request "HiggsRepro2011B_highpriority_v2"
+
+
+
+
+* dpiparo * ppd
+/build/dani/HiggsReprocessingRequest30112011/rereco_higgs.py 
+/build/dani/HiggsReprocessingRequest30112011/rereco_higgs.py 
+No DocId found for section HiggsRepro2011B_highpriority_v2. Uploading the cfg to the couch.
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    6cb4393a59d87965bfa70295c8d4d478
+  Revision: 3-3b0ba309f110dd7eff58b4cb231b8139
+ 
+ 
+Injected workflow: dpiparo_CMSSW_4_2_8_patch7_HiggsRepro2011B_highpriority_v2_DblEl_Run2011B-v1_RAW_111130_193312
+Approved workflow: dpiparo_CMSSW_4_2_8_patch7_HiggsRepro2011B_highpriority_v2_DblEl_Run2011B-v1_RAW_111130_193312
+Sleeping 1.21504176417 seconds
+

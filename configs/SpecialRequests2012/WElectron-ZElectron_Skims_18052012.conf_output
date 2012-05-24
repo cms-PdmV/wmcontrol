@@ -1,0 +1,75 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: WElectron-ZElectron_Skims_18052012.conf.
+---> Processing request "WEle2012BSkim"
+
+
+
+
+* casarsa * PREP
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_2_5_patch1/src/skim_WElectron_on_SingleElectron_PD.py 
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_2_5_patch1/src/skim_WElectron_on_SingleElectron_PD.py 
+No DocId found for section WEle2012BSkim. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_2_5_patch1/src/skim_WElectron_on_SingleElectron_PD.py.couchID
+
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_2_5_patch1/src/skim_WElectron_on_SingleElectron_PD.py already uploaded with ID d9c6fd9ab4bbebb0891b8cdd10512eb5 from /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_2_5_patch1/src/skim_WElectron_on_SingleElectron_PD.py.couchID
+ 
+ 
+Injected workflow: casarsa_WEle2012BSkim_525p1_120519_111748_4494
+Approved workflow: casarsa_WEle2012BSkim_525p1_120519_111748_4494
+Sleeping 1.10723638398 seconds
+---> Processing request "ZEle2012ASkim"
+
+
+
+
+* casarsa * PREP
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_2_5_patch1/src/skim_ZElectron_on_DoubleElectron_PD.py 
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_2_5_patch1/src/skim_ZElectron_on_DoubleElectron_PD.py 
+No DocId found for section ZEle2012ASkim. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_2_5_patch1/src/skim_ZElectron_on_DoubleElectron_PD.py.couchID
+
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_2_5_patch1/src/skim_ZElectron_on_DoubleElectron_PD.py already uploaded with ID d9c6fd9ab4bbebb0891b8cdd105c5caa from /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_2_5_patch1/src/skim_ZElectron_on_DoubleElectron_PD.py.couchID
+ 
+ 
+Injected workflow: casarsa_ZEle2012ASkim_525p1_120519_111752_1661
+Approved workflow: casarsa_ZEle2012ASkim_525p1_120519_111752_1661
+Sleeping 2.23531450649 seconds
+---> Processing request "ZEle2012BSkim"
+
+
+
+
+* casarsa * PREP
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_2_5_patch1/src/skim_ZElectron_on_DoubleElectron_PD.py 
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_2_5_patch1/src/skim_ZElectron_on_DoubleElectron_PD.py 
+No DocId found for section ZEle2012BSkim. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_2_5_patch1/src/skim_ZElectron_on_DoubleElectron_PD.py.couchID
+
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_2_5_patch1/src/skim_ZElectron_on_DoubleElectron_PD.py already uploaded with ID d9c6fd9ab4bbebb0891b8cdd105c5caa from /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_2_5_patch1/src/skim_ZElectron_on_DoubleElectron_PD.py.couchID
+ 
+ 
+Injected workflow: casarsa_ZEle2012BSkim_525p1_120519_111757_7214
+Approved workflow: casarsa_ZEle2012BSkim_525p1_120519_111757_7214
+Sleeping 1.00836235685 seconds
+---> Processing request "WEle2012ASkim"
+
+
+
+
+* casarsa * PREP
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_2_5_patch1/src/skim_WElectron_on_SingleElectron_PD.py 
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_2_5_patch1/src/skim_WElectron_on_SingleElectron_PD.py 
+No DocId found for section WEle2012ASkim. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_2_5_patch1/src/skim_WElectron_on_SingleElectron_PD.py.couchID
+
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_2_5_patch1/src/skim_WElectron_on_SingleElectron_PD.py already uploaded with ID d9c6fd9ab4bbebb0891b8cdd10512eb5 from /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_2_5_patch1/src/skim_WElectron_on_SingleElectron_PD.py.couchID
+ 
+ 
+Injected workflow: casarsa_WEle2012ASkim_525p1_120519_111802_1414
+Approved workflow: casarsa_WEle2012ASkim_525p1_120519_111802_1414
+Sleeping 1.65034883811 seconds

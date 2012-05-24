@@ -1,0 +1,44 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: DQM_IO_test_12032011.conf.
+---> Processing request "BoundaryTestB"
+
+
+
+
+* dpiparo * ppd
+/build/dani/DQM_NewIO/dqmIOtest_RAW2DIGI_RECO_DQM.py 
+/build/dani/DQM_NewIO/dqmIOtest_RAW2DIGI_RECO_DQM.py 
+No DocId found for section BoundaryTestB. Uploading the cfg to the couch.
+/build/dani/DQM_NewIO/dqmIOtest_RAW2DIGI_RECO_DQM.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    f843808fc1998c99c605965ae89b7864
+  Revision: 3-90c2e0801df6c582b12e2bbc013d948e
+ 
+ 
+Injected workflow: dpiparo_BoundaryTestB_520_120312_132421
+Approved workflow: dpiparo_BoundaryTestB_520_120312_132421
+Sleeping 1.34062521596 seconds
+---> Processing request "BoundaryTestA"
+
+
+
+
+* dpiparo * ppd
+/build/dani/DQM_NewIO/dqmIOtest_RAW2DIGI_RECO_DQM.py 
+/build/dani/DQM_NewIO/dqmIOtest_RAW2DIGI_RECO_DQM.py 
+No DocId found for section BoundaryTestA. Uploading the cfg to the couch.
+/build/dani/DQM_NewIO/dqmIOtest_RAW2DIGI_RECO_DQM.py.couchID
+
+/build/dani/DQM_NewIO/dqmIOtest_RAW2DIGI_RECO_DQM.py already uploaded with ID f843808fc1998c99c605965ae89b7864 from /build/dani/DQM_NewIO/dqmIOtest_RAW2DIGI_RECO_DQM.py.couchID
+ 
+ 
+Injected workflow: dpiparo_BoundaryTestA_520_120312_132427
+Approved workflow: dpiparo_BoundaryTestA_520_120312_132427
+Sleeping 2.03240748191 seconds

@@ -1,0 +1,43 @@
+
+ ---> Processing request "GT_GR_R_44_V6"
+
+*** Normal mode (multiple runs per request)
+Injected workflow: cmsdataops_CMSSW_4_4_0_patch3_DblMu_Run2011B-ZMu-PromptSkim-v1_RAW-RECO_111017_171410
+Approved workflow: cmsdataops_CMSSW_4_4_0_patch3_DblMu_Run2011B-ZMu-PromptSkim-v1_RAW-RECO_111017_171410
+Sleeping 1.52598296195 seconds
+*** Normal mode (multiple runs per request)
+Injected workflow: cmsdataops_CMSSW_4_4_0_patch3_MinimumBias_Run2011A-ValSkim-05Aug2011-v1_RAW-RECO_111017_171412
+Approved workflow: cmsdataops_CMSSW_4_4_0_patch3_MinimumBias_Run2011A-ValSkim-05Aug2011-v1_RAW-RECO_111017_171412
+Sleeping 1.93801783991 seconds
+*** Normal mode (multiple runs per request)
+Injected workflow: cmsdataops_CMSSW_4_4_0_patch3_MinimumBias_Run2011B-v1_RAW_111017_171415
+Approved workflow: cmsdataops_CMSSW_4_4_0_patch3_MinimumBias_Run2011B-v1_RAW_111017_171415
+Sleeping 2.11948494851 seconds
+
+ ---> Processing request "GT_GR_R_44_V6C"
+
+*** Normal mode (multiple runs per request)
+Injected workflow: cmsdataops_CMSSW_4_4_0_patch3_DblMu_Run2011A-ZMu-PromptSkim-v4_RAW-RECO_111017_171444
+Approved workflow: cmsdataops_CMSSW_4_4_0_patch3_DblMu_Run2011A-ZMu-PromptSkim-v4_RAW-RECO_111017_171444
+Sleeping 3.3139680183 seconds
+*** Normal mode (multiple runs per request)
+Injected workflow: cmsdataops_CMSSW_4_4_0_patch3_DblMu_Run2011A-ZMu-PromptSkim-v5_RAW-RECO_111017_171449
+Approved workflow: cmsdataops_CMSSW_4_4_0_patch3_DblMu_Run2011A-ZMu-PromptSkim-v5_RAW-RECO_111017_171449
+Sleeping 1.72930678315 seconds
+*** Normal mode (multiple runs per request)
+Injected workflow: cmsdataops_CMSSW_4_4_0_patch3_DblMu_Run2011A-ZMu-PromptSkim-v6_RAW-RECO_111017_171452
+Approved workflow: cmsdataops_CMSSW_4_4_0_patch3_DblMu_Run2011A-ZMu-PromptSkim-v6_RAW-RECO_111017_171452
+Sleeping 1.74857982839 seconds
+*** Normal mode (multiple runs per request)
+Injected workflow: cmsdataops_CMSSW_4_4_0_patch3_DblMu_Run2011B-ZMu-PromptSkim-v1_RAW-RECO_111017_171454
+Approved workflow: cmsdataops_CMSSW_4_4_0_patch3_DblMu_Run2011B-ZMu-PromptSkim-v1_RAW-RECO_111017_171454
+Sleeping 1.48546775919 seconds
+*** Normal mode (multiple runs per request)
+Injected workflow: cmsdataops_CMSSW_4_4_0_patch3_MinimumBias_Run2011A-ValSkim-05Aug2011-v1_RAW-RECO_111017_171456
+Approved workflow: cmsdataops_CMSSW_4_4_0_patch3_MinimumBias_Run2011A-ValSkim-05Aug2011-v1_RAW-RECO_111017_171456
+Sleeping 2.08529853968 seconds
+*** Normal mode (multiple runs per request)
+Injected workflow: cmsdataops_CMSSW_4_4_0_patch3_MinimumBias_Run2011B-v1_RAW_111017_171459
+Approved workflow: cmsdataops_CMSSW_4_4_0_patch3_MinimumBias_Run2011B-v1_RAW_111017_171459
+Sleeping 1.35458016008 seconds
+

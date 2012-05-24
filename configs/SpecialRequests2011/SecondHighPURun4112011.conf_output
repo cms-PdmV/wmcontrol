@@ -1,0 +1,29 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: SecondHighPURun4112011.conf.
+---> Processing request "HighPileupRun"
+
+/build/dani/HighPuPDsRequest/rereco_hipu.py   
+No DocId found for section HighPileupRun. Uploading the cfg to the couch.
+Couch DB pass: 
+Importing the config, this may take a while... done.
+Hashing config... done.
+Config file /build/dani/HighPuPDsRequest/rereco_hipu.py added to the config cache:
+  DocID:    8216d7bbd56664bc2a5853fb4f0c515c
+  Revision: 3-2deda0779b93b67c96f01ad4160932fe
+   
+   
+
+Injected workflow: cmsdataops_CMSSW_4_4_2_HighPileupRun_ZeroBiasHPF1_Run2011B-v1_RAW_111104_150720
+Approved workflow: cmsdataops_CMSSW_4_4_2_HighPileupRun_ZeroBiasHPF1_Run2011B-v1_RAW_111104_150720
+Sleeping 1.3693591052 seconds
+Injected workflow: cmsdataops_CMSSW_4_4_2_HighPileupRun_ZeroBiasHPF2_Run2011B-v1_RAW_111104_150728
+Approved workflow: cmsdataops_CMSSW_4_4_2_HighPileupRun_ZeroBiasHPF2_Run2011B-v1_RAW_111104_150728
+Sleeping 2.0173121107 seconds
+Injected workflow: cmsdataops_CMSSW_4_4_2_HighPileupRun_ZeroBiasHPF3_Run2011B-v1_RAW_111104_150732
+Approved workflow: cmsdataops_CMSSW_4_4_2_HighPileupRun_ZeroBiasHPF3_Run2011B-v1_RAW_111104_150732
+Sleeping 1.16613255923 seconds

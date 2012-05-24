@@ -1,0 +1,36 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: TSG_Skims_DataMixing_DIGI_06022012.conf.
+---> Processing request "TSGSkimDMDigi"
+
+
+
+
+* dpiparo * ppd
+/build/dani/TSG_DataMixing_DIGI_27012012/DMPreProcess_RAW2DIGI.py 
+/build/dani/TSG_DataMixing_DIGI_27012012/DMPreProcess_RAW2DIGI.py 
+No DocId found for section TSGSkimDMDigi. Uploading the cfg to the couch.
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    3d4a3984d96f3a973cd4d36dd9761914
+  Revision: 3-92f3558f963aac39103b7cc4f04e788e
+ 
+ 
+{'InputDataset': '/MinimumBias/Run2011B-HLTZEROBIASSD-TSGSkim-v1/RAW', 'KeepStepOneOutput': 'True', 'Group': 'ppd', 'Scenario': 'pp', 'RequestPriority': '200000', 
+'Requestor': 'dpiparo', 'ScramArch': 'slc5_amd64_gcc434', 'inputMode': 'couchDB', 'StepOneConfigCacheID': '3d4a3984d96f3a973cd4d36dd9761914', 'RunBlacklist': [], 
+'RequestString': 'TSGSkimDMDigi_501p1_MinimumBias_Run2011B-HLTZEROBIASSD-TSGSkim-v1_RAW', 'DataPileup': '', 'MCPileup': '', 'BlockWhitelist': [], 'BlockBlacklist': [], 
+'GlobalTag': 'GR_R_50_V11::All', 'RequestType': 'ReDigi', 'RunWhitelist': [], 'DbsUrl': 'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet', 
+'StepOneOutputModuleName': '', 'PrepID': '', 'CMSSWVersion': 'CMSSW_5_0_1_patch1'}
+{'InputDataset': '/MinimumBias/Run2011B-HLTZEROBIASSD-TSGSkim-v1/RAW', 'KeepStepOneOutput': 'True', 'Group': 'ppd', 'Scenario': 'pp', 'RequestPriority': '200000', 
+'Requestor': 'dpiparo', 'ScramArch': 'slc5_amd64_gcc434', 'inputMode': 'couchDB', 'StepOneConfigCacheID': '3d4a3984d96f3a973cd4d36dd9761914', 'RunBlacklist': [], 
+'RequestString': 'TSGSkimDMDigi_501p1_MinimumBias_Run2011B-HLTZEROBIASSD-TSGSkim-v1_RAW', 'DataPileup': '', 'MCPileup': '', 'BlockWhitelist': [], 'BlockBlacklist': [], 
+'GlobalTag': 'GR_R_50_V11::All', 'RequestType': 'ReDigi', 'RunWhitelist': [], 'DbsUrl': 'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet', 
+'StepOneOutputModuleName': '', 'PrepID': '', 'CMSSWVersion': 'CMSSW_5_0_1_patch1'}
+Injected workflow: dpiparo_TSGSkimDMDigi_501p1_MinimumBias_Run2011B-HLTZEROBIASSD-TSGSkim-v1_RAW_120213_211538
+Approved workflow: dpiparo_TSGSkimDMDigi_501p1_MinimumBias_Run2011B-HLTZEROBIASSD-TSGSkim-v1_RAW_120213_211538
+Sleeping 3.01980475233 seconds
+

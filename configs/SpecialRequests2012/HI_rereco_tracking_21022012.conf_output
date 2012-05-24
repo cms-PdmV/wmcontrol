@@ -1,0 +1,25 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: HI_rereco_tracking_21022012.conf.
+---> Processing request "HIRereco"
+
+
+
+
+* dpiparo * ppd
+/build/dani/HIReco_21022012/step2a_RAW2DIGI_L1Reco_RECO_ALCA.py 
+/build/dani/HIReco_21022012/step2a_RAW2DIGI_L1Reco_RECO_ALCA.py 
+No DocId found for section HIRereco. Uploading the cfg to the couch.
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    1e27456fd9dbd1f548e9a21b7f580a2f
+  Revision: 3-b521961047fcd2090db26413fc3ac5de
+ 
+ 
+Injected workflow: dpiparo_HIRereco_442p9_120221_200605
+Approved workflow: dpiparo_HIRereco_442p9_120221_200605
+Sleeping 1.97223172032 seconds

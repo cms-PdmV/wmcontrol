@@ -1,0 +1,27 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: HI_gensim_16032012.conf.
+---> Processing request "HidjetQuenchedMinBias"
+
+
+
+
+* dpiparo * ppd
+/build/dani/ProdHI_16032012/Hydjet_Quenched_MinBias_2760GeV_cfi_GEN_SIM.py 
+/build/dani/ProdHI_16032012/Hydjet_Quenched_MinBias_2760GeV_cfi_GEN_SIM.py 
+No DocId found for section HidjetQuenchedMinBias. Uploading the cfg to the couch.
+/build/dani/ProdHI_16032012/Hydjet_Quenched_MinBias_2760GeV_cfi_GEN_SIM.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    a5db24be0b9d74d5698b1ee928f65a3b
+  Revision: 3-a17d4d692f58c9d0c1479ccb8b77c1d3
+ 
+ 
+Injected workflow: dpiparo_HidjetQuenchedMinBias_444_120316_135432
+Approved workflow: dpiparo_HidjetQuenchedMinBias_444_120316_135432
+Sleeping 2.0130761152 seconds

@@ -1,0 +1,28 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: HighPU522_stresstest_21032012.conf.
+---> Processing request "522StressTest"
+
+
+
+
+* dpiparo * ppd
+/build/dani/HighPu522StressTest/test_RAW2DIGI_L1Reco_RECO.py 
+/build/dani/HighPu522StressTest/test_RAW2DIGI_L1Reco_RECO.py 
+No DocId found for section 522StressTest. Uploading the cfg to the couch.
+/build/dani/HighPu522StressTest/test_RAW2DIGI_L1Reco_RECO.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    0b38434c468b8bd4ced8e3648fd8b630
+  Revision: 3-e8cb90fab989c14175dba7b92ed32c83
+ 
+ 
+Injected workflow: dpiparo_522StressTest_522_120321_124907
+Approved workflow: dpiparo_522StressTest_522_120321_124907
+Sleeping 1.08060026428 seconds
+

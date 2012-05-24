@@ -1,0 +1,43 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: ParkedZeroBias_11-42012.conf.
+---> Processing request "ParkedReReco"
+
+
+
+
+* dpiparo * ppd
+/build/dani/ParkedZeroBias_11042012/rereco_RAW2DIGI_L1Reco_RECO_DQM.py 
+/build/dani/ParkedZeroBias_11042012/rereco_RAW2DIGI_L1Reco_RECO_DQM.py 
+No DocId found for section ParkedReReco. Uploading the cfg to the couch.
+/build/dani/ParkedZeroBias_11042012/rereco_RAW2DIGI_L1Reco_RECO_DQM.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    e3e031c06975349f35e95fb83f646aa0
+  Revision: 3-a607defd4fe312b6965ecfa9a70220a3
+ 
+ 
+Injected workflow: dpiparo_ParkedReReco_523p4_120411_184915_527
+Approved workflow: dpiparo_ParkedReReco_523p4_120411_184915_527
+Sleeping 2.29135015045 seconds
+Injected workflow: dpiparo_ParkedReReco_523p4_120411_184918_8013
+Approved workflow: dpiparo_ParkedReReco_523p4_120411_184918_8013
+Sleeping 1.62875473802 seconds
+Injected workflow: dpiparo_ParkedReReco_523p4_120411_184922_5898
+Approved workflow: dpiparo_ParkedReReco_523p4_120411_184922_5898
+Sleeping 1.21758017132 seconds
+Injected workflow: dpiparo_ParkedReReco_523p4_120411_184924_7944
+Approved workflow: dpiparo_ParkedReReco_523p4_120411_184924_7944
+Sleeping 1.73995869476 seconds
+Injected workflow: dpiparo_ParkedReReco_523p4_120411_184928_2726
+Approved workflow: dpiparo_ParkedReReco_523p4_120411_184928_2726
+Sleeping 1.38910864931 seconds
+Injected workflow: dpiparo_ParkedReReco_523p4_120411_184930_6720
+Approved workflow: dpiparo_ParkedReReco_523p4_120411_184930_6720
+Sleeping 3.20242845342 seconds
+

@@ -1,0 +1,23 @@
+################################################################################
+#                                                                              #
+#    WMAControl: the swiss army knife for central requests submissions         #
+#                                                                              #
+################################################################################
+
+
+
+ ---> Processing request "HCAL2TS428patch6"
+
+Looking for runs in DBS for /MinimumBias/Run2011B-v1/RAW
+No DocId found for request HCAL2TS428patch6. Uploading the cfg to the couch.
+Couch DB pass: 
+Importing the config, this may take a while... done.
+Hashing config... done.
+Config file /build/dani/HCalTimeSlices/CMSSW_4_2_8_patch6/src/rereco_pp.py added to the config cache:
+  DocID:    8216d7bbd56664bc2a5853fb4f07d2d3
+  Revision: 3-0eb305997723a80b8c528b9b1445d627
+*** Normal mode (multiple runs per request)
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HCAL2TS428patch6_DblEl_Run2011B-v1_RAW_111018_175519
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HCAL2TS428patch6_DblEl_Run2011B-v1_RAW_111018_175519
+Sleeping 1.09806029845 seconds
+

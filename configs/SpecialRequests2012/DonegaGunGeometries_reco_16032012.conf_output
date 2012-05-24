@@ -1,0 +1,180 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: DonegaGunGeometries_reco_16032012.conf.
+---> Processing request "Infl10PBConnToST"
+
+
+
+
+* dpiparo * ppd
+/build/dani/DonegaGunsGeometries_05032012/ExtendedInflated10PixelBarrelConnToST_RECO.py 
+/build/dani/DonegaGunsGeometries_05032012/ExtendedInflated10PixelBarrelConnToST_RECO.py 
+No DocId found for section Infl10PBConnToST. Uploading the cfg to the couch.
+/build/dani/DonegaGunsGeometries_05032012/ExtendedInflated10PixelBarrelConnToST_RECO.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    4f6f6cef174cf1b066ee140369f6fbd6
+  Revision: 3-609919899e311dab69e1ee207d0c4173
+ 
+ 
+Injected workflow: dpiparo_Infl10PBConnToST_443p1_120316_174310
+Approved workflow: dpiparo_Infl10PBConnToST_443p1_120316_174310
+Sleeping 1.13184259162 seconds
+Injected workflow: dpiparo_Infl10PBConnToST_443p1_120316_174315
+Approved workflow: dpiparo_Infl10PBConnToST_443p1_120316_174315
+Sleeping 2.82143790738 seconds
+Injected workflow: dpiparo_Infl10PBConnToST_443p1_120316_174323
+Approved workflow: dpiparo_Infl10PBConnToST_443p1_120316_174323
+Sleeping 1.33513317058 seconds
+---> Processing request "Infl10TIBTIDServCyl"
+
+
+
+
+* dpiparo * ppd
+/build/dani/DonegaGunsGeometries_05032012/ExtendedInflated10TIBTIDServiceCylinder_RECO.py 
+/build/dani/DonegaGunsGeometries_05032012/ExtendedInflated10TIBTIDServiceCylinder_RECO.py 
+No DocId found for section Infl10TIBTIDServCyl. Uploading the cfg to the couch.
+/build/dani/DonegaGunsGeometries_05032012/ExtendedInflated10TIBTIDServiceCylinder_RECO.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    4f6f6cef174cf1b066ee140369f7498e
+  Revision: 3-a2c5aff7f35a09259da88d10a46a4595
+ 
+ 
+Injected workflow: dpiparo_Infl10TIBTIDServCyl_443p1_120316_174331
+Approved workflow: dpiparo_Infl10TIBTIDServCyl_443p1_120316_174331
+Sleeping 1.97151230192 seconds
+Injected workflow: dpiparo_Infl10TIBTIDServCyl_443p1_120316_174335
+Approved workflow: dpiparo_Infl10TIBTIDServCyl_443p1_120316_174335
+Sleeping 2.26298305623 seconds
+Injected workflow: dpiparo_Infl10TIBTIDServCyl_443p1_120316_174340
+Approved workflow: dpiparo_Infl10TIBTIDServCyl_443p1_120316_174340
+Sleeping 1.52482034652 seconds
+---> Processing request "Infl10TIBFlange"
+
+
+
+
+* dpiparo * ppd
+/build/dani/DonegaGunsGeometries_05032012/ExtendedInflated10TIBFlange_RECO.py 
+/build/dani/DonegaGunsGeometries_05032012/ExtendedInflated10TIBFlange_RECO.py 
+No DocId found for section Infl10TIBFlange. Uploading the cfg to the couch.
+/build/dani/DonegaGunsGeometries_05032012/ExtendedInflated10TIBFlange_RECO.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    4f6f6cef174cf1b066ee140369f76f73
+  Revision: 3-d860624859dec404e3b8df0c922e6618
+ 
+ 
+Injected workflow: dpiparo_Infl10TIBFlange_443p1_120316_174347
+Approved workflow: dpiparo_Infl10TIBFlange_443p1_120316_174347
+Sleeping 1.80550374618 seconds
+Injected workflow: dpiparo_Infl10TIBFlange_443p1_120316_174352
+Approved workflow: dpiparo_Infl10TIBFlange_443p1_120316_174352
+Sleeping 1.05792498151 seconds
+Injected workflow: dpiparo_Infl10TIBFlange_443p1_120316_174358
+Approved workflow: dpiparo_Infl10TIBFlange_443p1_120316_174358
+Sleeping 1.58654364923 seconds
+---> Processing request "standard"
+
+
+
+
+* dpiparo * ppd
+/build/dani/DonegaGunsGeometries_05032012/standard_RECO.py 
+/build/dani/DonegaGunsGeometries_05032012/standard_RECO.py 
+No DocId found for section standard. Uploading the cfg to the couch.
+/build/dani/DonegaGunsGeometries_05032012/standard_RECO.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    4f6f6cef174cf1b066ee140369f80c01
+  Revision: 3-89207b0a33fb1717de30beb9f46a4523
+ 
+ 
+Injected workflow: dpiparo_standard_443p1_120316_174404
+Approved workflow: dpiparo_standard_443p1_120316_174404
+Sleeping 1.09148166785 seconds
+Injected workflow: dpiparo_standard_443p1_120316_174408
+Approved workflow: dpiparo_standard_443p1_120316_174408
+Sleeping 1.07182702209 seconds
+---> Processing request "Infl10PBConn"
+
+
+
+
+* dpiparo * ppd
+/build/dani/DonegaGunsGeometries_05032012/ExtendedInflated10PixelBarrelConn_RECO.py 
+/build/dani/DonegaGunsGeometries_05032012/ExtendedInflated10PixelBarrelConn_RECO.py 
+No DocId found for section Infl10PBConn. Uploading the cfg to the couch.
+/build/dani/DonegaGunsGeometries_05032012/ExtendedInflated10PixelBarrelConn_RECO.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    4f6f6cef174cf1b066ee140369fc94e4
+  Revision: 3-f2acbe6840ccd77155326f87afea19ff
+ 
+ 
+Injected workflow: dpiparo_Infl10PBConn_443p1_120316_174415
+Approved workflow: dpiparo_Infl10PBConn_443p1_120316_174415
+Sleeping 1.77067041726 seconds
+Injected workflow: dpiparo_Infl10PBConn_443p1_120316_174420
+Approved workflow: dpiparo_Infl10PBConn_443p1_120316_174420
+Sleeping 2.33309768759 seconds
+Injected workflow: dpiparo_Infl10PBConn_443p1_120316_174425
+Approved workflow: dpiparo_Infl10PBConn_443p1_120316_174425
+Sleeping 1.59427473426 seconds
+---> Processing request "X0Max"
+
+
+
+
+* dpiparo * ppd
+/build/dani/DonegaGunsGeometries_05032012/ExtendedX0Max_RECO.py 
+/build/dani/DonegaGunsGeometries_05032012/ExtendedX0Max_RECO.py 
+No DocId found for section X0Max. Uploading the cfg to the couch.
+/build/dani/DonegaGunsGeometries_05032012/ExtendedX0Max_RECO.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    4f6f6cef174cf1b066ee140369fcb5de
+  Revision: 3-7d4ffcb43641174dd1c3fe97247753f6
+ 
+ 
+Injected workflow: dpiparo_X0Max_443p1_120316_174431
+Approved workflow: dpiparo_X0Max_443p1_120316_174431
+Sleeping 2.47115514878 seconds
+---> Processing request "Infl10TIBTIDMarg"
+
+
+
+
+* dpiparo * ppd
+/build/dani/DonegaGunsGeometries_05032012/ExtendedInflated10TIBTIDMargherita_RECO.py 
+/build/dani/DonegaGunsGeometries_05032012/ExtendedInflated10TIBTIDMargherita_RECO.py 
+No DocId found for section Infl10TIBTIDMarg. Uploading the cfg to the couch.
+/build/dani/DonegaGunsGeometries_05032012/ExtendedInflated10TIBTIDMargherita_RECO.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    4f6f6cef174cf1b066ee140369fccc5a
+  Revision: 3-deaba2bcd6499c1a5df7ec7348a6c024
+ 
+ 
+Injected workflow: dpiparo_Infl10TIBTIDMarg_443p1_120316_174440
+Approved workflow: dpiparo_Infl10TIBTIDMarg_443p1_120316_174440
+Sleeping 1.76496302563 seconds
+Injected workflow: dpiparo_Infl10TIBTIDMarg_443p1_120316_174443
+Approved workflow: dpiparo_Infl10TIBTIDMarg_443p1_120316_174443
+Sleeping 3.6750358046 seconds
+Injected workflow: dpiparo_Infl10TIBTIDMarg_443p1_120316_174449
+Approved workflow: dpiparo_Infl10TIBTIDMarg_443p1_120316_174449
+Sleeping 1.24104236531 seconds

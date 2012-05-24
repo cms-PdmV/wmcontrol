@@ -1,0 +1,50 @@
+
+################################################################################
+#                                                                              #
+#    WMAControl: the swiss army knife for central requests submissions         #
+#                                                                              #
+################################################################################
+
+
+
+ ---> Processing request "HiggsReproForCert2011A"
+
+*** No DocId found for request HiggsReproForCert2011A. Uploading the cfg to the couch.
+Importing the config, this may take a while... done.
+Hashing config... done.
+Config file /build/dani/HiggsReprocessingRequest04112011/dqmforcert_higgs.py added to the config cache:
+  DocID:    8216d7bbd56664bc2a5853fb4f11b1e9
+  Revision: 3-4b339b18e6cd5d2dfdbe0f506ded9cc5
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011A_Jet_Run2011A-v1_RAW_111115_160924
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011A_Jet_Run2011A-v1_RAW_111115_160924
+Sleeping 1.67 seconds
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011A_Jet_Run2011A-v1_RAW_111115_160926
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011A_Jet_Run2011A-v1_RAW_111115_160926
+Sleeping 2.21 seconds
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011A_Jet_Run2011A-v1_RAW_111115_160929
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011A_Jet_Run2011A-v1_RAW_111115_160929
+Sleeping 1.04 seconds
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011A_Jet_Run2011A-v1_RAW_111115_160930
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011A_Jet_Run2011A-v1_RAW_111115_160930
+Sleeping 1.80 seconds
+
+ ---> Processing request "HiggsReproForCert2011B"
+
+*** No DocId found for request HiggsReproForCert2011B. Uploading the cfg to the couch.
+Importing the config, this may take a while... done.
+Hashing config... done.
+Config file /build/dani/HiggsReprocessingRequest04112011/dqmforcert_higgs.py added to the config cache:
+  DocID:    8216d7bbd56664bc2a5853fb4f11bd4b
+  Revision: 3-41a63f381a551d21e166f5e52eee7b6a
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011B_Jet_Run2011B-v1_RAW_111115_160938
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011B_Jet_Run2011B-v1_RAW_111115_160938
+Sleeping 1.41 seconds
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011B_Jet_Run2011B-v1_RAW_111115_160940
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011B_Jet_Run2011B-v1_RAW_111115_160940
+Sleeping 1.72 seconds
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011B_Jet_Run2011B-v1_RAW_111115_160942
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011B_Jet_Run2011B-v1_RAW_111115_160942
+Sleeping 1.67 seconds
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011B_Jet_Run2011B-v1_RAW_111115_160944
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011B_Jet_Run2011B-v1_RAW_111115_160944
+Sleeping 1.76 seconds

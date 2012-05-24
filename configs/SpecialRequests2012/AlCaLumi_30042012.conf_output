@@ -1,0 +1,29 @@
+Importing
+End Importing
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: AlCaLumi_30042012.conf.
+---> Processing request "AlCaLumiPixels"
+
+
+
+
+* dpiparo * ppd
+/build/dani/AlCaLumi_30042012/lumi_ALCA.py 
+/build/dani/AlCaLumi_30042012/lumi_ALCA.py 
+No DocId found for section AlCaLumiPixels. Uploading the cfg to the couch.
+/build/dani/AlCaLumi_30042012/lumi_ALCA.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    0a80324324ad5653d8ee62a321806f8c
+  Revision: 3-2777abf1721dcf27ef881780a9ffc065
+ 
+ 
+Injected workflow: dpiparo_AlCaLumiPixels_524p2_120430_200203_8533
+Approved workflow: dpiparo_AlCaLumiPixels_524p2_120430_200203_8533
+Sleeping 2.48834411007 seconds

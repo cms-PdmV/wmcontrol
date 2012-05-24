@@ -1,0 +1,89 @@
+
+################################################################################
+#                                                                              #
+#    WMAControl: the swiss army knife for central requests submissions         #
+#                                                                              #
+################################################################################
+
+
+
+ ---> Processing request "HighPileupRun"
+
+*** No DocId found for request HighPileupRun. Uploading the cfg to the couch.
+Importing the config, this may take a while... done.
+Hashing config... done.
+Config file /build/dani/HighPuPDsRequest/rereco_hipu.py added to the config cache:
+  DocID:    8216d7bbd56664bc2a5853fb4f153aa0
+  Revision: 3-6dfec42f805b7a76ab8dddcb84ba4421
+{   'BlockBlacklist': [],
+    'BlockWhitelist': [],
+    'CMSSWVersion': 'CMSSW_4_4_2',
+    'DbsUrl': 'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet',
+    'GlobalTag': 'GR_P_V26A::All',
+    'Group': 'cmsdataops',
+    'InputDataset': '/ZeroBiasHPF1/Run2011B-v1/RAW',
+    'ProdConfigCacheID': '8216d7bbd56664bc2a5853fb4f153aa0',
+    'RequestPriority': '10000000',
+    'RequestString': 'CMSSW_4_4_2_HighPileupRun_ZeroBiasHPF1_Run2011B-v1_RAW',
+    'RequestType': 'ReReco',
+    'Requestor': 'cmsdataops',
+    'RunBlacklist': [],
+    'RunWhitelist': [],
+    'Scenario': 'pp',
+    'ScramArch': 'slc5_amd64_gcc434',
+    'inputMode': 'couchDB'}
+{   'cfg_path': '/build/dani/HighPuPDsRequest/rereco_hipu.py',
+    'do_single_runs': False,
+    'section': 'HighPileupRun',
+    'skimcfg_path': ''}
+Injected workflow: cmsdataops_CMSSW_4_4_2_HighPileupRun_ZeroBiasHPF1_Run2011B-v1_RAW_111118_200632
+Approved workflow: cmsdataops_CMSSW_4_4_2_HighPileupRun_ZeroBiasHPF1_Run2011B-v1_RAW_111118_200632
+Sleeping 2.08 seconds
+{   'BlockBlacklist': [],
+    'BlockWhitelist': [],
+    'CMSSWVersion': 'CMSSW_4_4_2',
+    'DbsUrl': 'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet',
+    'GlobalTag': 'GR_P_V26A::All',
+    'Group': 'cmsdataops',
+    'InputDataset': '/ZeroBiasHPF2/Run2011B-v1/RAW',
+    'ProdConfigCacheID': '8216d7bbd56664bc2a5853fb4f153aa0',
+    'RequestPriority': '10000000',
+    'RequestString': 'CMSSW_4_4_2_HighPileupRun_ZeroBiasHPF2_Run2011B-v1_RAW',
+    'RequestType': 'ReReco',
+    'Requestor': 'cmsdataops',
+    'RunBlacklist': [],
+    'RunWhitelist': [],
+    'Scenario': 'pp',
+    'ScramArch': 'slc5_amd64_gcc434',
+    'inputMode': 'couchDB'}
+{   'cfg_path': '/build/dani/HighPuPDsRequest/rereco_hipu.py',
+    'do_single_runs': False,
+    'section': 'HighPileupRun',
+    'skimcfg_path': ''}
+Injected workflow: cmsdataops_CMSSW_4_4_2_HighPileupRun_ZeroBiasHPF2_Run2011B-v1_RAW_111118_200635
+Approved workflow: cmsdataops_CMSSW_4_4_2_HighPileupRun_ZeroBiasHPF2_Run2011B-v1_RAW_111118_200635
+Sleeping 2.44 seconds
+{   'BlockBlacklist': [],
+    'BlockWhitelist': [],
+    'CMSSWVersion': 'CMSSW_4_4_2',
+    'DbsUrl': 'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet',
+    'GlobalTag': 'GR_P_V26A::All',
+    'Group': 'cmsdataops',
+    'InputDataset': '/ZeroBiasHPF3/Run2011B-v1/RAW',
+    'ProdConfigCacheID': '8216d7bbd56664bc2a5853fb4f153aa0',
+    'RequestPriority': '10000000',
+    'RequestString': 'CMSSW_4_4_2_HighPileupRun_ZeroBiasHPF3_Run2011B-v1_RAW',
+    'RequestType': 'ReReco',
+    'Requestor': 'cmsdataops',
+    'RunBlacklist': [],
+    'RunWhitelist': [],
+    'Scenario': 'pp',
+    'ScramArch': 'slc5_amd64_gcc434',
+    'inputMode': 'couchDB'}
+{   'cfg_path': '/build/dani/HighPuPDsRequest/rereco_hipu.py',
+    'do_single_runs': False,
+    'section': 'HighPileupRun',
+    'skimcfg_path': ''}
+Injected workflow: cmsdataops_CMSSW_4_4_2_HighPileupRun_ZeroBiasHPF3_Run2011B-v1_RAW_111118_200638
+Approved workflow: cmsdataops_CMSSW_4_4_2_HighPileupRun_ZeroBiasHPF3_Run2011B-v1_RAW_111118_200638
+Sleeping 1.50 seconds

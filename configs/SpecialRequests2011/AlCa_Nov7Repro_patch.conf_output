@@ -1,0 +1,24 @@
+
+################################################################################
+#                                                                              #
+#    WMAControl: the swiss army knife for central requests submissions         #
+#                                                                              #
+################################################################################
+
+
+
+ ---> Processing request "AlCaNo7ReRecoPatch"
+
+Looking for runs in DBS for /Cosmics/Commissioning11-v1/RAW
+*** No DocId found for request AlCaNo7ReRecoPatch. Uploading the cfg to the couch.
+Importing the config, this may take a while... done.
+Hashing config... done.
+Config file /build/dani/7NovReprocessing/AlCaPatch/rereco_Cosmics_cosmics_alignment.py added to the config cache:
+  DocID:    8216d7bbd56664bc2a5853fb4f1222db
+  Revision: 3-9d0b35f01bf969909313ea5391ea74db
+Injected workflow: cmsdataops_CMSSW_4_4_2_patch2_AlCaNo7ReRecoPatch_Cosmics_Commissioning11-v1_RAW_111117_162417
+Approved workflow: cmsdataops_CMSSW_4_4_2_patch2_AlCaNo7ReRecoPatch_Cosmics_Commissioning11-v1_RAW_111117_162417
+Sleeping 1.09 seconds
+Injected workflow: cmsdataops_CMSSW_4_4_2_patch2_AlCaNo7ReRecoPatch_MinimumBias_Run2011A-v1_RAW_111117_162418
+Approved workflow: cmsdataops_CMSSW_4_4_2_patch2_AlCaNo7ReRecoPatch_MinimumBias_Run2011A-v1_RAW_111117_162418
+Sleeping 2.51 seconds

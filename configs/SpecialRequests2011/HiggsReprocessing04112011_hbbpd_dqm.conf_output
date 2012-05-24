@@ -1,0 +1,422 @@
+
+################################################################################
+#                                                                              #
+#    WMAControl: the swiss army knife for central requests submissions         #
+#                                                                              #
+################################################################################
+
+
+
+ ---> Processing request "HiggsRepro2011A"
+
+*** No DocId found for request HiggsRepro2011A. Uploading the cfg to the couch.
+Importing the config, this may take a while... done.
+Hashing config... done.
+Config file /build/dani/HiggsReprocessingRequest04112011/rereco_higgs.py added to the config cache:
+  DocID:    8216d7bbd56664bc2a5853fb4f11dbcb
+  Revision: 3-720c6ca4cb72b3d505278388749dd31c
+{   'BlockBlacklist': [],
+    'BlockWhitelist': [],
+    'CMSSWVersion': 'CMSSW_4_2_8_patch6',
+    'DbsUrl': 'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet',
+    'GlobalTag': 'GR_R_42_V22A::All',
+    'Group': 'cmsdataops',
+    'InputDataset': '/ElectronHad/Run2011A-v1/RAW',
+    'ProdConfigCacheID': '8216d7bbd56664bc2a5853fb4f11dbcb',
+    'RequestPriority': '1000001',
+    'RequestString': 'CMSSW_4_2_8_patch6_HiggsRepro2011A_ElHad_Run2011A-v1_RAW',
+    'RequestType': 'ReReco',
+    'Requestor': 'cmsdataops',
+    'RunBlacklist': [],
+    'RunWhitelist': [171446, 170722, 170759],
+    'Scenario': 'pp',
+    'ScramArch': 'slc5_amd64_gcc434',
+    'inputMode': 'couchDB'}
+{   'cfg_path': '/build/dani/HiggsReprocessingRequest04112011/rereco_higgs.py',
+    'do_single_runs': False,
+    'section': 'HiggsRepro2011A',
+    'skimcfg_path': ''}
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011A_ElHad_Run2011A-v1_RAW_111116_125245
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011A_ElHad_Run2011A-v1_RAW_111116_125245
+Sleeping 2.38 seconds
+{   'BlockBlacklist': [],
+    'BlockWhitelist': [],
+    'CMSSWVersion': 'CMSSW_4_2_8_patch6',
+    'DbsUrl': 'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet',
+    'GlobalTag': 'GR_R_42_V22A::All',
+    'Group': 'cmsdataops',
+    'InputDataset': '/MET/Run2011A-v1/RAW',
+    'ProdConfigCacheID': '8216d7bbd56664bc2a5853fb4f11dbcb',
+    'RequestPriority': '1000001',
+    'RequestString': 'CMSSW_4_2_8_patch6_HiggsRepro2011A_MET_Run2011A-v1_RAW',
+    'RequestType': 'ReReco',
+    'Requestor': 'cmsdataops',
+    'RunBlacklist': [],
+    'RunWhitelist': [171446, 170722, 170759],
+    'Scenario': 'pp',
+    'ScramArch': 'slc5_amd64_gcc434',
+    'inputMode': 'couchDB'}
+{   'cfg_path': '/build/dani/HiggsReprocessingRequest04112011/rereco_higgs.py',
+    'do_single_runs': False,
+    'section': 'HiggsRepro2011A',
+    'skimcfg_path': ''}
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011A_MET_Run2011A-v1_RAW_111116_125248
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011A_MET_Run2011A-v1_RAW_111116_125248
+Sleeping 1.19 seconds
+{   'BlockBlacklist': [],
+    'BlockWhitelist': [],
+    'CMSSWVersion': 'CMSSW_4_2_8_patch6',
+    'DbsUrl': 'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet',
+    'GlobalTag': 'GR_R_42_V22A::All',
+    'Group': 'cmsdataops',
+    'InputDataset': '/MuHad/Run2011A-v1/RAW',
+    'ProdConfigCacheID': '8216d7bbd56664bc2a5853fb4f11dbcb',
+    'RequestPriority': '1000001',
+    'RequestString': 'CMSSW_4_2_8_patch6_HiggsRepro2011A_MuHad_Run2011A-v1_RAW',
+    'RequestType': 'ReReco',
+    'Requestor': 'cmsdataops',
+    'RunBlacklist': [],
+    'RunWhitelist': [171446, 170722, 170759],
+    'Scenario': 'pp',
+    'ScramArch': 'slc5_amd64_gcc434',
+    'inputMode': 'couchDB'}
+{   'cfg_path': '/build/dani/HiggsReprocessingRequest04112011/rereco_higgs.py',
+    'do_single_runs': False,
+    'section': 'HiggsRepro2011A',
+    'skimcfg_path': ''}
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011A_MuHad_Run2011A-v1_RAW_111116_125249
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011A_MuHad_Run2011A-v1_RAW_111116_125249
+Sleeping 1.17 seconds
+
+ ---> Processing request "HiggsReproForCert2011A"
+
+*** No DocId found for request HiggsReproForCert2011A. Uploading the cfg to the couch.
+Importing the config, this may take a while... done.
+Hashing config... done.
+Config file /build/dani/HiggsReprocessingRequest04112011/dqmforcert_higgs.py added to the config cache:
+  DocID:    8216d7bbd56664bc2a5853fb4f11e479
+  Revision: 3-4b339b18e6cd5d2dfdbe0f506ded9cc5
+{   'BlockBlacklist': [],
+    'BlockWhitelist': [],
+    'CMSSWVersion': 'CMSSW_4_2_8_patch6',
+    'DbsUrl': 'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet',
+    'GlobalTag': 'GR_R_42_V22A::All',
+    'Group': 'cmsdataops',
+    'InputDataset': '/ElectronHad/Run2011A-v1/RAW',
+    'ProdConfigCacheID': '8216d7bbd56664bc2a5853fb4f11e479',
+    'RequestPriority': '1000001',
+    'RequestString': 'CMSSW_4_2_8_patch6_HiggsReproForCert2011A_ElHad_Run2011A-v1_RAW',
+    'RequestType': 'ReReco',
+    'Requestor': 'cmsdataops',
+    'RunBlacklist': [],
+    'RunWhitelist': [171446, 170722, 170759],
+    'Scenario': 'pp',
+    'ScramArch': 'slc5_amd64_gcc434',
+    'inputMode': 'couchDB'}
+{   'cfg_path': '/build/dani/HiggsReprocessingRequest04112011/dqmforcert_higgs.py',
+    'do_single_runs': False,
+    'section': 'HiggsReproForCert2011A',
+    'skimcfg_path': ''}
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011A_ElHad_Run2011A-v1_RAW_111116_125259
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011A_ElHad_Run2011A-v1_RAW_111116_125259
+Sleeping 1.16 seconds
+{   'BlockBlacklist': [],
+    'BlockWhitelist': [],
+    'CMSSWVersion': 'CMSSW_4_2_8_patch6',
+    'DbsUrl': 'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet',
+    'GlobalTag': 'GR_R_42_V22A::All',
+    'Group': 'cmsdataops',
+    'InputDataset': '/MET/Run2011A-v1/RAW',
+    'ProdConfigCacheID': '8216d7bbd56664bc2a5853fb4f11e479',
+    'RequestPriority': '1000001',
+    'RequestString': 'CMSSW_4_2_8_patch6_HiggsReproForCert2011A_MET_Run2011A-v1_RAW',
+    'RequestType': 'ReReco',
+    'Requestor': 'cmsdataops',
+    'RunBlacklist': [],
+    'RunWhitelist': [171446, 170722, 170759],
+    'Scenario': 'pp',
+    'ScramArch': 'slc5_amd64_gcc434',
+    'inputMode': 'couchDB'}
+{   'cfg_path': '/build/dani/HiggsReprocessingRequest04112011/dqmforcert_higgs.py',
+    'do_single_runs': False,
+    'section': 'HiggsReproForCert2011A',
+    'skimcfg_path': ''}
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011A_MET_Run2011A-v1_RAW_111116_125301
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011A_MET_Run2011A-v1_RAW_111116_125301
+Sleeping 2.38 seconds
+{   'BlockBlacklist': [],
+    'BlockWhitelist': [],
+    'CMSSWVersion': 'CMSSW_4_2_8_patch6',
+    'DbsUrl': 'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet',
+    'GlobalTag': 'GR_R_42_V22A::All',
+    'Group': 'cmsdataops',
+    'InputDataset': '/MuHad/Run2011A-v1/RAW',
+    'ProdConfigCacheID': '8216d7bbd56664bc2a5853fb4f11e479',
+    'RequestPriority': '1000001',
+    'RequestString': 'CMSSW_4_2_8_patch6_HiggsReproForCert2011A_MuHad_Run2011A-v1_RAW',
+    'RequestType': 'ReReco',
+    'Requestor': 'cmsdataops',
+    'RunBlacklist': [],
+    'RunWhitelist': [171446, 170722, 170759],
+    'Scenario': 'pp',
+    'ScramArch': 'slc5_amd64_gcc434',
+    'inputMode': 'couchDB'}
+{   'cfg_path': '/build/dani/HiggsReprocessingRequest04112011/dqmforcert_higgs.py',
+    'do_single_runs': False,
+    'section': 'HiggsReproForCert2011A',
+    'skimcfg_path': ''}
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011A_MuHad_Run2011A-v1_RAW_111116_125304
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011A_MuHad_Run2011A-v1_RAW_111116_125304
+Sleeping 2.14 seconds
+
+ ---> Processing request "HiggsRepro2011B"
+
+*** No DocId found for request HiggsRepro2011B. Uploading the cfg to the couch.
+Importing the config, this may take a while... done.
+Hashing config... done.
+Config file /build/dani/HiggsReprocessingRequest04112011/rereco_higgs.py added to the config cache:
+  DocID:    8216d7bbd56664bc2a5853fb4f11ea8d
+  Revision: 3-90c692641064a45bb56ca87e773d3269
+{   'BlockBlacklist': [],
+    'BlockWhitelist': [],
+    'CMSSWVersion': 'CMSSW_4_2_8_patch6',
+    'DbsUrl': 'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet',
+    'GlobalTag': 'GR_R_42_V22::All',
+    'Group': 'cmsdataops',
+    'InputDataset': '/ElectronHad/Run2011B-v1/RAW',
+    'ProdConfigCacheID': '8216d7bbd56664bc2a5853fb4f11ea8d',
+    'RequestPriority': '1000001',
+    'RequestString': 'CMSSW_4_2_8_patch6_HiggsRepro2011B_ElHad_Run2011B-v1_RAW',
+    'RequestType': 'ReReco',
+    'Requestor': 'cmsdataops',
+    'RunBlacklist': [],
+    'RunWhitelist': [   177507,
+                        177509,
+                        177515,
+                        177318,
+                        175832,
+                        175833,
+                        175834,
+                        175835,
+                        175836,
+                        175837,
+                        175838,
+                        175858,
+                        175875,
+                        177507,
+                        177509,
+                        177515],
+    'Scenario': 'pp',
+    'ScramArch': 'slc5_amd64_gcc434',
+    'inputMode': 'couchDB'}
+{   'cfg_path': '/build/dani/HiggsReprocessingRequest04112011/rereco_higgs.py',
+    'do_single_runs': False,
+    'section': 'HiggsRepro2011B',
+    'skimcfg_path': ''}
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011B_ElHad_Run2011B-v1_RAW_111116_125310
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011B_ElHad_Run2011B-v1_RAW_111116_125310
+Sleeping 1.77 seconds
+{   'BlockBlacklist': [],
+    'BlockWhitelist': [],
+    'CMSSWVersion': 'CMSSW_4_2_8_patch6',
+    'DbsUrl': 'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet',
+    'GlobalTag': 'GR_R_42_V22::All',
+    'Group': 'cmsdataops',
+    'InputDataset': '/MET/Run2011B-v1/RAW',
+    'ProdConfigCacheID': '8216d7bbd56664bc2a5853fb4f11ea8d',
+    'RequestPriority': '1000001',
+    'RequestString': 'CMSSW_4_2_8_patch6_HiggsRepro2011B_MET_Run2011B-v1_RAW',
+    'RequestType': 'ReReco',
+    'Requestor': 'cmsdataops',
+    'RunBlacklist': [],
+    'RunWhitelist': [   177507,
+                        177509,
+                        177515,
+                        177318,
+                        175832,
+                        175833,
+                        175834,
+                        175835,
+                        175836,
+                        175837,
+                        175838,
+                        175858,
+                        175875,
+                        177507,
+                        177509,
+                        177515],
+    'Scenario': 'pp',
+    'ScramArch': 'slc5_amd64_gcc434',
+    'inputMode': 'couchDB'}
+{   'cfg_path': '/build/dani/HiggsReprocessingRequest04112011/rereco_higgs.py',
+    'do_single_runs': False,
+    'section': 'HiggsRepro2011B',
+    'skimcfg_path': ''}
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011B_MET_Run2011B-v1_RAW_111116_125312
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011B_MET_Run2011B-v1_RAW_111116_125312
+Sleeping 1.38 seconds
+{   'BlockBlacklist': [],
+    'BlockWhitelist': [],
+    'CMSSWVersion': 'CMSSW_4_2_8_patch6',
+    'DbsUrl': 'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet',
+    'GlobalTag': 'GR_R_42_V22::All',
+    'Group': 'cmsdataops',
+    'InputDataset': '/MuHad/Run2011B-v1/RAW',
+    'ProdConfigCacheID': '8216d7bbd56664bc2a5853fb4f11ea8d',
+    'RequestPriority': '1000001',
+    'RequestString': 'CMSSW_4_2_8_patch6_HiggsRepro2011B_MuHad_Run2011B-v1_RAW',
+    'RequestType': 'ReReco',
+    'Requestor': 'cmsdataops',
+    'RunBlacklist': [],
+    'RunWhitelist': [   177507,
+                        177509,
+                        177515,
+                        177318,
+                        175832,
+                        175833,
+                        175834,
+                        175835,
+                        175836,
+                        175837,
+                        175838,
+                        175858,
+                        175875,
+                        177507,
+                        177509,
+                        177515],
+    'Scenario': 'pp',
+    'ScramArch': 'slc5_amd64_gcc434',
+    'inputMode': 'couchDB'}
+{   'cfg_path': '/build/dani/HiggsReprocessingRequest04112011/rereco_higgs.py',
+    'do_single_runs': False,
+    'section': 'HiggsRepro2011B',
+    'skimcfg_path': ''}
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011B_MuHad_Run2011B-v1_RAW_111116_125314
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011B_MuHad_Run2011B-v1_RAW_111116_125314
+Sleeping 1.52 seconds
+
+ ---> Processing request "HiggsReproForCert2011B"
+
+*** No DocId found for request HiggsReproForCert2011B. Uploading the cfg to the couch.
+Importing the config, this may take a while... done.
+Hashing config... done.
+Config file /build/dani/HiggsReprocessingRequest04112011/dqmforcert_higgs.py added to the config cache:
+  DocID:    8216d7bbd56664bc2a5853fb4f11ef11
+  Revision: 3-41a63f381a551d21e166f5e52eee7b6a
+{   'BlockBlacklist': [],
+    'BlockWhitelist': [],
+    'CMSSWVersion': 'CMSSW_4_2_8_patch6',
+    'DbsUrl': 'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet',
+    'GlobalTag': 'GR_R_42_V22::All',
+    'Group': 'cmsdataops',
+    'InputDataset': '/ElectronHad/Run2011B-v1/RAW',
+    'ProdConfigCacheID': '8216d7bbd56664bc2a5853fb4f11ef11',
+    'RequestPriority': '1000001',
+    'RequestString': 'CMSSW_4_2_8_patch6_HiggsReproForCert2011B_ElHad_Run2011B-v1_RAW',
+    'RequestType': 'ReReco',
+    'Requestor': 'cmsdataops',
+    'RunBlacklist': [],
+    'RunWhitelist': [   177507,
+                        177509,
+                        177515,
+                        177318,
+                        175832,
+                        175833,
+                        175834,
+                        175835,
+                        175836,
+                        175837,
+                        175838,
+                        175858,
+                        175875,
+                        177507,
+                        177509,
+                        177515],
+    'Scenario': 'pp',
+    'ScramArch': 'slc5_amd64_gcc434',
+    'inputMode': 'couchDB'}
+{   'cfg_path': '/build/dani/HiggsReprocessingRequest04112011/dqmforcert_higgs.py',
+    'do_single_runs': False,
+    'section': 'HiggsReproForCert2011B',
+    'skimcfg_path': ''}
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011B_ElHad_Run2011B-v1_RAW_111116_125321
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011B_ElHad_Run2011B-v1_RAW_111116_125321
+Sleeping 1.33 seconds
+{   'BlockBlacklist': [],
+    'BlockWhitelist': [],
+    'CMSSWVersion': 'CMSSW_4_2_8_patch6',
+    'DbsUrl': 'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet',
+    'GlobalTag': 'GR_R_42_V22::All',
+    'Group': 'cmsdataops',
+    'InputDataset': '/MET/Run2011B-v1/RAW',
+    'ProdConfigCacheID': '8216d7bbd56664bc2a5853fb4f11ef11',
+    'RequestPriority': '1000001',
+    'RequestString': 'CMSSW_4_2_8_patch6_HiggsReproForCert2011B_MET_Run2011B-v1_RAW',
+    'RequestType': 'ReReco',
+    'Requestor': 'cmsdataops',
+    'RunBlacklist': [],
+    'RunWhitelist': [   177507,
+                        177509,
+                        177515,
+                        177318,
+                        175832,
+                        175833,
+                        175834,
+                        175835,
+                        175836,
+                        175837,
+                        175838,
+                        175858,
+                        175875,
+                        177507,
+                        177509,
+                        177515],
+    'Scenario': 'pp',
+    'ScramArch': 'slc5_amd64_gcc434',
+    'inputMode': 'couchDB'}
+{   'cfg_path': '/build/dani/HiggsReprocessingRequest04112011/dqmforcert_higgs.py',
+    'do_single_runs': False,
+    'section': 'HiggsReproForCert2011B',
+    'skimcfg_path': ''}
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011B_MET_Run2011B-v1_RAW_111116_125323
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011B_MET_Run2011B-v1_RAW_111116_125323
+Sleeping 2.48 seconds
+{   'BlockBlacklist': [],
+    'BlockWhitelist': [],
+    'CMSSWVersion': 'CMSSW_4_2_8_patch6',
+    'DbsUrl': 'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet',
+    'GlobalTag': 'GR_R_42_V22::All',
+    'Group': 'cmsdataops',
+    'InputDataset': '/MuHad/Run2011B-v1/RAW',
+    'ProdConfigCacheID': '8216d7bbd56664bc2a5853fb4f11ef11',
+    'RequestPriority': '1000001',
+    'RequestString': 'CMSSW_4_2_8_patch6_HiggsReproForCert2011B_MuHad_Run2011B-v1_RAW',
+    'RequestType': 'ReReco',
+    'Requestor': 'cmsdataops',
+    'RunBlacklist': [],
+    'RunWhitelist': [   177507,
+                        177509,
+                        177515,
+                        177318,
+                        175832,
+                        175833,
+                        175834,
+                        175835,
+                        175836,
+                        175837,
+                        175838,
+                        175858,
+                        175875,
+                        177507,
+                        177509,
+                        177515],
+    'Scenario': 'pp',
+    'ScramArch': 'slc5_amd64_gcc434',
+    'inputMode': 'couchDB'}
+{   'cfg_path': '/build/dani/HiggsReprocessingRequest04112011/dqmforcert_higgs.py',
+    'do_single_runs': False,
+    'section': 'HiggsReproForCert2011B',
+    'skimcfg_path': ''}
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011B_MuHad_Run2011B-v1_RAW_111116_125326
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsReproForCert2011B_MuHad_Run2011B-v1_RAW_111116_125326
+Sleeping 1.28 seconds

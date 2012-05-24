@@ -1,0 +1,41 @@
+
+################################################################################
+#                                                                              #
+#    WMAControl: the swiss army knife for central requests submissions         #
+#                                                                              #
+################################################################################
+
+
+
+ ---> Processing request "HighPileupRun_v3"
+
+*** No DocId found for request HighPileupRun_v3. Uploading the cfg to the couch.
+Importing the config, this may take a while... done.
+Hashing config... done.
+Config file /build/dani/HighPuPDsRequest/rereco_hipu.py added to the config cache:
+  DocID:    8216d7bbd56664bc2a5853fb4f1545ac
+  Revision: 3-1f929e345b7cb572954ad6e0875d7d47
+{   'BlockBlacklist': [],
+    'BlockWhitelist': [],
+    'CMSSWVersion': 'CMSSW_4_4_2',
+    'DbsUrl': 'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet',
+    'GlobalTag': 'GR_P_V26A::All',
+    'Group': 'cmsdataops',
+    'InputDataset': '/ZeroBiasHPF0/Run2011B-v1/RAW',
+    'ProdConfigCacheID': '8216d7bbd56664bc2a5853fb4f1545ac',
+    'RequestPriority': '20000',
+    'RequestString': 'CMSSW_4_4_2_HighPileupRun_v3_ZeroBiasHPF0_Run2011B-v1_RAW',
+    'RequestType': 'ReReco',
+    'Requestor': 'cmsdataops',
+    'RunBlacklist': [],
+    'RunWhitelist': [],
+    'Scenario': 'pp',
+    'ScramArch': 'slc5_amd64_gcc434',
+    'inputMode': 'couchDB'}
+{   'cfg_path': '/build/dani/HighPuPDsRequest/rereco_hipu.py',
+    'do_single_runs': False,
+    'section': 'HighPileupRun_v3',
+    'skimcfg_path': ''}
+Injected workflow: cmsdataops_CMSSW_4_4_2_HighPileupRun_v3_ZeroBiasHPF0_Run2011B-v1_RAW_111119_120059
+Approved workflow: cmsdataops_CMSSW_4_4_2_HighPileupRun_v3_ZeroBiasHPF0_Run2011B-v1_RAW_111119_120059
+Sleeping 2.41 seconds

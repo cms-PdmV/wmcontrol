@@ -1,0 +1,88 @@
+dpiparo@vocms101:/build/dani/HiggsReprocessingRequest04112011/wmcontrol$  ./wmcontrol2.py  HiggsReprocessing04112011.conf 
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: HiggsReprocessing04112011.conf.
+---> Processing request "HiggsRepro2011A"
+
+/build/dani/HiggsReprocessingRequest04112011/rereco_higgs.py   
+No DocId found for section HiggsRepro2011A. Uploading the cfg to the couch.
+Couch DB pass: 
+Importing the config, this may take a while... done.
+Hashing config... done.
+Config file /build/dani/HiggsReprocessingRequest04112011/rereco_higgs.py added to the config cache:
+  DocID:    8216d7bbd56664bc2a5853fb4f0c86f4
+  Revision: 3-720c6ca4cb72b3d505278388749dd31c
+   
+   
+/DoubleElectron/Run2011A-v1/RAW
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011A_DblEl_Run2011A-v1_RAW_111104_173618
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011A_DblEl_Run2011A-v1_RAW_111104_173618
+Sleeping 2.85657490686 seconds
+/DoubleMu/Run2011A-v1/RAW
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011A_DblMu_Run2011A-v1_RAW_111104_173621
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011A_DblMu_Run2011A-v1_RAW_111104_173621
+Sleeping 1.25078232466 seconds
+/MuEG/Run2011A-v1/RAW
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011A_MuEG_Run2011A-v1_RAW_111104_173623
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011A_MuEG_Run2011A-v1_RAW_111104_173623
+Sleeping 1.75048173298 seconds
+/Photon/Run2011A-v1/RAW
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011A_Photon_Run2011A-v1_RAW_111104_173625
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011A_Photon_Run2011A-v1_RAW_111104_173625
+Sleeping 3.91615243091 seconds
+/SingleElectron/Run2011A-v1/RAW
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011A_SingEl_Run2011A-v1_RAW_111104_173633
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011A_SingEl_Run2011A-v1_RAW_111104_173633
+Sleeping 1.74243426168 seconds
+/SingleMu/Run2011A-v1/RAW
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011A_SingMu_Run2011A-v1_RAW_111104_173635
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011A_SingMu_Run2011A-v1_RAW_111104_173635
+Sleeping 2.38021660355 seconds
+/TauPlusX/Run2011A-v1/RAW
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011A_TauPlusX_Run2011A-v1_RAW_111104_173638
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011A_TauPlusX_Run2011A-v1_RAW_111104_173638
+Sleeping 2.37714871898 seconds
+---> Processing request "HiggsRepro2011B"
+
+/build/dani/HiggsReprocessingRequest04112011/rereco_higgs.py   
+No DocId found for section HiggsRepro2011B. Uploading the cfg to the couch.
+Importing the config, this may take a while... done.
+Hashing config... done.
+Config file /build/dani/HiggsReprocessingRequest04112011/rereco_higgs.py added to the config cache:
+  DocID:    8216d7bbd56664bc2a5853fb4f0c88ad
+  Revision: 3-90c692641064a45bb56ca87e773d3269
+   
+   
+/DoubleElectron/Run2011B-v1/RAW
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011B_DblEl_Run2011B-v1_RAW_111104_173645
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011B_DblEl_Run2011B-v1_RAW_111104_173645
+Sleeping 1.34901254369 seconds
+/DoubleMu/Run2011B-v1/RAW
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011B_DblMu_Run2011B-v1_RAW_111104_173647
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011B_DblMu_Run2011B-v1_RAW_111104_173647
+Sleeping 1.29872623117 seconds
+/MuEG/Run2011B-v1/RAW
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011B_MuEG_Run2011B-v1_RAW_111104_173649
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011B_MuEG_Run2011B-v1_RAW_111104_173649
+Sleeping 2.70414286487 seconds
+/Photon/Run2011B-v1/RAW
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011B_Photon_Run2011B-v1_RAW_111104_173652
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011B_Photon_Run2011B-v1_RAW_111104_173652
+Sleeping 1.82411589497 seconds
+/SingleElectron/Run2011B-v1/RAW
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011B_SingEl_Run2011B-v1_RAW_111104_173655
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011B_SingEl_Run2011B-v1_RAW_111104_173655
+Sleeping 2.23261793478 seconds
+/SingleMu/Run2011B-v1/RAW
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011B_SingMu_Run2011B-v1_RAW_111104_173657
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011B_SingMu_Run2011B-v1_RAW_111104_173657
+Sleeping 1.23872298872 seconds
+/TauPlusX/Run2011B-v1/RAW
+Injected workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011B_TauPlusX_Run2011B-v1_RAW_111104_173659
+Approved workflow: cmsdataops_CMSSW_4_2_8_patch6_HiggsRepro2011B_TauPlusX_Run2011B-v1_RAW_111104_173659
+Sleeping 1.406905507 seconds
+

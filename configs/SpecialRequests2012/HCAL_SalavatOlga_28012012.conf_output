@@ -1,0 +1,31 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: HCAL_SalavatOlga_28012012.conf.
+---> Processing request "HCALNoiseStudies"
+
+
+
+
+* dpiparo * ppd
+/build/dani/HCAL_SalavatOlga_28012012/reco.py 
+/build/dani/HCAL_SalavatOlga_28012012/reco.py 
+No DocId found for section HCALNoiseStudies. Uploading the cfg to the couch.
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    6aac745517db9895304d33ce60ee0e01
+  Revision: 3-23e4b94acec9c1e94cb235e18e48f935
+ 
+ 
+Injected workflow: dpiparo_HCALNoiseStudies_500p1_MinimumBias_Run2011B-v1_RAW_120128_124347
+Approved workflow: dpiparo_HCALNoiseStudies_500p1_MinimumBias_Run2011B-v1_RAW_120128_124347
+Sleeping 1.17559503982 seconds
+Injected workflow: dpiparo_HCALNoiseStudies_500p1_ZeroBias_Run2011B-v1_RAW_120128_124351
+Approved workflow: dpiparo_HCALNoiseStudies_500p1_ZeroBias_Run2011B-v1_RAW_120128_124351
+Sleeping 1.01669357831 seconds
+Injected workflow: dpiparo_HCALNoiseStudies_500p1_ZeroBiasHPF0_Run2011B-v1_RAW_120128_124353
+Approved workflow: dpiparo_HCALNoiseStudies_500p1_ZeroBiasHPF0_Run2011B-v1_RAW_120128_124353
+Sleeping 1.64523023328 seconds

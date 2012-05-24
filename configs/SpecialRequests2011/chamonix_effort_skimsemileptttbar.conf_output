@@ -1,0 +1,26 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: chamonix_effort_skimsemileptttbar.conf.
+---> Processing request "smttbar"
+
+
+
+
+* dpiparo * ppd
+/build/dani/ChamonixEffort/TTbarFilterForLeptonJets/skim_ttsemileptonic_cfg.py 
+/build/dani/ChamonixEffort/TTbarFilterForLeptonJets/skim_ttsemileptonic_cfg.py 
+No DocId found for section smttbar. Uploading the cfg to the couch.
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    d776c47754646a52d5ebfef80a698668
+  Revision: 3-059d32c608414e1b069911dd1774daf2
+ 
+ 
+Injected workflow: dpiparo_CMSSW_4_1_8_patch6_smttbar_TTJ-7TeV-MadGraph_Summer11-START311_V2-v2_GEN-SIM_111216_171758
+Approved workflow: dpiparo_CMSSW_4_1_8_patch6_smttbar_TTJ-7TeV-MadGraph_Summer11-START311_V2-v2_GEN-SIM_111216_171758
+Sleeping 1.35851484834 seconds
+

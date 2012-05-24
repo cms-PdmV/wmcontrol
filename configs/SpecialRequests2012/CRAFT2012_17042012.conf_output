@@ -1,0 +1,27 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: CRAFT2012_17042012.conf.
+---> Processing request "Craft2012"
+
+
+
+
+* dpiparo * ppd
+/build/dani/Craft17042012/recoCraft_RAW2DIGI_L1Reco_RECO_ALCA.py 
+/build/dani/Craft17042012/recoCraft_RAW2DIGI_L1Reco_RECO_ALCA.py 
+No DocId found for section Craft2012. Uploading the cfg to the couch.
+/build/dani/Craft17042012/recoCraft_RAW2DIGI_L1Reco_RECO_ALCA.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    23069bd7529cc1372057ed3800110f68
+  Revision: 3-2890ed4c455e51b12b8fc3b5cd0c2aa7
+ 
+ 
+Injected workflow: dpiparo_Craft2012_524_120417_150457_3302
+Approved workflow: dpiparo_Craft2012_524_120417_150457_3302
+Sleeping 1.63381378393 seconds

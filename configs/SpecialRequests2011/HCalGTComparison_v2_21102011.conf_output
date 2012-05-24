@@ -1,0 +1,31 @@
+
+################################################################################
+#                                                                              #
+#    WMAControl: the swiss army knife for central requests submissions         #
+#                                                                              #
+################################################################################
+
+
+
+ ---> Processing request "GT_GR_R_44_V6_v2"
+
+*** Normal mode (multiple runs per request)
+Injected workflow: cmsdataops_CMSSW_4_4_0_patch3_GT_GR_R_44_V6_v2_HT_Run2011A-v1_RAW_111021_182432
+Approved workflow: cmsdataops_CMSSW_4_4_0_patch3_GT_GR_R_44_V6_v2_HT_Run2011A-v1_RAW_111021_182432
+Sleeping 1.18940304351 seconds
+*** Normal mode (multiple runs per request)
+Injected workflow: cmsdataops_CMSSW_4_4_0_patch3_GT_GR_R_44_V6_v2_HT_Run2011B-v1_RAW_111021_182435
+Approved workflow: cmsdataops_CMSSW_4_4_0_patch3_GT_GR_R_44_V6_v2_HT_Run2011B-v1_RAW_111021_182435
+Sleeping 3.6704370146 seconds
+
+ ---> Processing request "GT_GR_R_44_V6C_v2"
+
+*** Normal mode (multiple runs per request)
+Injected workflow: cmsdataops_CMSSW_4_4_0_patch3_GT_GR_R_44_V6C_v2_HT_Run2011A-v1_RAW_111021_182439
+Approved workflow: cmsdataops_CMSSW_4_4_0_patch3_GT_GR_R_44_V6C_v2_HT_Run2011A-v1_RAW_111021_182439
+Sleeping 1.08759759215 seconds
+*** Normal mode (multiple runs per request)
+Injected workflow: cmsdataops_CMSSW_4_4_0_patch3_GT_GR_R_44_V6C_v2_HT_Run2011B-v1_RAW_111021_182441
+Approved workflow: cmsdataops_CMSSW_4_4_0_patch3_GT_GR_R_44_V6C_v2_HT_Run2011B-v1_RAW_111021_182441
+Sleeping 2.84027294805 seconds
+

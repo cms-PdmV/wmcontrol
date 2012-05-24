@@ -1,0 +1,36 @@
+################################################################################
+#                                                                              #
+#    WMAControl: the swiss army knife for central requests submissions         #
+#                                                                              #
+################################################################################
+
+
+
+ ---> Processing request "2011BPileup_MinBias"
+
+No DocId found for request 2011BPileup_MinBias. Uploading the cfg to the couch.
+Couch DB pass: 
+Importing the config, this may take a while... done.
+Hashing config... done.
+Config file /build/dani/2011BPileUpRequest20102011/reco_pp.py added to the config cache:
+  DocID:    8216d7bbd56664bc2a5853fb4f08c2ee
+  Revision: 3-2d1910a1b3cea5e6e4dc0c2e4f754db9
+*** Normal mode (multiple runs per request)
+Injected workflow: cmsdataops_CMSSW_4_4_0_patch3_2011BPileup_MinBias_MinimumBias_Run2011B-v1_RAW_111020_185030
+Approved workflow: cmsdataops_CMSSW_4_4_0_patch3_2011BPileup_MinBias_MinimumBias_Run2011B-v1_RAW_111020_185030
+Sleeping 2.74055878104 seconds
+
+ ---> Processing request "2011BPileup_HT"
+
+No DocId found for request 2011BPileup_HT. Uploading the cfg to the couch.
+Couch DB pass: 
+Importing the config, this may take a while... done.
+Hashing config... done.
+Config file /build/dani/2011BPileUpRequest20102011/reco_pp.py added to the config cache:
+  DocID:    8216d7bbd56664bc2a5853fb4f08d178
+  Revision: 3-89ced8a4558f7d8539a26690393dcab0
+*** Normal mode (multiple runs per request)
+Injected workflow: cmsdataops_CMSSW_4_4_0_patch3_2011BPileup_HT_HT_Run2011B-v1_RAW_111020_185116
+Approved workflow: cmsdataops_CMSSW_4_4_0_patch3_2011BPileup_HT_HT_Run2011B-v1_RAW_111020_185116
+Sleeping 1.51361182081 seconds
+
