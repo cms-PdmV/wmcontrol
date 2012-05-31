@@ -333,14 +333,21 @@ def loop_and_submit(cfg):
     for dataset in sorted(dataset_runs_dict.keys()):      
       params['InputDataset']=dataset
       runs=[]
-      blocks=[]
+      new_blocks=[]
       for item in dataset_runs_dict[dataset]:
           if isinstance(item,str) and '#' in item:
-              if item.startswith('#'):                  blocks.append(dataset+item)
-              else:                  blocks.append(item)
-          else:              runs.append(item)
+              if item.startswith('#'):
+                new_blocks.append(dataset+item)
+              else:
+                new_blocks.append(item)
+          else:
+            runs.append(item)
       params['RunWhitelist']=runs
-      params['BlockWhitelist']=blocks
+      if params['BlockWhitelist']==[]:
+        params['BlockWhitelist']=new_blocks
+      if params['BlockWhitelist']!=[] and new_blocks!=[]:
+        print "WARNING: a different set of blocks was made available in the input dataset and in the blocks option."
+        print "Keeping the blocks option (%s)" % str(sorted(new_blocks))
       params['RequestString']= make_request_string(params,service_params,section)
       if service_params['request_type'] == 'MonteCarlo':
           params.pop('InputDataset')
@@ -466,7 +473,10 @@ def build_params_dict(section,cfg):
   skim_input = cfg.get_param('skim_input','RECOoutput',section)
   
   # priority
-  priority = cfg.get_param('priority',181983,section)
+  priority = cfg.get_param('priority',default_parameters['priority'],section)
+  
+  #blocks
+  blocks = cfg.get_param('blocks', [], section)  
   
   # Now the service ones
   # Service
@@ -540,7 +550,7 @@ def build_params_dict(section,cfg):
           "RunWhitelist": ['Will Be replaced'],
           "InputDataset": 'Will Be replaced',
           "RunBlacklist": [],
-          "BlockWhitelist": [],
+          "BlockWhitelist": blocks,
           "BlockBlacklist": [],
           "DbsUrl": dbsurl,
           "RequestType": request_type,
@@ -646,12 +656,13 @@ def build_parser():
   
   parser = optparse.OptionParser(usage)
   
+  parser.add_option('--arch', help='SCRAM_ARCH', dest='scramarch')  
   parser.add_option('--release', help='Production release', dest='release')
   parser.add_option('--request-type', help='Request type: "MonteCarlo","MonteCarloFromGEN","ReDigi"' , dest='request_type')
   parser.add_option('--conditions', help='Conditions Global Tag' , dest='globaltag')
   parser.add_option('--request-id', help='Request identifier' , dest='request_id')
   parser.add_option('--input-ds', help='Input Data Set name' , dest='input_name')
-  #parser.add_option('--block-whitelist', help='While list blocks in input. Coma separated numbers, no need for the DS name', dest='block_whitelist', default=[])
+  parser.add_option('--blocks', action="extend", help='comma separated list of input blocks to be processed' , dest='blocks')  
   parser.add_option('--pileup-ds', help='Pile-Up input Data Set name' , dest='pu_dataset')
   parser.add_option('--step1-cfg', help='step 1 configuration' , dest='step1_cfg')
   parser.add_option('--step1-output', help='step 1 output' , dest='step1_output')
