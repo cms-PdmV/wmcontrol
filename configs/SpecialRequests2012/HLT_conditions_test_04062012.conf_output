@@ -1,0 +1,47 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: WMControl/configs/SpecialRequests2012/HLT_conditions_test_04062012.conf.
+---> Processing request "HLT_04062012_test"
+
+
+
+
+* dpiparo * ppd
+/afs/cern.ch/user/d/dpiparo/workspace/HLTREPRO/hlt_TEST_default.py 
+/afs/cern.ch/user/d/dpiparo/workspace/HLTREPRO/hlt_TEST_default.py 
+No DocId found for section HLT_04062012_test. Uploading the cfg to the couch.
+/afs/cern.ch/user/d/dpiparo/workspace/HLTREPRO/hlt_TEST_default.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    4ec505887ee7845aa69484906159797c
+  Revision: 3-deaa6c9158efcaaef984f8cd20d408f1
+ 
+ 
+Injected workflow: dpiparo_HLT_04062012_test_525p1_120604_191752_6977
+Approved workflow: dpiparo_HLT_04062012_test_525p1_120604_191752_6977
+Sleeping 1.88012323619 seconds
+---> Processing request "HLT_04062012_ecal"
+
+
+
+
+* dpiparo * ppd
+/afs/cern.ch/user/d/dpiparo/workspace/HLTREPRO/hlt_Ecal.py 
+/afs/cern.ch/user/d/dpiparo/workspace/HLTREPRO/hlt_Ecal.py 
+No DocId found for section HLT_04062012_ecal. Uploading the cfg to the couch.
+/afs/cern.ch/user/d/dpiparo/workspace/HLTREPRO/hlt_Ecal.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    4ec505887ee7845aa6948490615983fe
+  Revision: 3-a7704bd1b89dcf0179fb0b82e19f581d
+ 
+ 
+Injected workflow: dpiparo_HLT_04062012_ecal_525p1_120604_191802_4379
+Approved workflow: dpiparo_HLT_04062012_ecal_525p1_120604_191802_4379
+Sleeping 1.10571974505 seconds
