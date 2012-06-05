@@ -47,13 +47,7 @@ def __check_request_params(params):
 def approveRequest(url,workflow,encodeDict=False):
     params = {"requestName": workflow,
               "status": "assignment-approved"}
-    if encodeDict:
-        jsonEncodedParams = {}
-        for paramKey in params.keys():
-            jsonEncodedParams[paramKey] = json.dumps(params[paramKey])
-        encodedParams = urllib.urlencode(jsonEncodedParams, False)
-    else:                            
-        encodedParams = urllib.urlencode(params)
+    encodedParams = urllib.urlencode(params)
     headers  =  {"Content-type": "application/x-www-form-urlencoded",
                  "Accept": "text/plain"}
 
@@ -95,11 +89,17 @@ def __loadConfig(configPath):
     
 #-------------------------------------------------------------------------------    
 # DP leave this untouched even if less than optimal!
-def makeRequest(url,params):
+def makeRequest(url,params,encodeDict=False):
 
-    __check_request_params(params)
-
-    encodedParams = urllib.urlencode(params)
+    if encodeDict:
+        import json
+        jsonEncodedParams = {}
+        for paramKey in params.keys():
+            jsonEncodedParams[paramKey] = json.dumps(params[paramKey])
+        encodedParams = urllib.urlencode(jsonEncodedParams, False)
+    else:
+        __check_request_params(params)
+        encodedParams = urllib.urlencode(params)
 
     headers  =  {"Content-type": "application/x-www-form-urlencoded",
                  "Accept": "text/plain"}
