@@ -41,6 +41,7 @@ default_parameters = {
 'priority':181983,
 'request_type':'ReReco',
 'scramarch':'slc5_amd64_gcc462', 
+'includeparents': 'False'
   }
 
 if os.getenv('SCRAM_ARCH'):
@@ -463,6 +464,7 @@ def build_params_dict(section,cfg):
   identifier = cfg.get_param('identifier','',section)
   dbsurl = cfg.get_param('dbsurl',default_parameters['dbsurl'],section)
 
+  includeparents=cfg.get_param('includeparents',default_parameters['includeparents'],section)
   
   # for the user and group
   user,group = get_user_group(cfg,section)
@@ -563,7 +565,8 @@ def build_params_dict(section,cfg):
 
   if request_type == "ReReco":
     params.update({"ProcConfigCacheID": step1_docID,
-                              "Scenario": "pp"})
+                              "Scenario": "pp",
+                              "IncludeParents" : includeparents})
 
 
     if skim_docid != '':
@@ -662,7 +665,7 @@ def build_parser():
   parser.add_option('--conditions', help='Conditions Global Tag' , dest='globaltag')
   parser.add_option('--request-id', help='Request identifier' , dest='request_id')
   parser.add_option('--input-ds', help='Input Data Set name' , dest='input_name')
-  parser.add_option('--blocks', action="extend", help='comma separated list of input blocks to be processed' , dest='blocks')  
+  parser.add_option('--blocks', help='comma separated list of input blocks to be processed' , dest='blocks')  
   parser.add_option('--pileup-ds', help='Pile-Up input Data Set name' , dest='pu_dataset')
   parser.add_option('--step1-cfg', help='step 1 configuration' , dest='step1_cfg')
   parser.add_option('--step1-output', help='step 1 output' , dest='step1_output')
@@ -686,6 +689,7 @@ def build_parser():
   parser.add_option('--group', help='The group to which the user belong' , dest='group')
 
   parser.add_option('--test', help='To test things', action='store_true' , dest='test')
+  parser.add_option('--includeparents', help='Include parents', action='store_true' , dest='includeparents')
   # The config file
   parser.add_option('--req_file', help='The ini configuration to launch requests' , dest='req_file')
   
