@@ -303,6 +303,10 @@ def make_request_string(params,service_params,request):
                                    custodial(dataset),
                                    joinString,
                                    service_params['version'])
+    
+    elif service_params['req_name'] != '' :
+      identifier=service_params['req_name']
+      
     else:
         dset_nick = get_dset_nick(dataset)
         cmssw_version=params["CMSSWVersion"]
@@ -466,6 +470,8 @@ def build_params_dict(section,cfg):
 
   includeparents=cfg.get_param('includeparents',default_parameters['includeparents'],section)
   
+  req_name=cfg.get_param('req_name','',section)
+  
   # for the user and group
   user,group = get_user_group(cfg,section)
   
@@ -543,7 +549,8 @@ def build_params_dict(section,cfg):
                   "step3_cfg": step3_cfg,
                   "step3_output": step3_output,
                   #
-                  'cfg_docid_dict' : cfg_docid_dict}
+                  'cfg_docid_dict' : cfg_docid_dict,
+                  'req_name': req_name}
 
   # According to the rerquest type, cook a request!
   params={"CMSSWVersion": release,
@@ -690,6 +697,7 @@ def build_parser():
 
   parser.add_option('--test', help='To test things', action='store_true' , dest='test')
   parser.add_option('--includeparents', help='Include parents', action='store_true' , dest='includeparents')
+  parser.add_option('--req_name', help='Set the name of the request', dest='req_name')
   # The config file
   parser.add_option('--req_file', help='The ini configuration to launch requests' , dest='req_file')
   
