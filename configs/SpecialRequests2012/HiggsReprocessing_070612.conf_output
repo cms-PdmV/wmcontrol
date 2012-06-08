@@ -1,0 +1,79 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: WMControl/configs/SpecialRequests2012/HiggsReprocessing_070612.conf.
+---> Processing request "HiggsReReco_2012A_EcalRecover"
+
+
+
+
+* dpiparo * ppd
+/afs/cern.ch/user/d/dpiparo/workspace/Hgammagamma07062012/reprocessing.py 
+/afs/cern.ch/user/d/dpiparo/workspace/Hgammagamma07062012/reprocessing.py 
+No DocId found for section HiggsReReco_2012A_EcalRecover. Uploading the cfg to the couch.
+/afs/cern.ch/user/d/dpiparo/workspace/Hgammagamma07062012/reprocessing.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    54bde1810435e657e39d6229a88bc6aa
+  Revision: 3-e424146f47eb573bc768901fde75577b
+ 
+ 
+Injected workflow: dpiparo_HiggsReReco_2012A_EcalRecover_525ecalp1_120608_085411_8331
+Approved workflow: dpiparo_HiggsReReco_2012A_EcalRecover_525ecalp1_120608_085411_8331
+Sleeping 2.96024491732 seconds
+Injected workflow: dpiparo_HiggsReReco_2012A_EcalRecover_525ecalp1_120608_085417_5715
+Approved workflow: dpiparo_HiggsReReco_2012A_EcalRecover_525ecalp1_120608_085417_5715
+Sleeping 1.76546122995 seconds
+Injected workflow: dpiparo_HiggsReReco_2012A_EcalRecover_525ecalp1_120608_085421_1056
+Approved workflow: dpiparo_HiggsReReco_2012A_EcalRecover_525ecalp1_120608_085421_1056
+Sleeping 1.77396253405 seconds
+Injected workflow: dpiparo_HiggsReReco_2012A_EcalRecover_525ecalp1_120608_085424_9290
+Approved workflow: dpiparo_HiggsReReco_2012A_EcalRecover_525ecalp1_120608_085424_9290
+Sleeping 1.42505127877 seconds
+Injected workflow: dpiparo_HiggsReReco_2012A_EcalRecover_525ecalp1_120608_085427_5226
+Approved workflow: dpiparo_HiggsReReco_2012A_EcalRecover_525ecalp1_120608_085427_5226
+Sleeping 2.07464193798 seconds
+---> Processing request "HiggsReReco_2012AB"
+
+
+
+
+* dpiparo * ppd
+/afs/cern.ch/user/d/dpiparo/workspace/Hgammagamma07062012/reprocessing.py 
+/afs/cern.ch/user/d/dpiparo/workspace/Hgammagamma07062012/reprocessing.py 
+No DocId found for section HiggsReReco_2012AB. Uploading the cfg to the couch.
+/afs/cern.ch/user/d/dpiparo/workspace/Hgammagamma07062012/reprocessing.py.couchID
+
+/afs/cern.ch/user/d/dpiparo/workspace/Hgammagamma07062012/reprocessing.py already uploaded with ID 54bde1810435e657e39d6229a88bc6aa from /afs/cern.ch/user/d/dpiparo/workspace/Hgammagamma07062012/reprocessing.py.couchID
+ 
+ 
+Injected workflow: dpiparo_HiggsReReco_2012AB_525p3_120608_085431_4807
+Approved workflow: dpiparo_HiggsReReco_2012AB_525p3_120608_085431_4807
+Sleeping 1.18535176564 seconds
+Injected workflow: dpiparo_HiggsReReco_2012AB_525p3_120608_085435_1184
+Traceback (most recent call last):
+  File "WMControl/wmcontrol.py", line 726, in <module>
+    loop_and_submit(config)
+  File "WMControl/wmcontrol.py", line 364, in loop_and_submit
+    wma.approveRequest(WMAgent_url_g,workflow)      
+  File "/afs/cern.ch/user/d/dpiparo/PdmVTools/WMControl/trunk/modules/wma.py", line 56, in approveRequest
+    response = conn.getresponse()
+  File "/afs/cern.ch/cms/slc5_amd64_gcc462/external/python/2.6.4/lib/python2.6/httplib.py", line 974, in getresponse
+    response.begin()
+  File "/afs/cern.ch/cms/slc5_amd64_gcc462/external/python/2.6.4/lib/python2.6/httplib.py", line 391, in begin
+    version, status, reason = self._read_status()
+  File "/afs/cern.ch/cms/slc5_amd64_gcc462/external/python/2.6.4/lib/python2.6/httplib.py", line 349, in _read_status
+    line = self.fp.readline()
+  File "/afs/cern.ch/cms/slc5_amd64_gcc462/external/python/2.6.4/lib/python2.6/socket.py", line 397, in readline
+    data = recv(1)
+  File "/afs/cern.ch/cms/slc5_amd64_gcc462/external/python/2.6.4/lib/python2.6/ssl.py", line 96, in <lambda>
+    self.recv = lambda buflen=1024, flags=0: SSLSocket.recv(self, buflen, flags)
+  File "/afs/cern.ch/cms/slc5_amd64_gcc462/external/python/2.6.4/lib/python2.6/ssl.py", line 217, in recv
+    return self.read(buflen)
+  File "/afs/cern.ch/cms/slc5_amd64_gcc462/external/python/2.6.4/lib/python2.6/ssl.py", line 136, in read
+    return self._sslobj.read(len)
+KeyboardInterrupt

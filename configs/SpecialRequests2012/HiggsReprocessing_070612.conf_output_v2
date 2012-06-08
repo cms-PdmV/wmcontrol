@@ -1,0 +1,51 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: WMControl/configs/SpecialRequests2012/HiggsReprocessing_070612.conf.
+---> Processing request "HiggsReReco_2012AB"
+
+
+
+
+* dpiparo * ppd
+/afs/cern.ch/user/d/dpiparo/workspace/Hgammagamma07062012/reprocessing.py 
+/afs/cern.ch/user/d/dpiparo/workspace/Hgammagamma07062012/reprocessing.py 
+No DocId found for section HiggsReReco_2012AB. Uploading the cfg to the couch.
+/afs/cern.ch/user/d/dpiparo/workspace/Hgammagamma07062012/reprocessing.py.couchID
+
+/afs/cern.ch/user/d/dpiparo/workspace/Hgammagamma07062012/reprocessing.py already uploaded with ID 54bde1810435e657e39d6229a88bc6aa from /afs/cern.ch/user/d/dpiparo/workspace/Hgammagamma07062012/reprocessing.py.couchID
+ 
+ 
+Injected workflow: dpiparo_HiggsReReco_2012AB_525p3_120608_091537_3152
+Approved workflow: dpiparo_HiggsReReco_2012AB_525p3_120608_091537_3152
+Sleeping 1.28749428836 seconds
+Injected workflow: dpiparo_HiggsReReco_2012AB_525p3_120608_091540_7276
+Approved workflow: dpiparo_HiggsReReco_2012AB_525p3_120608_091540_7276
+Sleeping 1.11050372336 seconds
+Injected workflow: dpiparo_HiggsReReco_2012AB_525p3_120608_091544_6913
+Approved workflow: dpiparo_HiggsReReco_2012AB_525p3_120608_091544_6913
+Sleeping 1.69214697115 seconds
+Injected workflow: dpiparo_HiggsReReco_2012AB_525p3_120608_091548_3192
+Approved workflow: dpiparo_HiggsReReco_2012AB_525p3_120608_091548_3192
+Sleeping 2.15515371629 seconds
+Injected workflow: dpiparo_HiggsReReco_2012AB_525p3_120608_091552_2220
+Approved workflow: dpiparo_HiggsReReco_2012AB_525p3_120608_091552_2220
+Sleeping 1.90643191092 seconds
+Injected workflow: dpiparo_HiggsReReco_2012AB_525p3_120608_091556_3201
+Approved workflow: dpiparo_HiggsReReco_2012AB_525p3_120608_091556_3201
+Sleeping 2.28884084672 seconds
+Injected workflow: dpiparo_HiggsReReco_2012AB_525p3_120608_091600_6302
+Approved workflow: dpiparo_HiggsReReco_2012AB_525p3_120608_091600_6302
+Sleeping 1.86461441034 seconds
+Injected workflow: dpiparo_HiggsReReco_2012AB_525p3_120608_091604_4695
+Approved workflow: dpiparo_HiggsReReco_2012AB_525p3_120608_091604_4695
+Sleeping 1.13255585181 seconds
+Injected workflow: dpiparo_HiggsReReco_2012AB_525p3_120608_091607_7175
+Approved workflow: dpiparo_HiggsReReco_2012AB_525p3_120608_091607_7175
+Sleeping 1.31586562166 seconds
+Injected workflow: dpiparo_HiggsReReco_2012AB_525p3_120608_091610_9349
+Approved workflow: dpiparo_HiggsReReco_2012AB_525p3_120608_091610_9349
+Sleeping 1.3115567157 seconds
