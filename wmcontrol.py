@@ -145,9 +145,9 @@ def get_runs(dset_name,minrun=-1,maxrun=-1):
       run_list.append(int(line))
 
   if minrun >= 0:
-    run_list = filter(lambda n: n > minrun,run_list)
+    run_list = filter(lambda n: n >= minrun,run_list)
   if maxrun >= 0:
-    run_list = filter(lambda n: n < maxrun,run_list)
+    run_list = filter(lambda n: n <= maxrun,run_list)
 
   return sorted(run_list)
 

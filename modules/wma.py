@@ -17,6 +17,7 @@ from WMCore.Cache.WMConfigCache import ConfigCache
 
 DBS_URL = "http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet"
 PHEDEX_ADDR = 'https://cmsweb.cern.ch/phedex/datasvc/json/prod/blockreplicas?block=%s*'
+
 DATABASE_NAME = 'reqmgr_config_cache'
 #COUCH_DB_ADDRESS = 'https://cmsweb-testbed.cern.ch/couchdb'
 #WMAGENT_URL = 'cmsweb-testbed.cern.ch'
