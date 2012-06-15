@@ -131,6 +131,10 @@ def get_runs(dset_name,minrun=-1,maxrun=-1):
   minrun=int(minrun)
   maxrun=int(maxrun)
 
+  # check if cmssw is set up for the dbs command
+  if not os.environ.has_key("CMSSW_BASE"):
+    raise Exception("No CMSSW environment set. You need it to query dbs.")
+
   dbs_cmd = 'dbs search --query="find run where dataset=\'%s\'"' %dset_name
   p = subprocess.Popen(dbs_cmd, shell=True, 
                        stdin=subprocess.PIPE, 
