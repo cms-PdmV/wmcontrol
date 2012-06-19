@@ -593,7 +593,7 @@ def build_params_dict(section,cfg):
     params.update({"RequestString": identifier,
                   "TimePerEvent": time_event,
                   "FilterEfficiency": filter_eff,
-                  "RequestSizeEvents": number_events,
+                  "RequestNumEvents": number_events,
                   "ProcConfigCacheID": step1_docID,
                   "PrimaryDataset": primary_dataset,
                   "DataPileup": "",
