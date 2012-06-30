@@ -1,0 +1,50 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: /afs/cern.ch/user/d/dpiparo/PdmVTools/WMControl/trunk/configs/SpecialRequests2012/HLT_conditions_27062012.conf.
+
+---> Processing request "ecal_ref"
+No DocId found for section ecal_ref. Uploading the cfg to the couch.
+/build/dani/HLT_conditions_27062012/hlt_ecal_reference.py.couchID
+
+/build/dani/HLT_conditions_27062012/hlt_ecal_reference.py already uploaded with ID 025f83670a94ef8e26e44881e45e7fde from 
+/build/dani/HLT_conditions_27062012/hlt_ecal_reference.py.couchID
+Injected workflow: dpiparo_RelVal_HLTCond_ecal_ref_195774_120627_143752_3434
+Approved workflow: dpiparo_RelVal_HLTCond_ecal_ref_195774_120627_143752_3434
+
+---> Processing request "ecal_update"
+No DocId found for section ecal_update. Uploading the cfg to the couch.
+/build/dani/HLT_conditions_27062012/hlt_ecal_update.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    025f83670a94ef8e26e44881e4e18867
+  Revision: 3-686e7ae9ad62f08d9063c47ab73d272f
+Injected workflow: dpiparo_RelVal_HLTCond_ecal_update_195774_120627_143802_7933
+Approved workflow: dpiparo_RelVal_HLTCond_ecal_update_195774_120627_143802_7933
+
+---> Processing request "tracker_update"
+No DocId found for section tracker_update. Uploading the cfg to the couch.
+/build/dani/HLT_conditions_27062012/hlt_tracker_update.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    025f83670a94ef8e26e44881e4e210b5
+  Revision: 3-0f98158e4c37b26f53eb5ca4c76d3dcf
+Injected workflow: dpiparo_RelVal_HLTCond_tracker_update_195774_120627_143822_8916
+Approved workflow: dpiparo_RelVal_HLTCond_tracker_update_195774_120627_143822_8916
+
+---> Processing request "tracker_ref"
+No DocId found for section tracker_ref. Uploading the cfg to the couch.
+/build/dani/HLT_conditions_27062012/hlt_tracker_reference.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    025f83670a94ef8e26e44881e4e2a1cc
+  Revision: 3-f6e5d5b5a0c2eaefeaed281be751b8e3
+Injected workflow: dpiparo_RelVal_HLTCond_tracker_ref_195774_120627_143840_8859
+Approved workflow: dpiparo_RelVal_HLTCond_tracker_ref_195774_120627_143840_8859
+

@@ -1,0 +1,48 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: /afs/cern.ch/user/d/dpiparo/PdmVTools/WMControl/trunk/configs/SpecialRequests2012/HiggsReprocessing_290612.conf.
+
+---> Processing request "HiggsReReco_29June_2012AB"
+No DocId found for section HiggsReReco_29June_2012AB. Uploading the cfg to the couch.
+/afs/cern.ch/user/d/dpiparo/workspace/Hgammagamma29062012/reprocessing.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    d8242a9062082c63b6d1f0c9556a6d30
+  Revision: 3-7c3e48828b14bd42461482e84264c38f
+Injected workflow: dpiparo_HiggsReReco_29June_2012AB_525p3_120629_133409_5189
+Approved workflow: dpiparo_HiggsReReco_29June_2012AB_525p3_120629_133409_5189
+Injected workflow: dpiparo_HiggsReReco_29June_2012AB_525p3_120629_133415_229
+Approved workflow: dpiparo_HiggsReReco_29June_2012AB_525p3_120629_133415_229
+Injected workflow: dpiparo_HiggsReReco_29June_2012AB_525p3_120629_133419_9341
+Approved workflow: dpiparo_HiggsReReco_29June_2012AB_525p3_120629_133419_9341
+Injected workflow: dpiparo_HiggsReReco_29June_2012AB_525p3_120629_133424_1921
+Approved workflow: dpiparo_HiggsReReco_29June_2012AB_525p3_120629_133424_1921
+Injected workflow: dpiparo_HiggsReReco_29June_2012AB_525p3_120629_133427_1438
+Approved workflow: dpiparo_HiggsReReco_29June_2012AB_525p3_120629_133427_1438
+Injected workflow: dpiparo_HiggsReReco_29June_2012AB_525p3_120629_133431_1294
+Approved workflow: dpiparo_HiggsReReco_29June_2012AB_525p3_120629_133431_1294
+Injected workflow: dpiparo_HiggsReReco_29June_2012AB_525p3_120629_133434_7455
+Approved workflow: dpiparo_HiggsReReco_29June_2012AB_525p3_120629_133434_7455
+Injected workflow: dpiparo_HiggsReReco_29June_2012AB_525p3_120629_133439_1847
+Approved workflow: dpiparo_HiggsReReco_29June_2012AB_525p3_120629_133439_1847
+
+---> Processing request "HiggsReReco_29June_2012A_EcalRecover"
+No DocId found for section HiggsReReco_29June_2012A_EcalRecover. Uploading the cfg to the couch.
+/afs/cern.ch/user/d/dpiparo/workspace/Hgammagamma29062012/reprocessing.py.couchID
+
+/afs/cern.ch/user/d/dpiparo/workspace/Hgammagamma29062012/reprocessing.py already uploaded with ID d8242a9062082c63b6d1f0c9556a6d30 from 
+/afs/cern.ch/user/d/dpiparo/workspace/Hgammagamma29062012/reprocessing.py.couchID
+Injected workflow: dpiparo_HiggsReReco_29June_2012A_EcalRecover_525ecalp1_120629_133442_4404
+Approved workflow: dpiparo_HiggsReReco_29June_2012A_EcalRecover_525ecalp1_120629_133442_4404
+Injected workflow: dpiparo_HiggsReReco_29June_2012A_EcalRecover_525ecalp1_120629_133447_1811
+Approved workflow: dpiparo_HiggsReReco_29June_2012A_EcalRecover_525ecalp1_120629_133447_1811
+Injected workflow: dpiparo_HiggsReReco_29June_2012A_EcalRecover_525ecalp1_120629_133450_3949
+Approved workflow: dpiparo_HiggsReReco_29June_2012A_EcalRecover_525ecalp1_120629_133450_3949
+Injected workflow: dpiparo_HiggsReReco_29June_2012A_EcalRecover_525ecalp1_120629_133454_1591
+Approved workflow: dpiparo_HiggsReReco_29June_2012A_EcalRecover_525ecalp1_120629_133454_1591
+
