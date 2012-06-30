@@ -1,0 +1,42 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: /afs/cern.ch/user/d/dpiparo/PdmVTools/WMControl/trunk/configs/SpecialRequests2012/53X_RelVals_GR_R_53_V6_28062012.conf.
+
+---> Processing request "RelVal_GR_R_53_V6__MB"
+No DocId found for section RelVal_GR_R_53_V6__MB. Uploading the cfg to the couch.
+/build/dani/ValGR_R_53_V6/relval.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    f9d045a707eb604d49445e0cad063b4f
+  Revision: 3-91e21feef6fdd2985f2bd0f47fa00316
+Injected workflow: dpiparo_RelVal_MinBias_GR_R_53_V6_120629_175544_3957
+Approved workflow: dpiparo_RelVal_MinBias_GR_R_53_V6_120629_175544_3957
+
+---> Processing request "RelVal_GR_R_53_V2C__HT"
+No DocId found for section RelVal_GR_R_53_V2C__HT. Uploading the cfg to the couch.
+/build/dani/ValGR_R_53_V6/relval.py.couchID
+
+/build/dani/ValGR_R_53_V6/relval.py already uploaded with ID f9d045a707eb604d49445e0cad063b4f from /build/dani/ValGR_R_53_V6/relval.py.couchID
+Injected workflow: dpiparo_RelVal_JetHT_GR_R_53_V2C_120629_175551_6995
+Approved workflow: dpiparo_RelVal_JetHT_GR_R_53_V2C_120629_175551_6995
+
+---> Processing request "RelVal_GR_R_53_V2C__MB"
+No DocId found for section RelVal_GR_R_53_V2C__MB. Uploading the cfg to the couch.
+/build/dani/ValGR_R_53_V6/relval.py.couchID
+
+/build/dani/ValGR_R_53_V6/relval.py already uploaded with ID f9d045a707eb604d49445e0cad063b4f from /build/dani/ValGR_R_53_V6/relval.py.couchID
+Injected workflow: dpiparo_RelVal_MinBias_GR_R_53_V2C_120629_175555_6524
+Approved workflow: dpiparo_RelVal_MinBias_GR_R_53_V2C_120629_175555_6524
+
+---> Processing request "RelVal_GR_R_53_V6__HT"
+No DocId found for section RelVal_GR_R_53_V6__HT. Uploading the cfg to the couch.
+/build/dani/ValGR_R_53_V6/relval.py.couchID
+
+/build/dani/ValGR_R_53_V6/relval.py already uploaded with ID f9d045a707eb604d49445e0cad063b4f from /build/dani/ValGR_R_53_V6/relval.py.couchID
+Injected workflow: dpiparo_RelVal_JetHT_GR_R_53_V6_120629_175600_1824
+Approved workflow: dpiparo_RelVal_JetHT_GR_R_53_V6_120629_175600_1824
