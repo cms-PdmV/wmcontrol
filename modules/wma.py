@@ -131,7 +131,7 @@ def upload_to_couch(cfg_name, section_name,user_name,group_name,test_mode=False,
     return "00000000000000000"
       
   if not os.path.exists(cfg_name):
-    raise RuntimeError( "Error: Can't locate config file.")
+    raise RuntimeError( "Error: Can't locate config file %s." %cfg_name)
 
   # create a file with the ID inside to avoid multiple injections
   oldID=cfg_name+'.couchID'

@@ -256,7 +256,7 @@ def random_sleep(min_sleep=1,sigma=1):
     """
     rnd=abs(random.gauss(0,sigma))
     sleep_time=min_sleep+rnd
-    print "Sleeping %s seconds" %sleep_time
+    #print "Sleeping %s seconds" %sleep_time
     time.sleep(sleep_time)
 
 #-------------------------------------------------------------------------------
@@ -334,7 +334,7 @@ def loop_and_submit(cfg):
 
   
   for section in cfg.configparser.sections():
-    print '---> Processing request "%s"\n' %section
+    print '\n---> Processing request "%s"' %section
     # build the dictionary for the request
     params,service_params = build_params_dict(section,cfg)
     dataset_runs_dict = get_dataset_runs_dict (section,cfg)
@@ -363,7 +363,7 @@ def loop_and_submit(cfg):
           params.pop('InputDataset')
       if test_mode: # just print the parameters of the request you would have injected
         pp.pprint(params)
-        print WMAgent_url_g
+        #print WMAgent_url_g
       else: # do it for real!
         workflow = wma.makeRequest(WMAgent_url_g,params)
         wma.approveRequest(WMAgent_url_g,workflow)      
@@ -427,7 +427,7 @@ def get_user_group(cfg,section):
   user = cfg.get_param('user',user_default,section)
   group = cfg.get_param('group',group_default,section)
   
-  print "*", user, "*", group
+  #print "*", user, "*", group
   
   return user, group
   
@@ -449,12 +449,12 @@ def build_params_dict(section,cfg):
   if dummy!='':
     doc_id = step1_docID = dummy
   step2_docid = cfg.get_param('step2_docID','',section)
-  print step2_docid
+  #print step2_docid
   step3_docid = cfg.get_param('step3_docID','',section)
-  print step3_docid
+  #print step3_docid
   # elaborate the file containing the name docid pairs
   cfg_db_file = cfg.get_param('cfg_db_file','',section)
-  print cfg_db_file
+  #print cfg_db_file
   cfg_docid_dict = make_cfg_docid_dict(cfg_db_file)
   
   release = cfg.get_param('release','',section)
@@ -520,10 +520,10 @@ def build_params_dict(section,cfg):
   for step in xrange(3):
     step_cfg_name= cfgs[step]
     step_docid = docIDs[step]
-    print step_cfg_name, step_docid
+    #print step_cfg_name, step_docid
     
     if step_cfg_name!='' and step_docid=='' :
-      print step_cfg_name, step_docid
+      #print step_cfg_name, step_docid
       # try to see if it is in the cfg name dict
       if cfg_docid_dict.has_key(step_cfg_name):
         print "Using the one in the cfg-docid dictionary." 
