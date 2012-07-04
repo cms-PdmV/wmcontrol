@@ -20,6 +20,7 @@ import optparse
 import json
 import pprint
 import ConfigParser
+import traceback
 
 sys.path.append(os.path.join(sys.path[0], 'modules'))
 from modules import wma # here u have all the components to interact with the wma
