@@ -288,6 +288,23 @@ def get_dataset_runs_dict(section,cfg):
       dataset_runs_dict={}
       try:
         dataset_runs_dict = eval(cfg.get_param('dset_run_dict','',section))
+        for key in dataset_runs_dict.keys():
+            if isinstance(dataset_runs_dict[key], str):
+                if os.path.exists(os.path.join(os.getcwd(), dataset_runs_dict[key])):
+                    try:
+                        json_file = open(dataset_runs_dict[key])
+                        json_info = json.load(json_file)
+                        json_file.close()
+                    except ValueError:
+                        print "Error in JSON file: ", dataset_runs_dict[key], " Exiting..."
+                        print traceback.format_exc()
+                        sys.exit()
+                    for run_number in json_info:
+                        run_list.append(int(run_number))
+                    run_list.sort()
+                    dataset_runs_dict[key] = run_list
+                else:
+                    print "JSON file doesn't exists. ", os.path.join(os.getcwd(), dataset_runs_dict[key]), " Exiting..." 
       except:
         dataset_runs_dict[cfg.get_param('input_name','',section)]=[]
       return  dataset_runs_dict
