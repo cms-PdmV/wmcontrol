@@ -9,8 +9,8 @@ import imp
 import sys
 # from the wma
 
-from PSetTweaks.WMTweak import makeTweak
-from WMCore.Cache.WMConfigCache import ConfigCache
+#from PSetTweaks.WMTweak import makeTweak
+#from WMCore.Cache.WMConfigCache import ConfigCache
 
 #-------------------------------------------------------------------------------
 

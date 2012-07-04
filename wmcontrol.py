@@ -287,11 +287,12 @@ def get_dataset_runs_dict(section,cfg):
       If present, eval it, if not just use the plain dataset name input and [] !
       '''
       dataset_runs_dict={}
+      run_list = []
       try:
         dataset_runs_dict = eval(cfg.get_param('dset_run_dict','',section))
         for key in dataset_runs_dict.keys():
             if isinstance(dataset_runs_dict[key], str):
-                if os.path.exists(os.path.join(os.getcwd(), dataset_runs_dict[key])):
+                if os.path.exists(dataset_runs_dict[key]):
                     try:
                         json_file = open(dataset_runs_dict[key])
                         json_info = json.load(json_file)
@@ -299,15 +300,20 @@ def get_dataset_runs_dict(section,cfg):
                     except ValueError:
                         print "Error in JSON file: ", dataset_runs_dict[key], " Exiting..."
                         print traceback.format_exc()
-                        sys.exit()
+                        #sys.exit()
+                        return False
                     for run_number in json_info:
                         run_list.append(int(run_number))
                     run_list.sort()
                     dataset_runs_dict[key] = run_list
+                    run_list = []
                 else:
                     print "JSON file doesn't exists. ", os.path.join(os.getcwd(), dataset_runs_dict[key]), " Exiting..." 
+                    #sys.exit()
+		    return False
       except:
         dataset_runs_dict[cfg.get_param('input_name','',section)]=[]
+
       return  dataset_runs_dict
       
 #-------------------------------------------------------------------------------
@@ -356,6 +362,8 @@ def loop_and_submit(cfg):
     # build the dictionary for the request
     params,service_params = build_params_dict(section,cfg)
     dataset_runs_dict = get_dataset_runs_dict (section,cfg)
+    if (dataset_runs_dict == False):
+        sys.exit()
     # Submit request!
     for dataset in sorted(dataset_runs_dict.keys()):      
       params['InputDataset']=dataset
