@@ -1,0 +1,25 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: /afs/cern.ch/user/d/dpiparo/PdmVTools/WMControl/trunk/configs/SpecialRequests2012/53X_PFEgamma_BugFix.conf.
+
+---> Processing request "epFixReference"
+No DocId found for section epFixReference. Uploading the cfg to the couch.
+/build/dani/532_Val/REDIGI_DIGI_L1_DIGI2RAW_HLT.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    70c8a343ca5ccfd9f9c065394fd8587f
+  Revision: 3-12a37257e2c48de802ff7dc2dd44539d
+No DocId found for section epFixReference. Uploading the cfg to the couch.
+/build/dani/532_Val/STEP2_RAW2DIGI_L1Reco_RECO.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    70c8a343ca5ccfd9f9c065394fd85925
+  Revision: 3-eb8abf985e7ae0f54b476159b7cb611c
+Injected workflow: dpiparo_epFixReference_532p1_120705_201749_4555
+Approved workflow: dpiparo_epFixReference_532p1_120705_201749_4555
