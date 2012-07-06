@@ -1,0 +1,30 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: /afs/cern.ch/user/d/dpiparo/PdmVTools/WMControl/trunk/configs/SpecialRequests2012/53X_PFegamma_BugFix_Data.conf.
+
+---> Processing request "epFixReference"
+No DocId found for section epFixReference. Uploading the cfg to the couch.
+/build/dani/532_Val/epfix.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    da91b41ff5c237bbc1f5406d698e58f9
+  Revision: 3-5474237f96441e49ca79d8b88dcfa57a
+Injected workflow: dpiparo_epFixReference_532p1_120706_091214_3306
+Approved workflow: dpiparo_epFixReference_532p1_120706_091214_3306
+Injected workflow: dpiparo_epFixReference_532p1_120706_091221_1763
+Approved workflow: dpiparo_epFixReference_532p1_120706_091221_1763
+
+---> Processing request "epFixNew"
+No DocId found for section epFixNew. Uploading the cfg to the couch.
+/build/dani/532_Val/epfix.py.couchID
+
+/build/dani/532_Val/epfix.py already uploaded with ID da91b41ff5c237bbc1f5406d698e58f9 from /build/dani/532_Val/epfix.py.couchID
+Injected workflow: dpiparo_epFixNew_532metp1_120706_091225_8007
+Approved workflow: dpiparo_epFixNew_532metp1_120706_091225_8007
+Injected workflow: dpiparo_epFixNew_532metp1_120706_091228_9968
+Approved workflow: dpiparo_epFixNew_532metp1_120706_091228_9968
