@@ -1,0 +1,19 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: /afs/cern.ch/user/d/dpiparo/PdmVTools/WMControl/trunk/configs/SpecialRequests2012/53X_PFEgamma_BugFix.conf.
+
+---> Processing request "epFixNew"
+No DocId found for section epFixNew. Uploading the cfg to the couch.
+/build/dani/532_Val/REDIGI_DIGI_L1_DIGI2RAW_HLT.py.couchID
+
+/build/dani/532_Val/REDIGI_DIGI_L1_DIGI2RAW_HLT.py already uploaded with ID 70c8a343ca5ccfd9f9c065394fd8587f from /build/dani/532_Val/REDIGI_DIGI_L1_DIGI2RAW_HLT.py.couchID
+No DocId found for section epFixNew. Uploading the cfg to the couch.
+/build/dani/532_Val/STEP2_RAW2DIGI_L1Reco_RECO.py.couchID
+
+/build/dani/532_Val/STEP2_RAW2DIGI_L1Reco_RECO.py already uploaded with ID 70c8a343ca5ccfd9f9c065394fd85925 from /build/dani/532_Val/STEP2_RAW2DIGI_L1Reco_RECO.py.couchID
+Injected workflow: dpiparo_epFixNew_532metp1_120706_093421_9035
+Approved workflow: dpiparo_epFixNew_532metp1_120706_093421_9035
