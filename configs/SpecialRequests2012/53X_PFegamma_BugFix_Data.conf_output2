@@ -1,0 +1,26 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: /afs/cern.ch/user/d/dpiparo/PdmVTools/WMControl/trunk/configs/SpecialRequests2012/53X_PFegamma_BugFix_Data.conf.
+
+---> Processing request "epFixSkimReference"
+No DocId found for section epFixSkimReference. Uploading the cfg to the couch.
+/build/dani/532_Val/epfix2.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    aedbf9f91ce8e3dfe448533b49e7daee
+  Revision: 3-d93e6ae20902df83b07739f5e742b17d
+Injected workflow: dpiparo_epFixSkimReference_532p1_120706_175100_9540
+Approved workflow: dpiparo_epFixSkimReference_532p1_120706_175100_9540
+
+---> Processing request "epFixSkimNew"
+No DocId found for section epFixSkimNew. Uploading the cfg to the couch.
+/build/dani/532_Val/epfix2.py.couchID
+
+/build/dani/532_Val/epfix2.py already uploaded with ID aedbf9f91ce8e3dfe448533b49e7daee from /build/dani/532_Val/epfix2.py.couchID
+Injected workflow: dpiparo_epFixSkimNew_532metp1_120706_175105_3511
+Approved workflow: dpiparo_epFixSkimNew_532metp1_120706_175105_3511
