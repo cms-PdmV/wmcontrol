@@ -1,0 +1,62 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: /afs/cern.ch/user/d/dpiparo/PdmVTools/WMControl/trunk/configs/SpecialRequests2012/52X_RelVals_NewAlign_02072012.conf.
+
+---> Processing request "RelVal_GR_R_52_V9_ref"
+No DocId found for section RelVal_GR_R_52_V9_ref. Uploading the cfg to the couch.
+/build/dani/WMARelVals_27062012/relval.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    14db20c8b994318b1cbceb9ae1c70140
+  Revision: 3-51e1906b69fbe5f967abd92929f7f5a3
+Injected workflow: dpiparo_RelVal_GR_R_52_V9_120702_213313_5625
+Approved workflow: dpiparo_RelVal_GR_R_52_V9_120702_213313_5625
+Injected workflow: dpiparo_RelVal_GR_R_52_V9_120702_213319_4625
+Approved workflow: dpiparo_RelVal_GR_R_52_V9_120702_213319_4625
+Injected workflow: dpiparo_RelVal_GR_R_52_V9_120702_213323_2206
+Approved workflow: dpiparo_RelVal_GR_R_52_V9_120702_213323_2206
+Injected workflow: dpiparo_RelVal_GR_R_52_V9_120702_213327_5416
+Approved workflow: dpiparo_RelVal_GR_R_52_V9_120702_213327_5416
+Injected workflow: dpiparo_RelVal_GR_R_52_V9_120702_213331_9678
+Approved workflow: dpiparo_RelVal_GR_R_52_V9_120702_213331_9678
+Injected workflow: dpiparo_RelVal_GR_R_52_V9_120702_213336_6791
+Approved workflow: dpiparo_RelVal_GR_R_52_V9_120702_213336_6791
+Injected workflow: dpiparo_RelVal_GR_R_52_V9_120702_213340_4238
+Approved workflow: dpiparo_RelVal_GR_R_52_V9_120702_213340_4238
+Injected workflow: dpiparo_RelVal_GR_R_52_V9_120702_213344_6864
+Approved workflow: dpiparo_RelVal_GR_R_52_V9_120702_213344_6864
+Injected workflow: dpiparo_RelVal_GR_R_52_V9_120702_213347_9291
+Approved workflow: dpiparo_RelVal_GR_R_52_V9_120702_213347_9291
+Injected workflow: dpiparo_RelVal_GR_R_52_V9_120702_213352_836
+Approved workflow: dpiparo_RelVal_GR_R_52_V9_120702_213352_836
+
+---> Processing request "RelVal_GR_R_52_V9C_new"
+No DocId found for section RelVal_GR_R_52_V9C_new. Uploading the cfg to the couch.
+/build/dani/WMARelVals_27062012/relval.py.couchID
+
+/build/dani/WMARelVals_27062012/relval.py already uploaded with ID 14db20c8b994318b1cbceb9ae1c70140 from /build/dani/WMARelVals_27062012/relval.py.couchID
+Injected workflow: dpiparo_RelVal_GR_R_52_V9C_120702_213355_9676
+Approved workflow: dpiparo_RelVal_GR_R_52_V9C_120702_213355_9676
+Injected workflow: dpiparo_RelVal_GR_R_52_V9C_120702_213400_3951
+Approved workflow: dpiparo_RelVal_GR_R_52_V9C_120702_213400_3951
+Injected workflow: dpiparo_RelVal_GR_R_52_V9C_120702_213403_9640
+Approved workflow: dpiparo_RelVal_GR_R_52_V9C_120702_213403_9640
+Injected workflow: dpiparo_RelVal_GR_R_52_V9C_120702_213407_419
+Approved workflow: dpiparo_RelVal_GR_R_52_V9C_120702_213407_419
+Injected workflow: dpiparo_RelVal_GR_R_52_V9C_120702_213410_4923
+Approved workflow: dpiparo_RelVal_GR_R_52_V9C_120702_213410_4923
+Injected workflow: dpiparo_RelVal_GR_R_52_V9C_120702_213414_1725
+Approved workflow: dpiparo_RelVal_GR_R_52_V9C_120702_213414_1725
+Injected workflow: dpiparo_RelVal_GR_R_52_V9C_120702_213417_1721
+Approved workflow: dpiparo_RelVal_GR_R_52_V9C_120702_213417_1721
+Injected workflow: dpiparo_RelVal_GR_R_52_V9C_120702_213420_1560
+Approved workflow: dpiparo_RelVal_GR_R_52_V9C_120702_213420_1560
+Injected workflow: dpiparo_RelVal_GR_R_52_V9C_120702_213424_918
+Approved workflow: dpiparo_RelVal_GR_R_52_V9C_120702_213424_918
+Injected workflow: dpiparo_RelVal_GR_R_52_V9C_120702_213430_698
+Approved workflow: dpiparo_RelVal_GR_R_52_V9C_120702_213430_698
