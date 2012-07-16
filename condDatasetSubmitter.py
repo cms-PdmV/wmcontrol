@@ -14,7 +14,7 @@ def createOptionParser():
   global DRYRUN
   usage=\
   """
-  HLTConditionValidation.py --gt <GT> --run <run> --conds <condition json>
+  ConditionValidation.py --gt <GT> --run <run> --conds <condition json>
   """
 
   parser = OptionParser(usage)
@@ -86,6 +86,7 @@ def isAtFnal(ds, run):
   stopThere=False
   block=None
   dbsq1='dbs search --noheader --production --query "find block,block.status where dataset = %s and run = %s"'%(ds,run)
+  print dbsq1
   for line in os.popen(dbsq1):
       block=line.split()[0]
       status=int(line.split()[1])
@@ -106,10 +107,10 @@ def isAtFnal(ds, run):
       print "No block for %s in %s"%(run,ds)
       stopThere=True
   if stopThere:
-      return True
+      return False
   else:
       print "\n\n\t Block testing at fnal succeeded\n\n"
-      return False
+      return True
 
 #-------------------------------------------------------------------------------
 def checkIsAtFnal(run, ds):
@@ -169,12 +170,13 @@ def createCMSSWConfigs(options,confCondDictionary):
        "--eventcontent %s " %details['eventcontent']  +\
        "--conditions %s " %options.gt +\
        "--python_filename %s " %cfgname +\
-       '--custom_conditions="%s" ' %custconditions +\
        "--no_exec "       
     if details['custcommands']!="":
       driver_command += '--customise_commands="%s" ' %details['custcommands']       
     if details['inputcommands']!="":
       driver_command += '--inputCommands "%s" '%details['inputcommands']
+    if custconditions!="":
+      driver_command += '--custom_conditions="%s" ' %custconditions 
 
     execme(driver_command)
   
