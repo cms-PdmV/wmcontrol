@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
-# Original script of Jean-Roch Vlimant, adapted only for the couch password
-# Before starting, don't forget the tunneling:
-# https://twiki.cern.ch/twiki/bin/view/CMS/WMAgentMakeRequestTunneling
+# Originally Written by Jean-Roch Vlimant, remixed several times by others..
 
 import os
 import sys
@@ -288,9 +286,9 @@ def runlistfromdbs(query):
     return runlist
 
 #-------------------------------------------------------------------------------
-
+#fixme do not assume absence of abspath!!!
 def dump_requests(reprocfg_filename, requests):
-  ofilename=DUMPED_REQUESTS_SCHELETON %reprocfg_filename
+  ofilename=DUMPED_REQUESTS_SCHELETON % os.path.basename(reprocfg_filename)
   ofile=file(ofilename,"w")
   pprint.pprint(requests,ofile)
   ofile.close()
@@ -299,7 +297,7 @@ def dump_requests(reprocfg_filename, requests):
 #-------------------------------------------------------------------------------
 
 def read_requests(reprocfg_filename):
-  ifilename=DUMPED_REQUESTS_SCHELETON %reprocfg_filename
+  ifilename=DUMPED_REQUESTS_SCHELETON %os.path.basename(reprocfg_filename)
   ifile=file(ifilename,"r")
   requests = eval (ifile.read())
   pprint.pprint(requests)
