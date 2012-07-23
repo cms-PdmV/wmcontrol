@@ -1,0 +1,29 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: configs/SpecialRequests2012/ElectronGammaGuns_531_GENSIM_20072012.conf.
+
+---> Processing request "SingleElectronPt35"
+No DocId found for section SingleElectronPt35. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_1/src/SingleElectronPt35_cfi_GEN_SIM.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    818f8b70cba5c366da4d4c61af92a830
+  Revision: 3-ddfbc2ec6a55ddb6b8afba8d40c9e77f
+Injected workflow: casarsa_SingleElectronPt35_531_120723_120510_6306
+Approved workflow: casarsa_SingleElectronPt35_531_120723_120510_6306
+
+---> Processing request "SingleGammaPt35"
+No DocId found for section SingleGammaPt35. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_1/src/SingleGammaPt35_cfi_GEN_SIM.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    818f8b70cba5c366da4d4c61af92b316
+  Revision: 3-210bcffdbf72205191296865e0eb046d
+Injected workflow: casarsa_SingleGammaPt35_531_120723_120516_2184
+Approved workflow: casarsa_SingleGammaPt35_531_120723_120516_2184
