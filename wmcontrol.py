@@ -598,7 +598,10 @@ def build_params_dict(section,cfg):
           "inputMode": "couchDB",
           "RequestString": "Will Be dynamically created",
           "Group": group,
-          "Requestor": user
+          "Requestor": user,
+          "Memory": 2000,
+          "SizePerEvent": 1500,
+          "TimePerEvent": 10
           }
 
   if request_type == "ReReco":
@@ -718,13 +721,17 @@ def build_parser():
   parser.add_option('--step3-docID',help='step 3 configuration' ,dest='step3_docID')
   parser.add_option('--priority',help='priority flag' ,dest='priority')
   parser.add_option('--primary-dataset',help='primary dataset name' ,dest='primary_dataset')
-  parser.add_option('--time-event',help='time per event' , dest='time_event')
+  parser.add_option('--time-event',help='time per event in seconds (Default 10)' , dest='time_event', default=10)
   parser.add_option('--filter-eff',help='filter efficiency' ,dest='filter_eff')
   parser.add_option('--number-events',help='number of events' ,dest='number_events')
   parser.add_option('--version', help='submission version' , dest='version')
   parser.add_option('--cfg_db_file', help='File containing the cfg name docid pairs' , dest='cfg_db_file')
   parser.add_option('--user', help='The registered username' , dest='user')
   parser.add_option('--group', help='The group to which the user belong' , dest='group')
+  
+  ##New parametters as of 2012-08-22
+  parser.add_option('--memory', help='RSS memory in MB (Default 1500)' , type='int', dest='size_memory', default=1500)
+  parser.add_option('--size-event', help='Expected size per event in KB (Default 2000)', type='int', dest='size_event', default=2000)
 
   parser.add_option('--test', help='To test things', action='store_true' , dest='test')
   parser.add_option('--includeparents', help='Include parents', action='store_true' , dest='includeparents')
