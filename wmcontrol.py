@@ -487,10 +487,15 @@ def build_params_dict(section,cfg):
   globaltag = cfg.get_param('globaltag','',section)
   pileup_dataset = cfg.get_param('pu_dataset','',section)
   primary_dataset = cfg.get_param('primary_dataset','',section)
-  time_event = cfg.get_param('time_event','',section)
+
   filter_eff = cfg.get_param('filter_eff','',section)
   number_events = cfg.get_param('number_events','',section)
   version = cfg.get_param('version','',section)
+  
+  ##new values for renewed Request Agent
+  time_event = cfg.get_param('time_event',10,section)
+  size_memory = cfg.get_param('size_memory',2000,section)
+  size_event = cfg.get_param('size_event',1500,section)
   
   # parameters with fallback  
   scramarch = cfg.get_param('scramarch',default_parameters['scramarch'],section)
@@ -582,7 +587,6 @@ def build_params_dict(section,cfg):
                   #
                   'cfg_docid_dict' : cfg_docid_dict,
                   'req_name': req_name}
-
   # According to the rerquest type, cook a request!
   params={"CMSSWVersion": release,
           "ScramArch": scramarch,
@@ -599,9 +603,9 @@ def build_params_dict(section,cfg):
           "RequestString": "Will Be dynamically created",
           "Group": group,
           "Requestor": user,
-          "Memory": 2000,
-          "SizePerEvent": 1500,
-          "TimePerEvent": 10
+          "Memory": size_memory,
+          "SizePerEvent": size_event,
+          "TimePerEvent": time_event
           }
 
   if request_type == "ReReco":
