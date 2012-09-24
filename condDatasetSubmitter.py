@@ -23,7 +23,7 @@ def createOptionParser():
                     default="",
                     help="common global tag to both submissions")
   parser.add_option("--run",
-                    help="the run number to be processed")
+                    help="the run number to be processed, can be a comma separated list")
   parser.add_option("--ds",
                     help="dataset to be processed",
                     default="/MinimumBias/Run2012B-PromptReco-v1/RECO")
@@ -40,7 +40,7 @@ def createOptionParser():
                     help="Specify that we are treating a RECO workflow",
                     default=False,
                     action='store_true')
-
+  
   (options,args) = parser.parse_args()
 
   if options.gt=="":
@@ -61,7 +61,11 @@ def createOptionParser():
     
   if options.dry:
     DRYRUN=True
-  
+
+  if ',' in options.run:
+    options.run = options.run.split(',')
+  else:
+    options.run = [options.run]
   return options
 
 #-------------------------------------------------------------------------------
@@ -139,7 +143,6 @@ def getDriverDetails(isHLT):
             "inputcommands":'',
             "custcommands":'',
             "inclparents":"False"}
-  
 
 
 #-------------------------------------------------------------------------------
@@ -179,7 +182,7 @@ def createCMSSWConfigs(options,confCondDictionary):
       driver_command += '--custom_conditions="%s" ' %custconditions 
 
     execme(driver_command)
-  
+
 
   matched=re.match("(.*)::All",options.gt)
   gtshort=matched.group(1)
@@ -193,11 +196,11 @@ def createCMSSWConfigs(options,confCondDictionary):
                 'includeparents = %s \n' %details['inclparents']+\
                 'release=%s\n' %options.release +\
                 'globaltag =%s::All \n' %gtshort+\
-                'dset_run_dict= {"%s" : [%s]}\n '%(options.ds,options.run) +\
+                'dset_run_dict= {"%s" : [%s]}\n '%(options.ds, ','.join(options.run)) +\
                 '\n\n' +\
                 '[%s_default]\n' %details['reqtype'] +\
                 'cfg_path = REFERENCE.py\n' +\
-                'req_name = %s_reference_RelVal_%s\n'%(details['reqtype'],options.run)
+                'req_name = %s_reference_RelVal_%s\n'%(details['reqtype'],options.run[0]) ## take the first one of the list to label it
 
 
 
@@ -207,7 +210,7 @@ def createCMSSWConfigs(options,confCondDictionary):
       
     wmcconf_text+='\n\n[%s_newcond%s]\n' %(details['reqtype'],i)+\
                   'cfg_path = NEWCONDITIONS%s.py\n'%i+\
-                  'req_name = %s_newconditions%s_RelVal_%s\n'%(details['reqtype'],i,options.run)
+                  'req_name = %s_newconditions%s_RelVal_%s\n'%(details['reqtype'],i,options.run[0])
 
 
   wmconf_name='%sConditionValidation_%s_%s_%s.conf'%(details['reqtype'],
@@ -230,7 +233,8 @@ if __name__ == "__main__":
   options = createOptionParser()
 
   # Check if it is at FNAL
-  checkIsAtFnal( options.ds,options.run)
+  for run in options.run:
+    checkIsAtFnal( options.ds,run)
 
   # Read the group of conditions from the list in the file
   confCondDictionary = getConfCondDictionary(options)
