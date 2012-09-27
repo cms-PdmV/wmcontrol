@@ -387,11 +387,17 @@ def loop_and_submit(cfg):
       params['RequestString']= make_request_string(params,service_params,section)
       if service_params['request_type'] == 'MonteCarlo':
           params.pop('InputDataset')
+      elif service_params['request_type'] == 'TaskChain':
+          params['Task1']['InputDataset'] = params['InputDataset']
+          params.pop('InputDataset')
+          params['Task1']['RunWhitelist'] = params['RunWhitelist']
+          params.pop('RunWhitelist')
+          
       if test_mode: # just print the parameters of the request you would have injected
         pp.pprint(params)
         #print WMAgent_url_g
       else: # do it for real!
-        workflow = wma.makeRequest(WMAgent_url_g,params)
+        workflow = wma.makeRequest(WMAgent_url_g,params,encodeDict=(service_params['request_type']=='TaskChain'))
         wma.approveRequest(WMAgent_url_g,workflow)      
         random_sleep()
 
@@ -672,6 +678,48 @@ def build_params_dict(section,cfg):
             print 'Request not keeping anything'
             raise Exception('The request has one step and not keeping anything')
 
+  elif request_type == 'TaskChain':
+      print "Request type chose: "+str(request_type)+" is being implemented"
+      params.pop('RunBlacklist')
+      params.pop('BlockWhitelist')
+      params.pop('BlockBlacklist')
+      
+      task1_dict={'SplittingAlgorithm': 'LumiBased',
+                  'SplittingArguments': {'lumis_per_job': 8},
+                  'TaskName':'Task1'
+                  }
+      
+      task1_dict['GlobalTag'] = cfg.get_param('step1_globaltag',globaltag,section)
+      task1_dict['ConfigCacheID'] = step1_docID
+      params['Task1']=task1_dict
+      params['TaskChain']=1
+      if step2_cfg:
+          task2_dict={'SplittingAlgorithm': 'LumiBased',
+                      'SplittingArguments': {'lumis_per_job': 8},
+                      'TaskName':'Task2'
+                      }
+          task2_dict['GlobalTag'] = cfg.get_param('step2_globaltag',globaltag,section)
+          task2_dict['ConfigCacheID'] = step2_docID
+          task2_dict['InputFromOutputModule'] = step2_output
+          task2_dict['InputTask'] = cfg.get_param('step2_input','Task1',section)
+          params['Task2']=task2_dict
+          params['TaskChain']=2
+          if step3_cfg:
+              task3_dict={'SplittingAlgorithm': 'LumiBased',
+                          'SplittingArguments': {'lumis_per_job': 8},
+                          'TaskName':'Task3'
+                          }
+              task3_dict['GlobalTag'] = cfg.get_param('step3_globaltag',globaltag,section)
+              task3_dict['ConfigCacheID'] = step3_docID
+              task3_dict['InputFromOutputModule'] = step3_output
+              task3_dict['InputTask'] = cfg.get_param('step3_input','Task2',section)
+              params['Task3']=task3_dict
+              params['TaskChain']=3
+              
+      #from pprint import pformat
+      #print "\n current dictionnary \n",pformat(params),'\n\n'
+      
+      ###raise Exception('Unknown request type, aborting')
   else:
       print "Request type chose: "+str(request_type)
       raise Exception('Unknown request type, aborting')
