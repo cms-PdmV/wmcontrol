@@ -22,6 +22,10 @@ def createOptionParser():
                     dest="gt",
                     default="",
                     help="common global tag to both submissions")
+  parser.add_option("--basegt",
+                    dest="basegt",
+                    default="",
+                    help="common global tag to base RECO+HLT submissions")
   parser.add_option("--run",
                     help="the run number to be processed, can be a comma separated list")
   parser.add_option("--ds",
@@ -32,14 +36,10 @@ def createOptionParser():
   parser.add_option("--dry",
                     default=False,
                     action='store_true')
-  parser.add_option("--HLT",
-                    help="Specify that we are treating a HLT workflow (Default)",
-                    default=True,
-                    action='store_true')
-  parser.add_option("--RECO",
-                    help="Specify that we are treating a RECO workflow",
-                    default=False,
-                    action='store_true')
+  parser.add_option("--Type",
+                    help="Defines the type of the workflow",
+                    choices=['HLT','PR','RECO+HLT'],
+                    default='HLT')
   
   (options,args) = parser.parse_args()
 
@@ -56,9 +56,6 @@ def createOptionParser():
     sys.exit(1)
   options.release = os.getenv(CMSSW_VERSION)  
 
-  if options.RECO:
-    options.HLT=False
-    
   if options.dry:
     DRYRUN=True
 
@@ -74,14 +71,17 @@ def getConfCondDictionary(conditions_filename):
   # read the tags fromt eh list
   newCtags=eval(open(options.conds).read())
 
+  ConfCondList=[ ('REFERENCE.py','') ]
   ConfCondDictionary={
       'REFERENCE.py':''
       }
     
   for (i,condbunch) in enumerate(newCtags):
       ConfCondDictionary['NEWCONDITIONS%s.py'%i]='%s'%('+'.join(map(lambda r : ','.join(r),condbunch)))
+      ConfCondList.append( ('NEWCONDITIONS%s.py'%i, '%s'%('+'.join(map(lambda r : ','.join(r),condbunch))) ) )
 
-  return ConfCondDictionary
+  #return ConfCondDictionary
+  return ConfCondList
 
 #-------------------------------------------------------------------------------
 
@@ -124,9 +124,8 @@ def checkIsAtFnal(run, ds):
 
 #-------------------------------------------------------------------------------
 
-def getDriverDetails(isHLT):
-  if isHLT:
-    return {"reqtype":"HLT",
+def getDriverDetails(Type):
+  HLTBase= {"reqtype":"HLT",
             "steps":"HLT,DQM:triggerOfflineDQMSource",
             "procname":"HLT2",
             "datatier":"RAW,DQM ",
@@ -134,7 +133,19 @@ def getDriverDetails(isHLT):
             "inputcommands":'keep *,drop *_hlt*_*_HLT,drop *_TriggerResults_*_HLT',
             "custcommands":'process.schedule.remove( process.HLTriggerFirstPath )',
             "inclparents":"True"}
-  else:
+  HLTRECObase={"steps":"RAW2DIGI,L1Reco,RECO",
+               "procname":"RECO",
+               "datatier":"RAWRECO",
+               "eventcontent":"RAWRECO",
+               "inputcommands":'',
+               "custcommands":'',               
+               }
+  if Type=='HLT':
+    return HLTBase
+  elif Type=='RECO+HLT':
+    HLTBase.update({'base':HLTRECObase})
+    return HLTBase
+  elif Type=='PR':
     return {"reqtype":"PR",
             "steps":"RAW2DIGI,L1Reco,RECO,DQM",
             "procname":"RECO",
@@ -159,11 +170,13 @@ def execme(command):
 
 def createCMSSWConfigs(options,confCondDictionary):
 
-  details=getDriverDetails(options.HLT)
+  details=getDriverDetails(options.Type)
   
   # Create the drivers
-  print confCondDictionary
-  for cfgname,custconditions in confCondDictionary.items():
+  #print confCondDictionary
+  #for cfgname,custconditions in confCondDictionary.items():
+  for c in confCondList:
+    (cfgname,custconditions) = c
     print "\n\n\tCreating for",cfgname,"\n\n"
     driver_command="cmsDriver.py %s " %details['reqtype']+\
        "-s %s " %details['steps'] +\
@@ -183,34 +196,88 @@ def createCMSSWConfigs(options,confCondDictionary):
 
     execme(driver_command)
 
+    base=None
+    if 'base' in details:
+      base=details['base']
+      driver_command="cmsDriver.py %s " %details['reqtype']+\
+                      "-s %s " %base['steps'] +\
+                      "--processName %s " % base['procname'] +\
+                      "--data --scenario pp " +\
+                      "--datatier %s " % base['datatier'] +\
+                      "--eventcontent %s " %base['eventcontent']  +\
+                      "--conditions %s " %options.basegt +\
+                      "--python_filename reco.py " +\
+                      "--no_exec "       
+      if base['custcommands']!="":
+        driver_command += '--customise_commands="%s" ' %base['custcommands']       
+      if base['inputcommands']!="":
+        driver_command += '--inputCommands "%s" '%base['inputcommands']
+      if custconditions!="":
+        driver_command += '--custom_conditions="%s" ' %custconditions 
+      execme(driver_command)
+      
 
   matched=re.match("(.*)::All",options.gt)
   gtshort=matched.group(1)
+  if base:
+    subgtshort=gtshort
+    matched=re.match("(.*)::All",options.basegt)
+    gtshort=matched.group(1)
+    
   
   # Creating the WMC cfgfile
   wmcconf_text= '[DEFAULT] \n'+\
                 'group=ppd \n'+\
-                'user=%s\n' %os.getenv('USER') +\
-                'request_type= ReReco \n'+\
-                'priority = 1000000 \n'+\
-                'includeparents = %s \n' %details['inclparents']+\
+                'user=%s\n' %os.getenv('USER')
+  if base:
+    wmcconf_text+='request_type= TaskChain \n'
+  else:
+    wmcconf_text+='request_type= ReReco \n'+\
+                  'includeparents = %s \n' %details['inclparents']
+  
+  wmcconf_text+='priority = 1000000 \n'+\
                 'release=%s\n' %options.release +\
                 'globaltag =%s::All \n' %gtshort+\
                 'dset_run_dict= {"%s" : [%s]}\n '%(options.ds, ','.join(options.run)) +\
-                '\n\n' +\
-                '[%s_default]\n' %details['reqtype'] +\
-                'cfg_path = REFERENCE.py\n' +\
-                'req_name = %s_reference_RelVal_%s\n'%(details['reqtype'],options.run[0]) ## take the first one of the list to label it
+                '\n\n'
+  if base:
+    wmcconf_text+='[HLT_validation]\n'+\
+                   'cfg_path = reco.py\n' +\
+                   'req_name = %s_RelVal_%s\n'%(details['reqtype'],options.run[0]) +\
+                   '\n\n'
+  else:
+    wmcconf_text+='[%s_default]\n' %details['reqtype'] +\
+                   'cfg_path = REFERENCE.py\n' +\
+                   'req_name = %s_reference_RelVal_%s\n'%(details['reqtype'],options.run[0]) ## take the first one of the list to label it
 
 
 
-  for (i,cfgname) in enumerate(confCondDictionary):
-    
-    if "REFERENCE" in cfgname: continue
-      
-    wmcconf_text+='\n\n[%s_newcond%s]\n' %(details['reqtype'],i)+\
-                  'cfg_path = NEWCONDITIONS%s.py\n'%i+\
-                  'req_name = %s_newconditions%s_RelVal_%s\n'%(details['reqtype'],i,options.run[0])
+  task=2
+  for (i,c) in enumerate(confCondList):
+    cfgname=c[0]
+    if "REFERENCE" in cfgname:
+      if base:
+        wmcconf_text+='step%d_output = RAWRECOoutput\n'%task +\
+                       'step%d_cfg = %s\n'%(task,cfgname) +\
+                       'step%d_globaltag = %s\n'%(task,subgtshort) +\
+                       'step%d_input = Task1\n\n'%task
+        task+=1
+        continue
+      else:
+        continue
+
+    if base:
+      wmcconf_text+='\n\n' +\
+                     'step%d_output = RAWRECOoutput\n'%task +\
+                     'step%d_cfg = %s\n'%(task,cfgname) +\
+                     'step%d_globaltag = %s\n'%(task,subgtshort) +\
+                     'step%d_input = Task1\n\n'%task
+      task+=1
+    else:
+      label=cfgname.lower().replace('.py','')
+      wmcconf_text+='\n\n[%s_%s]\n' %(details['reqtype'],label)+\
+                     'cfg_path = %s\n'%cfgname+\
+                     'req_name = %s_%s_RelVal_%s\n'%(details['reqtype'],label,options.run[0])
 
 
   wmconf_name='%sConditionValidation_%s_%s_%s.conf'%(details['reqtype'],
@@ -237,8 +304,9 @@ if __name__ == "__main__":
     checkIsAtFnal( options.ds,run)
 
   # Read the group of conditions from the list in the file
-  confCondDictionary = getConfCondDictionary(options)
-
+  #confCondDictionary = getConfCondDictionary(options)
+  confCondList= getConfCondDictionary(options)
   # Create the cfgs, both for cmsRun and WMControl  
-  createCMSSWConfigs(options,confCondDictionary)
+  #createCMSSWConfigs(options,confCondDictionary)
+  createCMSSWConfigs(options,confCondList)
 
