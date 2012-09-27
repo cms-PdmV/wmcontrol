@@ -92,6 +92,7 @@ def __loadConfig(configPath):
 # DP leave this untouched even if less than optimal!
 def makeRequest(url,params,encodeDict=False):
 
+    __check_request_params(params)
     if encodeDict:
         import json
         jsonEncodedParams = {}
@@ -99,7 +100,6 @@ def makeRequest(url,params,encodeDict=False):
             jsonEncodedParams[paramKey] = json.dumps(params[paramKey])
         encodedParams = urllib.urlencode(jsonEncodedParams, False)
     else:
-        __check_request_params(params)
         encodedParams = urllib.urlencode(params)
 
     headers  =  {"Content-type": "application/x-www-form-urlencoded",
