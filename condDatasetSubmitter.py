@@ -119,7 +119,7 @@ def isAtFnal(ds, run):
 #-------------------------------------------------------------------------------
 def checkIsAtFnal(run, ds):
   if not isAtFnal (run, ds):
-    print "Run %s of %s is not at fnal. Impossible to continue." %(options.run, options.ds)
+    print "Run %s of %s is not at fnal. Impossible to continue." %(run, ds)
     sys.exit(1)
 
 #-------------------------------------------------------------------------------
@@ -216,7 +216,7 @@ def createCMSSWConfigs(options,confCondDictionary):
   wmconf_name='%sConditionValidation_%s_%s_%s.conf'%(details['reqtype'],
                                                       options.release,
                                                       gtshort,
-                                                      options.run)
+                                                      options.run[0])
   if not DRYRUN:
     wmcconf=open(wmconf_name,'w')    
     wmcconf.write(wmcconf_text)
