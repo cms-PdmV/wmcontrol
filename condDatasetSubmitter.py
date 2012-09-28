@@ -253,7 +253,7 @@ def createCMSSWConfigs(options,confCondDictionary):
       if base:
         wmcconf_text+='step%d_output = RAWRECOoutput\n'%task +\
                        'step%d_cfg = %s\n'%(task,cfgname) +\
-                       'step%d_globaltag = %s\n'%(task,subgtshort) +\
+                       'step%d_globaltag = %s::All\n'%(task,subgtshort) +\
                        'step%d_input = Task1\n\n'%task
         task+=1
         continue
@@ -264,7 +264,7 @@ def createCMSSWConfigs(options,confCondDictionary):
       wmcconf_text+='\n\n' +\
                      'step%d_output = RAWRECOoutput\n'%task +\
                      'step%d_cfg = %s\n'%(task,cfgname) +\
-                     'step%d_globaltag = %s\n'%(task,subgtshort) +\
+                     'step%d_globaltag = %s::All\n'%(task,subgtshort) +\
                      'step%d_input = Task1\n\n'%task
       task+=1
     else:
