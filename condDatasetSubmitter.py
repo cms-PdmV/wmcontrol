@@ -208,12 +208,6 @@ def createCMSSWConfigs(options,confCondDictionary):
                       "--conditions %s " %options.basegt +\
                       "--python_filename reco.py " +\
                       "--no_exec "       
-      if base['custcommands']!="":
-        driver_command += '--customise_commands="%s" ' %base['custcommands']       
-      if base['inputcommands']!="":
-        driver_command += '--inputCommands "%s" '%base['inputcommands']
-      if custconditions!="":
-        driver_command += '--custom_conditions="%s" ' %custconditions 
       execme(driver_command)
       
 
