@@ -135,7 +135,7 @@ def getDriverDetails(Type):
             "inclparents":"True"}
   HLTRECObase={"steps":"RAW2DIGI,L1Reco,RECO",
                "procname":"RECO",
-               "datatier":"RAWRECO",
+               "datatier":"RAW-RECO",
                "eventcontent":"RAWRECO",
                "inputcommands":'',
                "custcommands":'',               
