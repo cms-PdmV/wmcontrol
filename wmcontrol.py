@@ -630,6 +630,8 @@ def build_params_dict(section,cfg):
 
   elif request_type == 'MonteCarlo':
     params.update({"RequestString": identifier,
+                  "FirstEvent": 1, 
+                  "FirstLumi": 1,
                   "TimePerEvent": time_event,
                   "FilterEfficiency": filter_eff,
                   "RequestNumEvents": number_events,
