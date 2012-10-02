@@ -518,10 +518,17 @@ def build_params_dict(section,cfg):
   user,group = get_user_group(cfg,section)
   
   # for the skims
+  skim_cfg = cfg.get_param('skim_cfg','',section)
   skim_docid = cfg.get_param('skim_docID','',section)
   skim_name = cfg.get_param('skim_name','',section)
   skim_input = cfg.get_param('skim_input','RECOoutput',section)
-  
+
+  if not skim_docid:
+      if cfg_docid_dict.has_key(skim_cfg):
+          skim_docid=cfg_docid_dict[skim_cfg]
+      else:
+          skim_docid=wma.upload_to_couch(skim_cfg, section, user, group,test_mode)
+          
   # priority
   priority = cfg.get_param('priority',default_parameters['priority'],section)
   
