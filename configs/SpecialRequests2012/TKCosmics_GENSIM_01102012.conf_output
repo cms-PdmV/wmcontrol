@@ -11,38 +11,29 @@ No DocId found for section TKCosmicsPEAK38T. Uploading the cfg to the couch.
 /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_3_patch1/work/step1_GEN-SIM-RAW_PEAK38T_cfg.py.couchID
 
 /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_3_patch1/work/step1_GEN-SIM-RAW_PEAK38T_cfg.py already uploaded with ID db09c8dfc8757649b81f305db9def5db from /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_3_patch1/work/step1_GEN-SIM-RAW_PEAK38T_cfg.py.couchID
-Injected workflow: casarsa_TKCosmicsPEAK38T_533p1_121001_165113_4511
-Approved workflow: casarsa_TKCosmicsPEAK38T_533p1_121001_165113_4511
+Injected workflow: casarsa_TKCosmicsPEAK38T_533p1_121005_122213_295
+Approved workflow: casarsa_TKCosmicsPEAK38T_533p1_121005_122213_295
 
 ---> Processing request "TKCosmicsDECO0T"
 No DocId found for section TKCosmicsDECO0T. Uploading the cfg to the couch.
 /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_3_patch1/work/step1_GEN-SIM-RAW_DECO0T_cfg.py.couchID
 
-Importing the config, this may take a while... done.
-Added file to the config cache:
-  DocID:    b6554bae8bfd81fbbdbf41e1415a3a9f
-  Revision: 3-42d9e926b8dac2d27e36ab4451f75ef9
-Injected workflow: casarsa_TKCosmicsDECO0T_533p1_121001_165125_5059
-Approved workflow: casarsa_TKCosmicsDECO0T_533p1_121001_165125_5059
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_3_patch1/work/step1_GEN-SIM-RAW_DECO0T_cfg.py already uploaded with ID b6554bae8bfd81fbbdbf41e1415a3a9f from /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_3_patch1/work/step1_GEN-SIM-RAW_DECO0T_cfg.py.couchID
+Injected workflow: casarsa_TKCosmicsDECO0T_533p1_121005_122220_8825
+Approved workflow: casarsa_TKCosmicsDECO0T_533p1_121005_122220_8825
 
 ---> Processing request "TKCosmicsDECO38T"
 No DocId found for section TKCosmicsDECO38T. Uploading the cfg to the couch.
 /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_3_patch1/work/step1_GEN-SIM-RAW_DECO38T_cfg.py.couchID
 
-Importing the config, this may take a while... done.
-Added file to the config cache:
-  DocID:    b6554bae8bfd81fbbdbf41e1415a6d15
-  Revision: 3-3d4f448b9ad283286f5cf2d7eab8bc4c
-Injected workflow: casarsa_TKCosmicsDECO38T_533p1_121001_165130_2259
-Approved workflow: casarsa_TKCosmicsDECO38T_533p1_121001_165130_2259
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_3_patch1/work/step1_GEN-SIM-RAW_DECO38T_cfg.py already uploaded with ID b6554bae8bfd81fbbdbf41e1415a6d15 from /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_3_patch1/work/step1_GEN-SIM-RAW_DECO38T_cfg.py.couchID
+Injected workflow: casarsa_TKCosmicsDECO38T_533p1_121005_122224_7021
+Approved workflow: casarsa_TKCosmicsDECO38T_533p1_121005_122224_7021
 
 ---> Processing request "TKCosmicsPEAK0T"
 No DocId found for section TKCosmicsPEAK0T. Uploading the cfg to the couch.
 /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_3_patch1/work/step1_GEN-SIM-RAW_PEAK0T_cfg.py.couchID
 
-Importing the config, this may take a while... done.
-Added file to the config cache:
-  DocID:    b6554bae8bfd81fbbdbf41e1415aaf3f
-  Revision: 3-1d1a9ea7273296f0e4348d7eb11e9c83
-Injected workflow: casarsa_TKCosmicsPEAK0T_533p1_121001_165136_7917
-Approved workflow: casarsa_TKCosmicsPEAK0T_533p1_121001_165136_7917
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_3_patch1/work/step1_GEN-SIM-RAW_PEAK0T_cfg.py already uploaded with ID b6554bae8bfd81fbbdbf41e1415aaf3f from /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_3_patch1/work/step1_GEN-SIM-RAW_PEAK0T_cfg.py.couchID
+Injected workflow: casarsa_TKCosmicsPEAK0T_533p1_121005_122230_1914
+Approved workflow: casarsa_TKCosmicsPEAK0T_533p1_121005_122230_1914
