@@ -523,7 +523,7 @@ def build_params_dict(section,cfg):
   skim_name = cfg.get_param('skim_name','',section)
   skim_input = cfg.get_param('skim_input','RECOoutput',section)
 
-  if not skim_docid:
+  if not skim_docid and skim_cfg:
       if cfg_docid_dict.has_key(skim_cfg):
           skim_docid=cfg_docid_dict[skim_cfg]
       else:
