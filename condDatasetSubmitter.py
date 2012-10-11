@@ -40,6 +40,9 @@ def createOptionParser():
                     help="Defines the type of the workflow",
                     choices=['HLT','PR','RECO+HLT'],
                     default='HLT')
+  parser.add_option("--DQM",
+                    help="Specify what is the DQM sequence needed for PR",
+                    default=None)
   
   (options,args) = parser.parse_args()
 
@@ -146,15 +149,17 @@ def getDriverDetails(Type):
     HLTBase.update({'base':HLTRECObase})
     return HLTBase
   elif Type=='PR':
-    return {"reqtype":"PR",
-            "steps":"RAW2DIGI,L1Reco,RECO,DQM",
-            "procname":"RECO",
-            "datatier":"DQM ",
-            "eventcontent":"DQM",
-            "inputcommands":'',
-            "custcommands":'',
-            "inclparents":"False"}
-
+    theDetails={"reqtype":"PR",
+                "steps":"RAW2DIGI,L1Reco,RECO,DQM",
+                "procname":"RECO",
+                "datatier":"DQM ",
+                "eventcontent":"DQM",
+                "inputcommands":'',
+                "custcommands":'',
+                "inclparents":"False"}
+    if options.DQM:
+      theDetails["steps"]="RAW2DIGI,L1Reco,RECO,DQM:%s"%(options.DQM)
+    return theDetails
 
 #-------------------------------------------------------------------------------
 
@@ -171,7 +176,8 @@ def execme(command):
 def createCMSSWConfigs(options,confCondDictionary):
 
   details=getDriverDetails(options.Type)
-  
+  if options.DQM:
+    details
   # Create the drivers
   #print confCondDictionary
   #for cfgname,custconditions in confCondDictionary.items():
