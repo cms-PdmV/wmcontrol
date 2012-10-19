@@ -1,0 +1,29 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: configs/SpecialRequests2012/L1Upgrade_NuGun_DIGIL1_19102012.conf.
+
+---> Processing request "NuGunDIGIL1PU66"
+No DocId found for section NuGunDIGIL1PU66. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_2_patch4/src/DIGI_L1_PU66noOOT.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    b661aa4fa05f148708d938069b67cd4c
+  Revision: 3-5c271d4c48df58e73021c85714840ff0
+Injected workflow: casarsa_NuGunDIGIL1PU66_532p4_121019_145658_8532
+Approved workflow: casarsa_NuGunDIGIL1PU66_532p4_121019_145658_8532
+
+---> Processing request "NuGunDIGIL1PU45"
+No DocId found for section NuGunDIGIL1PU45. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_2_patch4/src/DIGI_L1_PU45noOOT.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    b661aa4fa05f148708d938069b67f564
+  Revision: 3-a580d9894c36a321ce803afd19bf0ae8
+Injected workflow: casarsa_NuGunDIGIL1PU45_532p4_121019_145704_1903
+Approved workflow: casarsa_NuGunDIGIL1PU45_532p4_121019_145704_1903
