@@ -1,0 +1,18 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: configs/SpecialRequests2012/ElectronGun_532p4_26102012.conf.
+
+---> Processing request "SingleElectronPt35"
+No DocId found for section SingleElectronPt35. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_2_patch4/work/SingleElectronPt35_cfi_GEN_SIM.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    3c5c1cdde943fa47eece3a7dae983196
+  Revision: 3-3c5fca1e6ca1b6c5b0d34651ef8cd2f3
+Injected workflow: casarsa_SingleElectronPt35_532p4_121026_164806_2343
+Approved workflow: casarsa_SingleElectronPt35_532p4_121026_164806_2343
