@@ -1,0 +1,40 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: configs/SpecialRequests2012/TKCosmics_GENSIM_25102012.conf.
+
+---> Processing request "TKCosmicsP100PEAK"
+No DocId found for section TKCosmicsP100PEAK. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_4/src/step1_p100.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    29d922462fe06a710349c9bacbd78089
+  Revision: 3-aa13b6013ba71d16519cab01d7035cf4
+Injected workflow: casarsa_TKCosmicsP100PEAK_534_121030_153121_3049
+Approved workflow: casarsa_TKCosmicsP100PEAK_534_121030_153121_3049
+
+---> Processing request "TKCosmicsP500PEAK"
+No DocId found for section TKCosmicsP500PEAK. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_4/src/step1_p500.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    29d922462fe06a710349c9bacbe5a8c8
+  Revision: 3-a9a54c71ae7d25793397be7ae1419fb1
+Injected workflow: casarsa_TKCosmicsP500PEAK_534_121030_153125_5581
+Approved workflow: casarsa_TKCosmicsP500PEAK_534_121030_153125_5581
+
+---> Processing request "TKCosmicsP10PEAK"
+No DocId found for section TKCosmicsP10PEAK. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_4/src/step1_p10.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    29d922462fe06a710349c9bacbf9d924
+  Revision: 3-500eb686d9e4e90bb9e9de65356d3f37
+Injected workflow: casarsa_TKCosmicsP10PEAK_534_121030_153133_5556
+Approved workflow: casarsa_TKCosmicsP10PEAK_534_121030_153133_5556
