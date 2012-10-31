@@ -1,0 +1,29 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: configs/SpecialRequests2012/TKCosmics_GENSIM_31102012.conf.
+
+---> Processing request "TKCosmicsPEAK38T"
+No DocId found for section TKCosmicsPEAK38T. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_4/src/step1_GEN-SIM_38T_cfg.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    13bda7c680f7db035a51ce578d455394
+  Revision: 3-d720d5f99c5d2b9289006e4a7760f9c7
+Injected workflow: casarsa_TKCosmicsPEAK38T_534_121031_092108_4386
+Approved workflow: casarsa_TKCosmicsPEAK38T_534_121031_092108_4386
+
+---> Processing request "TKCosmicsPEAK0T"
+No DocId found for section TKCosmicsPEAK0T. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_4/src/step1_GEN-SIM_0T_cfg.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    13bda7c680f7db035a51ce578d46d810
+  Revision: 3-b4f0c400e8fff05ef3496d7e77b45ac4
+Injected workflow: casarsa_TKCosmicsPEAK0T_534_121031_092114_8381
+Approved workflow: casarsa_TKCosmicsPEAK0T_534_121031_092114_8381
