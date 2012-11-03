@@ -1,0 +1,51 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: configs/SpecialRequests2012/TKCosmics_ALCARECO_03112012.conf.
+
+---> Processing request "TKCosmicsDECO0Treco"
+No DocId found for section TKCosmicsDECO0Treco. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_4/src/step23_ALCARECO_DECO0T_cfg.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    9495407a9bec1aac673ca10aea6a96fb
+  Revision: 3-e74bedef1f7ee33b00cb7655c826a5cf
+Injected workflow: casarsa_TKCosmicsDECO0Treco_534_121103_165746_3481
+Approved workflow: casarsa_TKCosmicsDECO0Treco_534_121103_165746_3481
+
+---> Processing request "TKCosmicsDECO38Treco"
+No DocId found for section TKCosmicsDECO38Treco. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_4/src/step23_ALCARECO_DECO38T_cfg.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    9495407a9bec1aac673ca10aea6aab93
+  Revision: 3-d2f604e7a324b07ce7696963fe04548d
+Injected workflow: casarsa_TKCosmicsDECO38Treco_534_121103_165754_3834
+Approved workflow: casarsa_TKCosmicsDECO38Treco_534_121103_165754_3834
+
+---> Processing request "TKCosmicsPEAK38Treco"
+No DocId found for section TKCosmicsPEAK38Treco. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_4/src/step23_ALCARECO_PEAK38T_cfg.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    9495407a9bec1aac673ca10aea6ac5a8
+  Revision: 3-17bb29514535f313910482ffa6095e1f
+Injected workflow: casarsa_TKCosmicsPEAK38Treco_534_121103_165759_6366
+Approved workflow: casarsa_TKCosmicsPEAK38Treco_534_121103_165759_6366
+
+---> Processing request "TKCosmicsPEAK0Treco"
+No DocId found for section TKCosmicsPEAK0Treco. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_4/src/step23_ALCARECO_PEAK0T_cfg.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    9495407a9bec1aac673ca10aea6ae687
+  Revision: 3-e9cbe1bda34df92e60b529d93e2efe36
+Injected workflow: casarsa_TKCosmicsPEAK0Treco_534_121103_165805_5342
+Approved workflow: casarsa_TKCosmicsPEAK0Treco_534_121103_165805_5342
