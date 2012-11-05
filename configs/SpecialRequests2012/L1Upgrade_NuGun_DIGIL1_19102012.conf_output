@@ -8,22 +8,22 @@ We have a configfile: configs/SpecialRequests2012/L1Upgrade_NuGun_DIGIL1_1910201
 
 ---> Processing request "NuGunDIGIL1PU66"
 No DocId found for section NuGunDIGIL1PU66. Uploading the cfg to the couch.
-/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_2_patch4/src/DIGI_L1_PU66noOOT.py.couchID
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_2_patch4/src/DIGIL1_66PU_DIGI_L1_DIGI2RAW_PU.py.couchID
 
 Importing the config, this may take a while... done.
 Added file to the config cache:
-  DocID:    b661aa4fa05f148708d938069b67cd4c
-  Revision: 3-5c271d4c48df58e73021c85714840ff0
-Injected workflow: casarsa_NuGunDIGIL1PU66_532p4_121019_145658_8532
-Approved workflow: casarsa_NuGunDIGIL1PU66_532p4_121019_145658_8532
+  DocID:    324d770c488aee9a386cce0c4dbce749
+  Revision: 3-b1201037ae04d0abbbff86d3f757fd6d
+Injected workflow: casarsa_NuGunDIGIL1PU66_532p4_121105_095856_7098
+Approved workflow: casarsa_NuGunDIGIL1PU66_532p4_121105_095856_7098
 
 ---> Processing request "NuGunDIGIL1PU45"
 No DocId found for section NuGunDIGIL1PU45. Uploading the cfg to the couch.
-/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_2_patch4/src/DIGI_L1_PU45noOOT.py.couchID
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_2_patch4/src/DIGIL1_45PU_DIGI_L1_DIGI2RAW_PU.py.couchID
 
 Importing the config, this may take a while... done.
 Added file to the config cache:
-  DocID:    b661aa4fa05f148708d938069b67f564
-  Revision: 3-a580d9894c36a321ce803afd19bf0ae8
-Injected workflow: casarsa_NuGunDIGIL1PU45_532p4_121019_145704_1903
-Approved workflow: casarsa_NuGunDIGIL1PU45_532p4_121019_145704_1903
+  DocID:    324d770c488aee9a386cce0c4dbd0434
+  Revision: 3-ee12c98cfe61af193c019db529c00631
+Injected workflow: casarsa_NuGunDIGIL1PU45_532p4_121105_095903_2649
+Approved workflow: casarsa_NuGunDIGIL1PU45_532p4_121105_095903_2649
