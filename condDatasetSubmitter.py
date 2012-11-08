@@ -1,12 +1,16 @@
 #! /usr/bin/env python
 
+
 import os
 import sys
 import re
 from optparse import OptionParser
+
+sys.path.append('/afs/cern.ch/cms/PPD/PdmV/tools/prod/devel/')
+from phedex import phedex
+
   
 DRYRUN=False
-PR_GT='GR_P_V40::All'
 
 #-------------------------------------------------------------------------------
 
@@ -20,7 +24,6 @@ def createOptionParser():
   parser = OptionParser(usage)
   parser.add_option("--gt",
                     dest="gt",
-                    default="",
                     help="common global tag to both submissions")
   parser.add_option("--basegt",
                     dest="basegt",
@@ -43,12 +46,13 @@ def createOptionParser():
   parser.add_option("--DQM",
                     help="Specify what is the DQM sequence needed for PR",
                     default=None)
-  
-  (options,args) = parser.parse_args()
 
-  if options.gt=="":
-    print "o No GT assigned: assuming this is %s" %PR_GT
-    options.gt=PR_GT
+  parser.add_option("--noSiteCheck",
+                    help="Prevents the site check to be operated",
+                    default=False,
+                    action='store_true')
+                     
+  (options,args) = parser.parse_args()
 
   if not options.gt or not options.run or not options.conds:
       parser.error("options --run, --gt and --conds are mandatory")
@@ -88,42 +92,48 @@ def getConfCondDictionary(conditions_filename):
 
 #-------------------------------------------------------------------------------
 
-def isAtFnal(ds, run):
+def isPCLReady(run):
+  for line in os.popen('curl -s http://cms-alcadb.web.cern.ch/cms-alcadb/Monitoring/PCLTier0Workflow/log.txt').read().split('\n'):
+    if not line: continue
+    spl=line.split()
+    if spl[0]==str(run):
+      ready=eval(spl[7])
+      print "\n\n\tPCL ready for ",run,"\n\n"
+      return ready
+  return False
 
-  stopThere=False
-  block=None
+def isAtSite(ds, run):
+  blocks=[]
   dbsq1='dbs search --noheader --production --query "find block,block.status where dataset = %s and run = %s"'%(ds,run)
+  ph=phedex(ds)
   print dbsq1
   for line in os.popen(dbsq1):
       block=line.split()[0]
       status=int(line.split()[1])
       if status!=0:
-          print block,'not closed'
-          stopThere=True
-          continue
-      available=False
-      for line2 in os.popen('dbs search --noheader --production --query "find block,site where block = %s and site = cmssrm.fnal.gov"'%(block)):
-          site=line2.split()[1]
-          available=True
-      if not available:
-          print block,'is not at fnal'
-          stopThere=True
-          continue
-      print block,site,status
-  if not block:
-      print "No block for %s in %s"%(run,ds)
-      stopThere=True
-  if stopThere:
-      return False
+        print block,'not closed'
+        continue
+
+      for b in filter(lambda b :b.name==block,ph.block):
+        for replica in filter(lambda r : r.custodial=='y',b.replica):
+          if replica.complete!='y':
+            print block,'not complete at custodial site'
+          else:
+            blocks.append('#'+block.split('#')[-1])
+            
+  if len(blocks)==0:
+    print "No possible block for %s in %s"%(run,ds)
+    return False
   else:
-      print "\n\n\t Block testing at fnal succeeded\n\n"
-      return True
+    print "\n\n\t Block testing at succeeded for %s in %s \n\n"%(run,ds)
+    return blocks
 
 #-------------------------------------------------------------------------------
-def checkIsAtFnal(run, ds):
-  if not isAtFnal (run, ds):
-    print "Run %s of %s is not at fnal. Impossible to continue." %(run, ds)
-    sys.exit(1)
+## decommissionned because we could run anywhere
+#def checkIsAtFnal(run, ds):
+#  if not isAtFnal (run, ds):
+#    print "Run %s of %s is not at fnal. Impossible to continue." %(run, ds)
+#    sys.exit(1)
 
 #-------------------------------------------------------------------------------
 
@@ -173,7 +183,7 @@ def execme(command):
 
 #-------------------------------------------------------------------------------
 
-def createCMSSWConfigs(options,confCondDictionary):
+def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
 
   details=getDriverDetails(options.Type)
   if options.DQM:
@@ -238,7 +248,7 @@ def createCMSSWConfigs(options,confCondDictionary):
   wmcconf_text+='priority = 1000000 \n'+\
                 'release=%s\n' %options.release +\
                 'globaltag =%s::All \n' %gtshort+\
-                'dset_run_dict= {"%s" : [%s]}\n '%(options.ds, ','.join(options.run)) +\
+                'dset_run_dict= {"%s" : [%s]}\n '%(options.ds, ','.join(options.run+ map(lambda s :'"%s"'%(s),allRunsAndBlocks))) +\
                 '\n\n'
   if base:
     wmcconf_text+='[HLT_validation]\n'+\
@@ -299,14 +309,26 @@ if __name__ == "__main__":
   # Get the options
   options = createOptionParser()
 
-  # Check if it is at FNAL
+  # Check for PCL availability
   for run in options.run:
-    checkIsAtFnal( options.ds,run)
+    if not isPCLReady(run):
+      print "The PCL is not ready for run:",run,"... aborting"
+      sys.exit(2)
+
+  # Check if it is at FNAL
+  allRunsAndBlocks=[]
+  if not options.noSiteCheck:
+    for run in options.run:
+      newblocks=isAtSite( options.ds, run)
+      if newblocks==False:
+        print "Cannot proceed with %s in %s"%(options.ds,run)
+        sys.exit(1)
+      else:
+        allRunsAndBlocks.extend(newblocks)
 
   # Read the group of conditions from the list in the file
-  #confCondDictionary = getConfCondDictionary(options)
   confCondList= getConfCondDictionary(options)
+  
   # Create the cfgs, both for cmsRun and WMControl  
-  #createCMSSWConfigs(options,confCondDictionary)
-  createCMSSWConfigs(options,confCondList)
+  createCMSSWConfigs(options,confCondList,allRunsAndBlocks)
 
