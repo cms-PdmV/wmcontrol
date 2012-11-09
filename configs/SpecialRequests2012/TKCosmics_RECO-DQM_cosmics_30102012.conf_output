@@ -1,0 +1,61 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: configs/SpecialRequests2012/TKCosmics_RECO-DQM_cosmics_30102012.conf.
+
+---> Processing request "TKCosmicsP10DECO"
+No DocId found for section TKCosmicsP10DECO. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_4/src/step3_deco.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    8bead427bcadfab2ab705db4ce03d3a0
+  Revision: 3-961287e01a3a0b19a486e64e9cac2ae3
+Injected workflow: casarsa_TKCosmicsP10DECO_534_121109_103759_7113
+Approved workflow: casarsa_TKCosmicsP10DECO_534_121109_103759_7113
+
+---> Processing request "TKCosmicsP100DECO"
+No DocId found for section TKCosmicsP100DECO. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_4/src/step3_deco.py.couchID
+
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_4/src/step3_deco.py already uploaded with ID 8bead427bcadfab2ab705db4ce03d3a0 from /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_4/src/step3_deco.py.couchID
+Injected workflow: casarsa_TKCosmicsP100DECO_534_121109_103808_4353
+Approved workflow: casarsa_TKCosmicsP100DECO_534_121109_103808_4353
+
+---> Processing request "TKCosmicsP10PEAK"
+No DocId found for section TKCosmicsP10PEAK. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_4/src/step3_peak.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    8bead427bcadfab2ab705db4ce27e342
+  Revision: 3-2211308a288d392c932121061f3c4915
+Injected workflow: casarsa_TKCosmicsP10PEAK_534_121109_103813_7785
+Approved workflow: casarsa_TKCosmicsP10PEAK_534_121109_103813_7785
+
+---> Processing request "TKCosmicsP100PEAK"
+No DocId found for section TKCosmicsP100PEAK. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_4/src/step3_peak.py.couchID
+
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_4/src/step3_peak.py already uploaded with ID 8bead427bcadfab2ab705db4ce27e342 from /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_4/src/step3_peak.py.couchID
+Injected workflow: casarsa_TKCosmicsP100PEAK_534_121109_103817_339
+Approved workflow: casarsa_TKCosmicsP100PEAK_534_121109_103817_339
+
+---> Processing request "TKCosmicsP500PEAK"
+No DocId found for section TKCosmicsP500PEAK. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_4/src/step3_peak.py.couchID
+
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_4/src/step3_peak.py already uploaded with ID 8bead427bcadfab2ab705db4ce27e342 from /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_4/src/step3_peak.py.couchID
+Injected workflow: casarsa_TKCosmicsP500PEAK_534_121109_103821_8110
+Approved workflow: casarsa_TKCosmicsP500PEAK_534_121109_103821_8110
+
+---> Processing request "TKCosmicsP500DECO"
+No DocId found for section TKCosmicsP500DECO. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_4/src/step3_deco.py.couchID
+
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_4/src/step3_deco.py already uploaded with ID 8bead427bcadfab2ab705db4ce03d3a0 from /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_4/src/step3_deco.py.couchID
+Injected workflow: casarsa_TKCosmicsP500DECO_534_121109_103826_3924
+Approved workflow: casarsa_TKCosmicsP500DECO_534_121109_103826_3924
