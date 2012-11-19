@@ -66,10 +66,9 @@ def createOptionParser():
   if options.dry:
     DRYRUN=True
 
-  if ',' in options.run:
-    options.run = options.run.split(',')
-  else:
-    options.run = [options.run]
+  options.ds=options.ds.split(',')
+  options.run = options.run.split(',')
+
   return options
 
 #-------------------------------------------------------------------------------
@@ -247,9 +246,11 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
   
   wmcconf_text+='priority = 1000000 \n'+\
                 'release=%s\n' %options.release +\
-                'globaltag =%s::All \n' %gtshort+\
-                'dset_run_dict= {"%s" : [%s]}\n '%(options.ds, ','.join(options.run+ map(lambda s :'"%s"'%(s),allRunsAndBlocks))) +\
-                '\n\n'
+                'globaltag =%s::All \n' %gtshort
+  wmcconf_text+='dset_run_dict= {'
+  for ds in options.ds:
+    wmcconf_text+='"%s" : [%s],\n '%(ds, ','.join(options.run+ map(lambda s :'"%s"'%(s),allRunsAndBlocks)))
+  wmcconf_text+='}\n\n'
   if base:
     wmcconf_text+='[HLT_validation]\n'+\
                    'cfg_path = reco.py\n' +\
@@ -318,13 +319,14 @@ if __name__ == "__main__":
   # Check if it is at FNAL
   allRunsAndBlocks=[]
   if not options.noSiteCheck:
-    for run in options.run:
-      newblocks=isAtSite( options.ds, run)
-      if newblocks==False:
-        print "Cannot proceed with %s in %s"%(options.ds,run)
-        sys.exit(1)
-      else:
-        allRunsAndBlocks.extend(newblocks)
+    for ds in options.ds:
+      for run in options.run:
+        newblocks=isAtSite( ds, run)
+        if newblocks==False:
+          print "Cannot proceed with %s in %s"%(ds,run)
+          sys.exit(1)
+        else:
+          allRunsAndBlocks.extend(newblocks)
 
   # Read the group of conditions from the list in the file
   confCondList= getConfCondDictionary(options)
