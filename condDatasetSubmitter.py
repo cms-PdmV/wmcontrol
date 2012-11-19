@@ -125,7 +125,7 @@ def isAtSite(ds, run):
     return False
   else:
     print "\n\n\t Block testing at succeeded for %s in %s \n\n"%(run,ds)
-    return blocks
+    return list(set(blocks))
 
 #-------------------------------------------------------------------------------
 ## decommissionned because we could run anywhere
@@ -249,7 +249,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                 'globaltag =%s::All \n' %gtshort
   wmcconf_text+='dset_run_dict= {'
   for ds in options.ds:
-    wmcconf_text+='"%s" : [%s],\n '%(ds, ','.join(options.run+ map(lambda s :'"%s"'%(s),allRunsAndBlocks)))
+    wmcconf_text+='"%s" : [%s],\n '%(ds, ','.join(options.run+ map(lambda s :'"%s"'%(s),allRunsAndBlocks[ds])))
   wmcconf_text+='}\n\n'
   if base:
     wmcconf_text+='[HLT_validation]\n'+\
@@ -317,17 +317,22 @@ if __name__ == "__main__":
       sys.exit(2)
 
   # Check if it is at FNAL
-  allRunsAndBlocks=[]
+  allRunsAndBlocks={}
   if not options.noSiteCheck:
     for ds in options.ds:
+      allRunsAndBlocks[ds]=[]
       for run in options.run:
         newblocks=isAtSite( ds, run)
         if newblocks==False:
           print "Cannot proceed with %s in %s"%(ds,run)
           sys.exit(1)
         else:
-          allRunsAndBlocks.extend(newblocks)
+          allRunsAndBlocks[ds].extend(newblocks)
 
+  #uniquing
+  for ds in allRunsAndBlocks:
+    allRunsAndBlocks[ds]=list(set(allRunsAndBlocks[ds]))
+    
   # Read the group of conditions from the list in the file
   confCondList= getConfCondDictionary(options)
   
