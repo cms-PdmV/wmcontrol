@@ -379,7 +379,9 @@ def make_request_string(params,service_params,request):
                                    joinString,
                                    service_params['version'],
                                    service_params['process_string'])
-      
+
+    elif service_params['req_name'] != '':
+        identifier=service_params['req_name']
     else:
         dset_nick = get_dset_nick(dataset)
         cmssw_version=params["CMSSWVersion"]
