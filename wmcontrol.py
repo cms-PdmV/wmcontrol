@@ -47,6 +47,22 @@ default_parameters = {
 
 if os.getenv('SCRAM_ARCH'):
     default_parameters['scramarch']=os.getenv('SCRAM_ARCH')
+
+#-------------------------------------------------------------------------------
+class ExtendedOption (optparse.Option):
+  ACTIONS = optparse.Option.ACTIONS + ("extend",)
+  STORE_ACTIONS = optparse.Option.STORE_ACTIONS + ("extend",)
+  TYPED_ACTIONS = optparse.Option.TYPED_ACTIONS + ("extend",)
+  ALWAYS_TYPED_ACTIONS = optparse.Option.ALWAYS_TYPED_ACTIONS + ("extend",)
+
+  def take_action(self, action, dest, opt, value, values, parser):
+    if action == "extend":
+      lvalue = value.split(",")
+      values.ensure_value(dest, []).extend(lvalue)
+    else:
+      optparse.Option.take_action(self, action, dest, opt, value, values, parser)
+
+
     
 #-------------------------------------------------------------------------------
 
@@ -358,7 +374,8 @@ def loop_and_submit(cfg):
 
   
   for section in cfg.configparser.sections():
-    print '\n---> Processing request "%s"' %section
+    # Warning muted
+    #print '\n---> Processing request "%s"' %section
     # build the dictionary for the request
     params,service_params = build_params_dict(section,cfg)
     dataset_runs_dict = get_dataset_runs_dict (section,cfg)
@@ -759,8 +776,8 @@ def build_parser():
   usage+= '\n\nExample cfg:\n'
   usage+= example_cfg    
   
-  parser = optparse.OptionParser(usage)
-  
+  parser = optparse.OptionParser(usage,option_class=ExtendedOption)
+    
   parser.add_option('--arch', help='SCRAM_ARCH', dest='scramarch')  
   parser.add_option('--release', help='Production release', dest='release')
   parser.add_option('--request-type', help='Request type: "MonteCarlo","MonteCarloFromGEN","ReDigi"' , dest='request_type')
