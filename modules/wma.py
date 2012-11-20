@@ -9,9 +9,11 @@ import imp
 import sys
 # from the wma
 
-from PSetTweaks.WMTweak import makeTweak
-from WMCore.Cache.WMConfigCache import ConfigCache
-
+try:
+  from PSetTweaks.WMTweak import makeTweak
+  from WMCore.Cache.WMConfigCache import ConfigCache
+except:
+  print "Probably no WMClient was set up. Trying to proceed anyway..."
 #-------------------------------------------------------------------------------
 
 
