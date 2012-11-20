@@ -633,7 +633,6 @@ def build_params_dict(section,cfg):
   campaign = cfg.get_param('campaign','',section)
   if campaign =="" and request_id=="":
     print "Campaign and request-id are not set. Provide at least the Campaign."
-    sys.exit(1)
   elif campaign =="" and request_id!="":    
     campaign = re.match(".*-(.*)-.*",request_id).group(1)
   elif campaign !="" and request_id!="":
