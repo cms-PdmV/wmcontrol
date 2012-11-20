@@ -176,6 +176,9 @@ def get_runs(dset_name,minrun=-1,maxrun=-1):
 #-------------------------------------------------------------------------------
 
 def custodial(datasetpath):
+  
+   if test_mode:
+     return "custodialSite1"
 
    allSites = 1
 
@@ -336,21 +339,46 @@ def get_dataset_runs_dict(section,cfg):
 #-------------------------------------------------------------------------------
 
 def make_request_string(params,service_params,request):
+    request_type = service_params['request_type']
     identifier=''
+    print request_type
     dataset=params['InputDataset']
-    # Make a string a la prep if needed:
+    # Make a string a la prep if needed: #old version
+#    if request == Configuration.default_section:
+#        # Request ID string
+#        joinString = ""
+#        if custodial(params['InputDataset']):
+#            joinString = "_v"
+#        identifier = "%s_%s%s%s" %(params['PrepID'],
+#                                   custodial(dataset),
+#                                   joinString,
+#                                   service_params['version'])
+#    
+#    elif service_params['req_name'] != '' :
+#      identifier=service_params['req_name']
     if request == Configuration.default_section:
         # Request ID string
         joinString = ""
-        if custodial(params['InputDataset']):
-            joinString = "_v"
-        identifier = "%s_%s%s%s" %(params['PrepID'],
-                                   custodial(dataset),
+        if request_type == 'MonteCarloFromGEN' or request_type == 'MonteCarlo':          
+          joinString = "_v"
+          identifier = "%s_%s%s%s_%s" %(params['PrepID'],
+                                   service_params['batch'],
                                    joinString,
-                                   service_params['version'])
-    
-    elif service_params['req_name'] != '' :
-      identifier=service_params['req_name']
+                                   service_params['version'],
+                                   service_params['process_string'])
+                                   
+        else: 
+          if custodial(params['InputDataset']):
+            custname = custodial(dataset)
+          else:
+            custname = "No_custT1"
+          joinString = "_v"
+          identifier = "%s_%s_%s%s%s_%s" %(params['PrepID'],
+                                   custname,
+                                   service_params['batch'],
+                                   joinString,
+                                   service_params['version'],
+                                   service_params['process_string'])
       
     else:
         dset_nick = get_dset_nick(dataset)
