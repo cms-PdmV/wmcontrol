@@ -21,6 +21,7 @@ import json
 import pprint
 import ConfigParser
 import traceback
+import re
 
 sys.path.append(os.path.join(sys.path[0], 'modules'))
 from modules import wma # here u have all the components to interact with the wma
@@ -599,7 +600,17 @@ def build_params_dict(section,cfg):
   if step1_docID=='':
     print "Invalid request, no docID configuration specified."
     sys.exit(0)
-  
+ 
+  # Extract Campaign from PREP-ID if necessary
+  campaign = cfg.get_param('campaign','',section)
+  if campaign =="" and request_id=="":
+    print "Campaign and request-id are not set. Provide at least the Campaign."
+    sys.exit(1)
+  elif campaign =="" and request_id!="":    
+    campaign = re.match(".*-(.*)-.*",request_id).group(1)
+  elif campaign !="" and request_id!="":
+    print "Campaign and request-id are set. Using %s as campaign." %campaign
+    
   
   service_params={"section": section,
                   "version": version,
@@ -633,6 +644,7 @@ def build_params_dict(section,cfg):
           "RequestString": "Will Be dynamically created",
           "Group": group,
           "Requestor": user,
+          "Campaign": campaign,
           "Memory": size_memory,
           "SizePerEvent": size_event,
           "TimePerEvent": time_event
@@ -810,10 +822,12 @@ def build_parser():
   ##New parametters as of 2012-08-22
   parser.add_option('--memory', help='RSS memory in MB (Default 1500)' , type='int', dest='size_memory', default=1500)
   parser.add_option('--size-event', help='Expected size per event in KB (Default 2000)', type='int', dest='size_event', default=2000)
-
   parser.add_option('--test', help='To test things', action='store_true' , dest='test')
   parser.add_option('--includeparents', help='Include parents', action='store_true' , dest='includeparents')
   parser.add_option('--req_name', help='Set the name of the request', dest='req_name')
+  
+  # Param to be inline with prep wmcontrol
+  parser.add_option('--campaign', help='The campaign name' , dest='campaign', default = "")
   # The config file
   parser.add_option('--req_file', help='The ini configuration to launch requests' , dest='req_file')
   
