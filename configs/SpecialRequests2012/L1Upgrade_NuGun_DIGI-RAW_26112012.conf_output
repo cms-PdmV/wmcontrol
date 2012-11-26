@@ -1,0 +1,40 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: configs/SpecialRequests2012/L1Upgrade_NuGun_DIGI-RAW_26112012.conf.
+
+---> Processing request "NuGunDIGIL1PU35"
+No DocId found for section NuGunDIGIL1PU35. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_6_0_1_PostLS1v2_patch2/src/NeutrinoGun_DIGI_L1_DIGI2RAW_PU35.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    a19a8413ec0eabbe5b6c8881e04121b3
+  Revision: 3-1e2e8de19b8c05a3ec08248f00d2a247
+Injected workflow: casarsa_NuGunDIGIL1PU35_601PostLS1v2p2_121126_213601_8330
+Approved workflow: casarsa_NuGunDIGIL1PU35_601PostLS1v2p2_121126_213601_8330
+
+---> Processing request "NuGunDIGIL1PU50"
+No DocId found for section NuGunDIGIL1PU50. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_6_0_1_PostLS1v2_patch2/src/NeutrinoGun_DIGI_L1_DIGI2RAW_PU50.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    a19a8413ec0eabbe5b6c8881e0432925
+  Revision: 3-e83649ef3455ff7b01de8e77546e21dc
+Injected workflow: casarsa_NuGunDIGIL1PU50_601PostLS1v2p2_121126_213608_5411
+Approved workflow: casarsa_NuGunDIGIL1PU50_601PostLS1v2p2_121126_213608_5411
+
+---> Processing request "NuGunDIGIL1PU50bx25"
+No DocId found for section NuGunDIGIL1PU50bx25. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_6_0_1_PostLS1v2_patch2/src/NeutrinoGun_DIGI_L1_DIGI2RAW_PU50bx25.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    a19a8413ec0eabbe5b6c8881e043a8fc
+  Revision: 3-6e4238ce349aabf85d3091645cf788c3
+Injected workflow: casarsa_NuGunDIGIL1PU50bx25_601PostLS1v2p2_121126_213612_8297
+Approved workflow: casarsa_NuGunDIGIL1PU50bx25_601PostLS1v2p2_121126_213612_8297
