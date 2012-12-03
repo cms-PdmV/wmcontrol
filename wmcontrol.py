@@ -547,7 +547,7 @@ def build_params_dict(section,cfg):
   version = cfg.get_param('version','',section)
   
   ##new values for renewed Request Agent
-  time_event = cfg.get_param('time_event',10,section)
+  time_event = cfg.get_param('time_event',20,section)
   size_memory = cfg.get_param('size_memory',2000,section)
   size_event = cfg.get_param('size_event',1500,section)
   
