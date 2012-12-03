@@ -431,7 +431,8 @@ def loop_and_submit(cfg):
           params['BlockWhitelist']=new_blocks
         if params['BlockWhitelist']!=[] and new_blocks!=[]:
           print "WARNING: a different set of blocks was made available in the input dataset and in the blocks option."
-          print "Keeping the blocks option (%s)" % str(sorted(new_blocks))
+          print "Keeping the blocks option (%s) instead of (%s)" % (str(sorted(new_blocks)), str(sorted(params['BlockWhitelist'])))
+          params['BlockWhitelist']=new_blocks
       params['RequestString']= make_request_string(params,service_params,section)
       if service_params['request_type'] == 'MonteCarlo':
           params.pop('InputDataset')
