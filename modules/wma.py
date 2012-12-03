@@ -18,7 +18,7 @@ except:
 
 
 DBS_URL = "http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet"
-PHEDEX_ADDR = 'https://cmsweb.cern.ch/phedex/datasvc/json/prod/blockreplicas?block=%s*'
+PHEDEX_ADDR = 'https://cmsweb.cern.ch/phedex/datasvc/json/prod/blockreplicas?dataset=%s*'
 
 DATABASE_NAME = 'reqmgr_config_cache'
 COUCH_DB_ADDRESS = 'https://cmsweb-testbed.cern.ch/couchdb'
