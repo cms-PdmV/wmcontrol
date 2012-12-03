@@ -359,7 +359,7 @@ def make_request_string(params,service_params,request):
     if request == Configuration.default_section:
         # Request ID string
         joinString = ""
-        if request_type == 'MonteCarloFromGEN' or request_type == 'MonteCarlo':          
+        if request_type == 'MonteCarloFromGEN' or request_type == 'MonteCarlo' or request_type == 'LHEstepZero':          
           joinString = "_v"
           identifier = "%s_%s%s%s_%s" %(params['PrepID'],
                                    service_params['batch'],
@@ -595,18 +595,19 @@ def build_params_dict(section,cfg):
   keep_step1 = cfg.get_param('keep_step1',False,section)
   
   step2_cfg = cfg.get_param('step2_cfg','',section)
+  step2_docID = cfg.get_param('step2_docID','',section)
   step2_output = cfg.get_param('step2_output','',section)
   keep_step2 = cfg.get_param('keep_step2',False,section)
   
   step3_cfg = cfg.get_param('step3_cfg','',section)
+  step3_docID = cfg.get_param('step3_docID','',section)
   step3_output = cfg.get_param('step3_output','',section)
   
   request_type = cfg.get_param('request_type',default_parameters['request_type'],section)
   request_id = cfg.get_param('request_id','',section)
+  events_per_job = cfg.get_param('events_per_job','',section)
 
   # Upload to couch if needed or check in the cfg dict if there
-  step2_docID = ''
-  step3_docID = ''
   docIDs=[step1_docID,step2_docID,step3_docID]
   cfgs=[step1_cfg,step2_cfg,step3_cfg]
   for step in xrange(3):
@@ -718,7 +719,17 @@ def build_params_dict(section,cfg):
                 "ProcConfigCacheID": step1_docID,
                 "PrepID": request_id,
                 "TotalTime": 28800 })
-
+  elif request_type == 'LHEstepZero':
+      params.update({"TimePerEvent": time_event,
+                     "Memory": 2300,
+                     "SizePerEvent": size_event,
+                     "FilterEfficiency": filter_eff,
+                     "ProcConfigCacheID": step1_docID,
+                     "PrepID": request_id,
+                     "TotalTime": 28800 ,
+                     "ProdJobSplitAlgo" : "EventBased",
+                     "ProdJobSplitArgs" : {"events_per_job": int(events_per_job),
+                                           "events_per_lumi": 300}})
   elif request_type == 'ReDigi':
     params.update({"RequestString": identifier,
                 "StepOneConfigCacheID": step1_docID,
@@ -760,7 +771,7 @@ def build_params_dict(section,cfg):
       task1_dict['ConfigCacheID'] = step1_docID
       params['Task1']=task1_dict
       params['TaskChain']=1
-      if step2_cfg:
+      if step2_cfg or step2_docID:
           task2_dict={'SplittingAlgorithm': 'LumiBased',
                       'SplittingArguments': {'lumis_per_job': 8},
                       'TaskName':'Task2'
@@ -771,7 +782,7 @@ def build_params_dict(section,cfg):
           task2_dict['InputTask'] = cfg.get_param('step2_input','Task1',section)
           params['Task2']=task2_dict
           params['TaskChain']=2
-          if step3_cfg:
+          if step3_cfg or step3_docID:
               task3_dict={'SplittingAlgorithm': 'LumiBased',
                           'SplittingArguments': {'lumis_per_job': 8},
                           'TaskName':'Task3'
@@ -843,6 +854,7 @@ def build_parser():
   parser.add_option('--time-event',help='time per event in seconds (Default 10)' , dest='time_event', default=10)
   parser.add_option('--filter-eff',help='filter efficiency' ,dest='filter_eff')
   parser.add_option('--number-events',help='number of events' ,dest='number_events')
+  parser.add_option('--events-per-job', help='number of events per job (for LHE production)' , dest='events_per_job', default=10000)
   parser.add_option('--version', help='submission version' , dest='version')
   parser.add_option('--cfg_db_file', help='File containing the cfg name docid pairs' , dest='cfg_db_file')
   parser.add_option('--user', help='The registered username' , dest='user')
