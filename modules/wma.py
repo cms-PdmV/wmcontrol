@@ -95,6 +95,11 @@ def __loadConfig(configPath):
 def makeRequest(url,params,encodeDict=False):
 
     __check_request_params(params)
+    #for (k,v) in params.items():
+    #  if type(v) ==dict:
+    #    encodeDict=True
+    #    break
+      
     if encodeDict:
         import json
         jsonEncodedParams = {}
@@ -170,3 +175,18 @@ def upload_to_couch(cfg_name, section_name,user_name,group_name,test_mode=False,
   
 #-------------------------------------------------------------------------------  
   
+
+def time_per_events(campaign):
+  ### ad-hoc method until something better comes up to define the time per event in injection time
+  addHoc={
+    'Summer12_DR53X' : 17.5,
+    'Summer12_DR52X' :  20.00,
+    'Fall11_R1' :   5.00,
+    'Fall11_R2' :  10.00,
+    'Fall11_R4' :   7.00,
+    'UpgradeL1TDR_DR6X' : 40.00,
+    }
+  if campaign in addHoc:
+    return addHoc[campaign]
+  else:
+    return None

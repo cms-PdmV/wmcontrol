@@ -644,6 +644,10 @@ def build_params_dict(section,cfg):
   elif campaign !="" and request_id!="":
     print "Campaign and request-id are set. Using %s as campaign." %campaign
     
+
+  time_per_campaign=wma.time_per_events(campaign)
+  if time_per_campaign:
+      time_event=time_per_campaign
   
   service_params={"section": section,
                   "version": version,
