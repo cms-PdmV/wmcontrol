@@ -21,11 +21,15 @@ DBS_URL = "http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet"
 PHEDEX_ADDR = 'https://cmsweb.cern.ch/phedex/datasvc/json/prod/blockreplicas?dataset=%s*'
 
 DATABASE_NAME = 'reqmgr_config_cache'
-COUCH_DB_ADDRESS = 'https://cmsweb-testbed.cern.ch/couchdb'
-WMAGENT_URL = 'cmsweb-testbed.cern.ch'
 COUCH_DB_ADDRESS = 'https://cmsweb.cern.ch/couchdb'
 WMAGENT_URL = 'cmsweb.cern.ch'
 
+def testbed():
+  global COUCH_DB_ADDRESS
+  global WMAGENT_URL
+  COUCH_DB_ADDRESS = 'https://cmsweb-testbed.cern.ch/couchdb'
+  WMAGENT_URL = 'cmsweb-testbed.cern.ch'
+  
 #-------------------------------------------------------------------------------
 
 def __check_GT(gt):
@@ -98,6 +102,7 @@ def makeRequest(url,params,encodeDict=False):
     #for (k,v) in params.items():
     #  if type(v) ==dict:
     #    encodeDict=True
+    #    print "Re-encoding for nested dicts"
     #    break
       
     if encodeDict:
