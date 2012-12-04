@@ -29,10 +29,7 @@ from modules import wma # here u have all the components to interact with the wm
 #-------------------------------------------------------------------------------
 
 
-#couch_db_address = wma.COUCH_DB_ADDRESS
 dbs_url_g = wma.DBS_URL
-phedex_addr_g = wma.PHEDEX_ADDR
-WMAgent_url_g = wma.WMAGENT_URL
 
 test_mode = False # Put True not to upload the requests
 
@@ -81,6 +78,11 @@ class Configuration:
         options,args = parser.parse_args()
         global test_mode
         test_mode=options.test
+
+        if options.wmtest:
+            print "Setting to injection in cmswebtest"
+            wma.testbed()
+            print wma.COUCH_DB_ADDRESS
 
         if options.req_file != '' and options.req_file !=None:
             cfg_filename=options.req_file
@@ -210,7 +212,7 @@ def custodial(datasetpath):
    non_custodial = {}
 
 #   if lfn == None :
-   url=phedex_addr_g %datasetpath
+   url=wma.PHEDEX_ADDR %datasetpath
    result = json.load(urllib.urlopen(url))
    try:
            for block in result['phedex']['block']:
@@ -359,7 +361,7 @@ def make_request_string(params,service_params,request):
     if request == Configuration.default_section:
         # Request ID string
         joinString = ""
-        if request_type == 'MonteCarloFromGEN' or request_type == 'MonteCarlo' or request_type == 'LHEstepZero':          
+        if request_type == 'MonteCarloFromGEN' or request_type == 'MonteCarlo' or request_type == 'LHEStepZero':          
           joinString = "_v"
           identifier = "%s_%s%s%s_%s" %(params['PrepID'],
                                    service_params['batch'],
@@ -444,10 +446,10 @@ def loop_and_submit(cfg):
           
       if test_mode: # just print the parameters of the request you would have injected
         pp.pprint(params)
-        #print WMAgent_url_g
+        #print wma.WMAGENT_URL
       else: # do it for real!
-        workflow = wma.makeRequest(WMAgent_url_g,params,encodeDict=(service_params['request_type']=='TaskChain'))
-        wma.approveRequest(WMAgent_url_g,workflow)      
+        workflow = wma.makeRequest(wma.WMAGENT_URL,params,encodeDict=(service_params['request_type']=='TaskChain'))
+        wma.approveRequest(wma.WMAGENT_URL,workflow)      
         random_sleep()
 
 #-------------------------------------------------------------------------------
@@ -730,7 +732,7 @@ def build_params_dict(section,cfg):
                 "ProcConfigCacheID": step1_docID,
                 "PrepID": request_id,
                 "TotalTime": 28800 })
-  elif request_type == 'LHEstepZero':
+  elif request_type == 'LHEStepZero':
       params.update({"TimePerEvent": time_event,
                      "Memory": 2300,
                      "SizePerEvent": size_event,
@@ -739,8 +741,8 @@ def build_params_dict(section,cfg):
                      "PrepID": request_id,
                      "TotalTime": 28800 ,
                      "ProdJobSplitAlgo" : "EventBased",
-                     "ProdJobSplitArgs" : {"events_per_job": int(events_per_job),
-                                           "events_per_lumi": 300}})
+                     "ProdJobSplitArgs" : {"events_per_job": int(events_per_job),"events_per_lumi": 300}}
+                    )
   elif request_type == 'ReDigi':
     params.update({"RequestString": identifier,
                 "StepOneConfigCacheID": step1_docID,
@@ -768,7 +770,7 @@ def build_params_dict(section,cfg):
             raise Exception('The request has one step and not keeping anything')
 
   elif request_type == 'TaskChain':
-      print "Request type chose: "+str(request_type)+" is being implemented"
+
       params.pop('RunBlacklist')
       params.pop('BlockWhitelist')
       params.pop('BlockBlacklist')
@@ -875,6 +877,7 @@ def build_parser():
   parser.add_option('--memory', help='RSS memory in MB (Default 1500)' , type='int', dest='size_memory', default=1500)
   parser.add_option('--size-event', help='Expected size per event in KB (Default 2000)', type='int', dest='size_event', default=2000)
   parser.add_option('--test', help='To test things', action='store_true' , dest='test')
+  parser.add_option('--wmtest', help='To inject requests to the cmsweb test bed', action='store_true' , dest='wmtest')
   parser.add_option('--includeparents', help='Include parents', action='store_true' , dest='includeparents')
   parser.add_option('--req_name', help='Set the name of the request', dest='req_name')
   parser.add_option('--process-string', help='process string do be added in the second part of dataset name' , dest='process_string')
@@ -902,7 +905,7 @@ if __name__ == "__main__":
 
     # Build a parser
     parser = build_parser()
-    
+
     # here we have all parameters, taken from commandline or config
     config = Configuration(parser)
 
