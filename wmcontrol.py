@@ -562,7 +562,9 @@ def build_params_dict(section,cfg):
   includeparents=cfg.get_param('includeparents',default_parameters['includeparents'],section)
   
   req_name=cfg.get_param('req_name','',section)
-  
+  process_string = cfg.get_param('process_string','',section)
+  batch = cfg.get_param('batch','',section)
+    
   # for the user and group
   user,group = get_user_group(cfg,section)
   
@@ -658,7 +660,11 @@ def build_params_dict(section,cfg):
                   "step3_output": step3_output,
                   #
                   'cfg_docid_dict' : cfg_docid_dict,
-                  'req_name': req_name}
+                  'req_name': req_name,
+                  "batch": batch,
+                  "process_string": process_string,
+                  }
+  
   # According to the rerquest type, cook a request!
   params={"CMSSWVersion": release,
           "ScramArch": scramarch,
@@ -867,6 +873,8 @@ def build_parser():
   parser.add_option('--test', help='To test things', action='store_true' , dest='test')
   parser.add_option('--includeparents', help='Include parents', action='store_true' , dest='includeparents')
   parser.add_option('--req_name', help='Set the name of the request', dest='req_name')
+  parser.add_option('--process-string', help='process string do be added in the second part of dataset name' , dest='process_string')
+  parser.add_option('--batch', help='Include in the WF batch number' , dest='batch')
   
   # Param to be inline with prep wmcontrol
   parser.add_option('--campaign', help='The campaign name' , dest='campaign', default = "")
