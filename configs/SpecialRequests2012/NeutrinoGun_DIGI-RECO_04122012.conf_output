@@ -1,0 +1,25 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: configs/SpecialRequests2012/NeutrinoGun_DIGI-RECO_04122012.conf.
+
+---> Processing request "NuGunDigiRecoPU45"
+No DocId found for section NuGunDigiRecoPU45. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_7/src/DIGI_45PU_DIGI_L1_DIGI2RAW_PU.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    4b902907abf4c77ae01fb2866624d0dc
+  Revision: 3-2d30b85f102cac73d6d4fc61216a12bf
+No DocId found for section NuGunDigiRecoPU45. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_7/src/STEP2_RAW2DIGI_L1Reco_RECO_VALIDATION_DQM.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    4b902907abf4c77ae01fb2866626f401
+  Revision: 3-a5f887f179c0c751efed3c90e00c2101
+Injected workflow: casarsa_NuGunDigiRecoPU45_537_121204_174954_5044
+Approved workflow: casarsa_NuGunDigiRecoPU45_537_121204_174954_5044
