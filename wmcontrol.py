@@ -82,8 +82,7 @@ class Configuration:
         if options.wmtest:
             print "Setting to injection in cmswebtest"
             wma.testbed()
-            print wma.COUCH_DB_ADDRESS
-
+            
         if options.req_file != '' and options.req_file !=None:
             cfg_filename=options.req_file
             print "We have a configfile: %s." %cfg_filename
@@ -428,6 +427,7 @@ def loop_and_submit(cfg):
           else:
             runs.append(item)
       params['RunWhitelist']=runs
+          
       if params.has_key("BlockWhitelist"):
         if params['BlockWhitelist']==[]:
           params['BlockWhitelist']=new_blocks
@@ -436,8 +436,9 @@ def loop_and_submit(cfg):
           print "Keeping the blocks option (%s) instead of (%s)" % (str(sorted(new_blocks)), str(sorted(params['BlockWhitelist'])))
           params['BlockWhitelist']=new_blocks
       params['RequestString']= make_request_string(params,service_params,section)
-      if service_params['request_type'] == 'MonteCarlo':
+      if service_params['request_type'] == 'MonteCarlo' or service_params['request_type'] == 'LHEStepZero':
           params.pop('InputDataset')
+          params.pop('RunWhitelist')
       elif service_params['request_type'] == 'TaskChain':
           params['Task1']['InputDataset'] = params['InputDataset']
           params.pop('InputDataset')
@@ -733,16 +734,28 @@ def build_params_dict(section,cfg):
                 "PrepID": request_id,
                 "TotalTime": 28800 })
   elif request_type == 'LHEStepZero':
-      params.update({"TimePerEvent": time_event,
+      params.update({"RequestString": identifier,
+                     "TimePerEvent": time_event,
+                     "FirstEvent": 1,
+                     "FirstLumi": 1,
                      "Memory": 2300,
                      "SizePerEvent": size_event,
-                     "FilterEfficiency": filter_eff,
                      "ProcConfigCacheID": step1_docID,
+                     "RequestNumEvents": number_events,
+                     "PrimaryDataset": primary_dataset,
                      "PrepID": request_id,
                      "TotalTime": 28800 ,
+                     "EventsPerLumi":300,
                      "ProdJobSplitAlgo" : "EventBased",
-                     "ProdJobSplitArgs" : {"events_per_job": int(events_per_job),"events_per_lumi": 300}}
-                    )
+                     "ProdJobSplitArgs" : {"events_per_job": int(events_per_job),"events_per_lumi": 300}
+                    })
+
+      params.pop('BlockBlacklist')
+      params.pop('BlockWhitelist')
+      params.pop('InputDataset')
+      params.pop('RunBlacklist')
+      params.pop('RunWhitelist')
+      
   elif request_type == 'ReDigi':
     params.update({"RequestString": identifier,
                 "StepOneConfigCacheID": step1_docID,
