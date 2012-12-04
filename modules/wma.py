@@ -99,11 +99,11 @@ def __loadConfig(configPath):
 def makeRequest(url,params,encodeDict=False):
 
     __check_request_params(params)
-    #for (k,v) in params.items():
-    #  if type(v) ==dict:
-    #    encodeDict=True
-    #    print "Re-encoding for nested dicts"
-    #    break
+    for (k,v) in params.items():
+      if type(v) ==dict:
+        encodeDict=True
+        print "Re-encoding for nested dicts"
+        break
       
     if encodeDict:
         import json
