@@ -695,9 +695,9 @@ def build_params_dict(section,cfg):
           }
 
   if request_type == "ReReco":
-    params.update({"ProcConfigCacheID": step1_docID,
-                              "Scenario": "pp",
-                              "IncludeParents" : includeparents})
+    params.update({"ConfigCacheID": step1_docID,
+                   "Scenario": "pp",
+                   "IncludeParents" : includeparents})
 
 
     if skim_docid != '':
@@ -715,7 +715,7 @@ def build_params_dict(section,cfg):
                   "TimePerEvent": time_event,
                   "FilterEfficiency": filter_eff,
                   "RequestNumEvents": number_events,
-                  "ProcConfigCacheID": step1_docID,
+                  "ConfigCacheID": step1_docID,
                   "PrimaryDataset": primary_dataset,
                   "DataPileup": "",
                   "MCPileup": "",
@@ -730,7 +730,7 @@ def build_params_dict(section,cfg):
   elif request_type == 'MonteCarloFromGEN':
     params.update({"TimePerEvent": time_event,
                 "FilterEfficiency": filter_eff,
-                "ProcConfigCacheID": step1_docID,
+                "ConfigCacheID": step1_docID,
                 "PrepID": request_id,
                 "TotalTime": 28800 })
   elif request_type == 'LHEStepZero':
@@ -740,7 +740,7 @@ def build_params_dict(section,cfg):
                      "FirstLumi": 1,
                      "Memory": 2300,
                      "SizePerEvent": size_event,
-                     "ProcConfigCacheID": step1_docID,
+                     "ConfigCacheID": step1_docID,
                      "RequestNumEvents": number_events,
                      "PrimaryDataset": primary_dataset,
                      "PrepID": request_id,
