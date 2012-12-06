@@ -9,6 +9,6 @@ No DocId found for section HiAllQCDPhotons. Uploading the cfg to the couch.
 /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/Pyquen_AllQCDPhotons_PtHat30_PhotonFilter_pt15GeV_eta21_TuneZ2_Unquenched_2760GeV_cfi_py_GEN_SIM_DIGI_L1_DIGI2RAW_HLT.py.couchID
 
 /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/Pyquen_AllQCDPhotons_PtHat30_PhotonFilter_pt15GeV_eta21_TuneZ2_Unquenched_2760GeV_cfi_py_GEN_SIM_DIGI_L1_DIGI2RAW_HLT.py already uploaded with ID 3511a60e4507eec3056992bcee4c462c from /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/Pyquen_AllQCDPhotons_PtHat30_PhotonFilter_pt15GeV_eta21_TuneZ2_Unquenched_2760GeV_cfi_py_GEN_SIM_DIGI_L1_DIGI2RAW_HLT.py.couchID
-MonteCarlo
-Injected workflow: casarsa_HiAllQCDPhotons_445p2_121205_113856_4377
-Approved workflow: casarsa_HiAllQCDPhotons_445p2_121205_113856_4377
+MonteCarloFromGEN
+Injected workflow: casarsa_HiAllQCDPhotons_445p2_121206_182554_513
+Approved workflow: casarsa_HiAllQCDPhotons_445p2_121206_182554_513
