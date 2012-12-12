@@ -596,6 +596,9 @@ def build_params_dict(section,cfg):
   dummy = cfg.get_param('step1_cfg','',section)
   if dummy != '':
     step1_cfg = cfg_path = dummy
+
+  harvest_cfg = cfg.get_param('harvest_cfg','',section)
+  harvest_docID = cfg.get_param('harvest_docID','',section)
   
   step1_output = cfg.get_param('step1_output','',section)
   keep_step1 = cfg.get_param('keep_step1',False,section)
@@ -632,7 +635,9 @@ def build_params_dict(section,cfg):
         docIDs[step]= wma.upload_to_couch(step_cfg_name, section, user, group,test_mode)
 
   step1_docID,step2_docID,step3_docID=docIDs
-  
+  if harvest_docID=='' and harvest_cfg!='':
+      harvest_docID= wma.upload_to_couch(harvest_cfg , section, user, group,test_mode)
+      
   # check if the request is valid
   if step1_docID=='':
     print "Invalid request, no docID configuration specified."
@@ -828,6 +833,12 @@ def build_params_dict(section,cfg):
       print "Request type chose: "+str(request_type)
       raise Exception('Unknown request type, aborting')
 
+  if harvest_docID:
+      ##setup automatic harvesting
+      params.update({"EnableDQMHarvest" : 1,
+                     "DQMUploadUrl" : "https://cmsweb.cern.ch/dqm/offline",
+                     "DQMConfigCacheID" : harvest_docID})
+      
   return params,service_params
 
 #-------------------------------------------------------------------------------
