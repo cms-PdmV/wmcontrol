@@ -1,0 +1,17 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: configs/SpecialRequests2012/HI_DIGI-RECO_040122012.conf.
+No DocId found for section HiAllQCDPhotons. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    a2e1ee0d5bb24e67b0793315c0c61b7e
+  Revision: 3-7a89397d73235b0cbeb1a639845cdd52
+ReDigi
+Injected workflow: casarsa_HiAllQCDPhotons_445p2_121218_182714_633
+Approved workflow: casarsa_HiAllQCDPhotons_445p2_121218_182714_633
