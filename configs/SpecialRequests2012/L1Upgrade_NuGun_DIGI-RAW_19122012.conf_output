@@ -1,0 +1,17 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: configs/SpecialRequests2012/L1Upgrade_NuGun_DIGI-RAW_19122012.conf.
+No DocId found for section NuGunDigiRecoPU100. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_6_0_1_PostLS1v2_patch4/src/NeutrinoGun_DIGI_L1_DIGI2RAW_PU.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    970dc1a5a70f112135c67e15c41f69aa
+  Revision: 3-8c7bc38c21980061cbe4ab58a6d304c1
+ReDigi
+Injected workflow: casarsa_NuGunDigiRecoPU100_601PostLS1v2p4_121219_121537_9352
+Approved workflow: casarsa_NuGunDigiRecoPU100_601PostLS1v2p4_121219_121537_9352
