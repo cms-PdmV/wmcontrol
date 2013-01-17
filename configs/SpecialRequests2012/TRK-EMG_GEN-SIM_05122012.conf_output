@@ -6,82 +6,82 @@
 
 We have a configfile: configs/SpecialRequests2012/TRK-EMG_GEN-SIM_05122012.conf.
 No DocId found for section DYToEEExtFlat10Serv30. Uploading the cfg to the couch.
-/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_7/src/DYToEE_GEN-SIM_ExtFlat10Serv30.py.couchID
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_7_patch4/src/DYToEE_GEN-SIM_ExtFlat10Serv30.py.couchID
 
 Importing the config, this may take a while... done.
 Added file to the config cache:
-  DocID:    f7156b6bd582ceb75df4a5da89c636c1
-  Revision: 3-5521b7e2c9ac53f4da3fb479816dd092
+  DocID:    6eef1edca01d24930f5a862ebb06b3ea
+  Revision: 3-c8a44724fbc1c87811c493ee959910c3
 MonteCarlo
-Injected workflow: casarsa_DYToEEExtFlat10Serv30_537_121206_183203_4779
-Approved workflow: casarsa_DYToEEExtFlat10Serv30_537_121206_183203_4779
+Injected workflow: casarsa_DYToEEExtFlat10Serv30_537p4_130117_165720_5529
+Approved workflow: casarsa_DYToEEExtFlat10Serv30_537p4_130117_165720_5529
 No DocId found for section TwentyMuonsNominalGeo. Uploading the cfg to the couch.
-/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_7/src/TwentyMuons_GEN-SIM_NominalGeo.py.couchID
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_7_patch4/src/TwentyMuons_GEN-SIM_NominalGeo.py.couchID
 
 Importing the config, this may take a while... done.
 Added file to the config cache:
-  DocID:    f7156b6bd582ceb75df4a5da89c67865
-  Revision: 3-327ad50ad85b295cbceb3d22ceb3887b
+  DocID:    6eef1edca01d24930f5a862ebb1371eb
+  Revision: 3-663369e6f89a435bb7b7edab3659ff6e
 MonteCarlo
-Injected workflow: casarsa_TwentyMuonsNominalGeo_537_121206_183210_641
-Approved workflow: casarsa_TwentyMuonsNominalGeo_537_121206_183210_641
+Injected workflow: casarsa_TwentyMuonsNominalGeo_537p4_130117_165728_9072
+Approved workflow: casarsa_TwentyMuonsNominalGeo_537p4_130117_165728_9072
 No DocId found for section DYToEEExtFlat20Serv30. Uploading the cfg to the couch.
-/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_7/src/DYToEE_GEN-SIM_ExtFlat20Serv30.py.couchID
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_7_patch4/src/DYToEE_GEN-SIM_ExtFlat20Serv30.py.couchID
 
 Importing the config, this may take a while... done.
 Added file to the config cache:
-  DocID:    f7156b6bd582ceb75df4a5da89c7c77e
-  Revision: 3-fa978ff2910f9ab66072ea07c8e60752
+  DocID:    6eef1edca01d24930f5a862ebb215fd6
+  Revision: 3-342b6f9a1a8be7a9726da9bfe058c87c
 MonteCarlo
-Injected workflow: casarsa_DYToEEExtFlat20Serv30_537_121206_183217_6120
-Approved workflow: casarsa_DYToEEExtFlat20Serv30_537_121206_183217_6120
+Injected workflow: casarsa_DYToEEExtFlat20Serv30_537p4_130117_165734_2464
+Approved workflow: casarsa_DYToEEExtFlat20Serv30_537p4_130117_165734_2464
 No DocId found for section TwentyMuonsExtFlat10. Uploading the cfg to the couch.
-/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_7/src/TwentyMuons_GEN-SIM_ExtFlat10.py.couchID
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_7_patch4/src/TwentyMuons_GEN-SIM_ExtFlat10.py.couchID
 
 Importing the config, this may take a while... done.
 Added file to the config cache:
-  DocID:    f7156b6bd582ceb75df4a5da89c908f1
-  Revision: 3-f91f4203fc7f311a616aa620129548a7
+  DocID:    6eef1edca01d24930f5a862ebb21b32a
+  Revision: 3-75572dce0b77ffad73c3f56e4232ae30
 MonteCarlo
-Injected workflow: casarsa_TwentyMuonsExtFlat10_537_121206_183222_4340
-Approved workflow: casarsa_TwentyMuonsExtFlat10_537_121206_183222_4340
+Injected workflow: casarsa_TwentyMuonsExtFlat10_537p4_130117_165740_2556
+Approved workflow: casarsa_TwentyMuonsExtFlat10_537p4_130117_165740_2556
 No DocId found for section DYToEEExtFlat20. Uploading the cfg to the couch.
-/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_7/src/DYToEE_GEN-SIM_ExtFlat20.py.couchID
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_7_patch4/src/DYToEE_GEN-SIM_ExtFlat20.py.couchID
 
 Importing the config, this may take a while... done.
 Added file to the config cache:
-  DocID:    f7156b6bd582ceb75df4a5da89c9d5f3
-  Revision: 3-b3f8ead7c08de346b359c595c08a796b
+  DocID:    6eef1edca01d24930f5a862ebb21ed45
+  Revision: 3-f87065dc2ac4dbd53835fadd69a137ce
 MonteCarlo
-Injected workflow: casarsa_DYToEEExtFlat20_537_121206_183228_3205
-Approved workflow: casarsa_DYToEEExtFlat20_537_121206_183228_3205
+Injected workflow: casarsa_DYToEEExtFlat20_537p4_130117_165746_5524
+Approved workflow: casarsa_DYToEEExtFlat20_537p4_130117_165746_5524
 No DocId found for section DYToEEExtFlat10. Uploading the cfg to the couch.
-/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_7/src/DYToEE_GEN-SIM_ExtFlat10.py.couchID
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_7_patch4/src/DYToEE_GEN-SIM_ExtFlat10.py.couchID
 
 Importing the config, this may take a while... done.
 Added file to the config cache:
-  DocID:    f7156b6bd582ceb75df4a5da89ca14d3
-  Revision: 3-975aa295703ceb584111de55fd763a37
+  DocID:    6eef1edca01d24930f5a862ebb221ccb
+  Revision: 3-1250effce675e767842fe72ad357b4cc
 MonteCarlo
-Injected workflow: casarsa_DYToEEExtFlat10_537_121206_183233_6408
-Approved workflow: casarsa_DYToEEExtFlat10_537_121206_183233_6408
+Injected workflow: casarsa_DYToEEExtFlat10_537p4_130117_165752_7837
+Approved workflow: casarsa_DYToEEExtFlat10_537p4_130117_165752_7837
 No DocId found for section DYToEENominalGeo. Uploading the cfg to the couch.
-/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_7/src/DYToEE_GEN-SIM_NominalGeo.py.couchID
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_7_patch4/src/DYToEE_GEN-SIM_NominalGeo.py.couchID
 
 Importing the config, this may take a while... done.
 Added file to the config cache:
-  DocID:    f7156b6bd582ceb75df4a5da89caa554
-  Revision: 3-e54a4796b881b7d72a9cec8f8c062dad
+  DocID:    6eef1edca01d24930f5a862ebb2b7c61
+  Revision: 3-7de0a1c920833112839cf3621916c1cb
 MonteCarlo
-Injected workflow: casarsa_DYToEENominalGeo_537_121206_183239_3745
-Approved workflow: casarsa_DYToEENominalGeo_537_121206_183239_3745
+Injected workflow: casarsa_DYToEENominalGeo_537p4_130117_165759_5494
+Approved workflow: casarsa_DYToEENominalGeo_537p4_130117_165759_5494
 No DocId found for section TwentyMuonsExtFlat20. Uploading the cfg to the couch.
-/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_7/src/TwentyMuons_GEN-SIM_ExtFlat20.py.couchID
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_5_3_7_patch4/src/TwentyMuons_GEN-SIM_ExtFlat20.py.couchID
 
 Importing the config, this may take a while... done.
 Added file to the config cache:
-  DocID:    f7156b6bd582ceb75df4a5da89cb08e3
-  Revision: 3-f3e5cbe73ebe26ffcc08c21209ae158d
+  DocID:    6eef1edca01d24930f5a862ebb3cf538
+  Revision: 3-e5ce3dec0af556cf75b61152b01d9eaf
 MonteCarlo
-Injected workflow: casarsa_TwentyMuonsExtFlat20_537_121206_183244_7857
-Approved workflow: casarsa_TwentyMuonsExtFlat20_537_121206_183244_7857
+Injected workflow: casarsa_TwentyMuonsExtFlat20_537p4_130117_165805_5338
+Approved workflow: casarsa_TwentyMuonsExtFlat20_537p4_130117_165805_5338
