@@ -2,7 +2,7 @@
 # using: 
 # Revision: 1.381.2.13 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/PyReleaseValidation/python/ConfigBuilder.py,v 
-# with command line options: STEP1 --step DIGI,L1,DIGI2RAW,HLT:7E33v2 --conditions START53_V16::All --geometry DB:ExtendedHFLibraryNoCastor --pileup 2012_Summer_50ns_PoissonOOTPU --datamix NODATAMIXER --eventcontent RAWDEBUG --datatier GEN-SIM-RAWDEBUG --customise Configuration/GenProduction/noCastorHFSL_customise.customise_digi -n 10 --no_exec
+# with command line options: STEP1 --step DIGI,L1,DIGI2RAW,HLT:7E33v2 --conditions START53_V16::All --geometry DB:ExtendedHFLibraryNoCastor --pileup 2012_Summer_50ns_PoissonOOTPU --datamix NODATAMIXER --eventcontent RAWDEBUG --datatier GEN-SIM-RAWDEBUG --customise Configuration/GenProduction/noCastorHFSL_customise.customise_digi -n 10 --no_exec --inline_custom
 import FWCore.ParameterSet.Config as cms
 
 process = cms.Process('HLT')
@@ -77,13 +77,93 @@ process.schedule.extend([process.endjob_step,process.RAWDEBUGoutput_step])
 # customisation of the process.
 
 # Automatic addition of the customisation function from HLTrigger.Configuration.customizeHLTforMC
-from HLTrigger.Configuration.customizeHLTforMC import customizeHLTforMC 
+
+def customizeHLTforMC(process):
+  """adapt the HLT to run on MC, instead of data
+  see Configuration/StandardSequences/Reconstruction_Data_cff.py
+  which does the opposite, for RECO"""
+
+  # CSCHaloDataProducer - not used at HLT
+  #if 'CSCHaloData' in process.__dict__:
+  #  process.CSCHaloData.ExpectedBX = cms.int32(6)
+
+  # EcalUncalibRecHitProducer - not used at HLT
+  #if 'ecalGlobalUncalibRecHit' in process.__dict__:
+  #  process.ecalGlobalUncalibRecHit.doEBtimeCorrection = cms.bool(False)
+  #  process.ecalGlobalUncalibRecHit.doEEtimeCorrection = cms.bool(False)
+
+  # HcalRecAlgoESProducer - these flags are not used at HLT (they should stay set to the default value for both data and MC)
+  #if 'hcalRecAlgos' in process.__dict__:
+  #  import RecoLocalCalo.HcalRecAlgos.RemoveAddSevLevel as HcalRemoveAddSevLevel
+  #  HcalRemoveAddSevLevel.AddFlag(process.hcalRecAlgos, "HFDigiTime",     8)
+  #  HcalRemoveAddSevLevel.AddFlag(process.hcalRecAlgos, "HBHEFlatNoise",  8)
+  #  HcalRemoveAddSevLevel.AddFlag(process.hcalRecAlgos, "HBHESpikeNoise", 8)
+
+  # PFRecHitProducerHCAL
+  if 'hltParticleFlowRecHitHCAL' in process.__dict__:
+    process.hltParticleFlowRecHitHCAL.ApplyPulseDPG      = cms.bool(False)
+    process.hltParticleFlowRecHitHCAL.LongShortFibre_Cut = cms.double(1000000000.0)
+
+  return process
 
 #call to customisation function customizeHLTforMC imported from HLTrigger.Configuration.customizeHLTforMC
 process = customizeHLTforMC(process)
 
 # Automatic addition of the customisation function from Configuration.GenProduction.noCastorHFSL_customise
-from Configuration.GenProduction.noCastorHFSL_customise import customise_digi 
+
+def customise_gensim(process): 
+
+    # extended geometric acceptance (full CASTOR acceptance)
+
+    process.g4SimHits.Generator.MinEtaCut = cms.double(-6.7)
+    process.g4SimHits.Generator.MaxEtaCut = cms.double(6.7)
+
+    # use HF shower library instead of GFlash parameterization
+
+    process.g4SimHits.HCalSD.UseShowerLibrary = cms.bool(True)
+    process.g4SimHits.HCalSD.UseParametrize = cms.bool(False)
+    process.g4SimHits.HCalSD.UsePMTHits = cms.bool(False)
+    process.g4SimHits.HCalSD.UseFibreBundleHits = cms.bool(False)
+    process.g4SimHits.HFShower.ApplyFiducialCut = cms.bool(True)
+    process.g4SimHits.HFShowerLibrary.ApplyFiducialCut = cms.bool(False)
+      
+    return(process)
+
+def customise_digi(process):
+
+    process.mix.mixObjects.mixCH = cms.PSet(
+        input = cms.VInputTag(cms.InputTag("g4SimHits","CaloHitsTk"), cms.InputTag("g4SimHits","EcalHitsEB"), cms.InputTag("g4SimHits","EcalHitsEE"), cms.InputTag("g4SimHits","EcalHitsES"), cms.InputTag("g4SimHits","EcalTBH4BeamHits"), cms.InputTag("g4SimHits","HcalHits"), cms.InputTag("g4SimHits","HcalTB06BeamHits"), cms.InputTag("g4SimHits","ZDCHITS")),
+        type = cms.string('PCaloHit'),
+        subdets = cms.vstring('CaloHitsTk',
+            'EcalHitsEB',      
+            'EcalHitsEE',      
+            'EcalHitsES',      
+            'EcalTBH4BeamHits',
+            'HcalHits',        
+            'HcalTB06BeamHits',
+            'ZDCHITS')         
+    )
+    process.calDigi = cms.Sequence(process.ecalDigiSequence+process.hcalDigiSequence)
+    process.DigiToRaw = cms.Sequence(process.csctfpacker+process.dttfpacker+process.gctDigiToRaw+process.l1GtPack+process.l1GtEvmPack+process.siPixelRawData+process.SiStripDigiToRaw+process.ecalPacker+process.esDigiToRaw+process.hcalRawData+process.cscpacker+process.dtpacker+process.rpcpacker+process.rawDataCollector)
+
+    return(process) 
+
+def customise_validation(process):
+
+    process.mix.mixObjects.mixCH = cms.PSet(
+        input = cms.VInputTag(cms.InputTag("g4SimHits","CaloHitsTk"), cms.InputTag("g4SimHits","EcalHitsEB"), cms.InputTag("g4SimHits","EcalHitsEE"), cms.InputTag("g4SimHits","EcalHitsES"), cms.InputTag("g4SimHits","EcalTBH4BeamHits"), cms.InputTag("g4SimHits","HcalHits"), cms.InputTag("g4SimHits","HcalTB06BeamHits"), cms.InputTag("g4SimHits","ZDCHITS")),
+        type = cms.string('PCaloHit'),
+        subdets = cms.vstring('CaloHitsTk',
+            'EcalHitsEB',      
+            'EcalHitsEE',      
+            'EcalHitsES',      
+            'EcalTBH4BeamHits',
+            'HcalHits',        
+            'HcalTB06BeamHits',
+            'ZDCHITS')         
+    )
+
+    return(process)
 
 #call to customisation function customise_digi imported from Configuration.GenProduction.noCastorHFSL_customise
 process = customise_digi(process)
