@@ -9,10 +9,16 @@ workflows = Matrix()
 workflows[20001] = ['', ['RunMinBias2012A','RECOSKIM']]
 workflows[20002] = ['', ['RunMinBias2012B','RECOSKIM']]
 workflows[20003] = ['', ['RunMinBias2012C','RECOSKIM']]
+workflows[30001] = ['', ['RunMinBias2012AOldAPE','RECOSKIM']]
+workflows[30002] = ['', ['RunMinBias2012BOldAPE','RECOSKIM']]
+workflows[30003] = ['', ['RunMinBias2012COldAPE','RECOSKIM']]
 # single mu for TK
 workflows[20004] = ['', ['RunMu2012A','RECOSKIM']]
+workflows[30004] = ['', ['RunMu2012AOldAPE','RECOSKIM']]
 workflows[20005] = ['', ['RunMu2012B','RECOSKIM']]
+workflows[30005] = ['', ['RunMu2012BOldAPE','RECOSKIM']]
 workflows[20006] = ['', ['RunMu2012C','RECOSKIM']]
+workflows[30006] = ['', ['RunMu2012COldAPE','RECOSKIM']]
 # zmu skim for TK
 workflows[20007] = ['', ['ZMuSkim2012A','RECOSKIM']]
 workflows[20008.1] = ['', ['ZMuSkim2012Bv1','RECOSKIM']]

@@ -163,10 +163,13 @@ steps['RunHI2011']={'INPUT':InputInfo(dataSet='/HIAllPhysics/HIRun2011A-v1/RAW',
 
 #Run2012A=[191226]
 Run2012A=[190688, 190705, 191226, 191718, 191830, 193621] # this is for TK
+Run2012AOldAPE=[191226] # this is for TK
 steps['RunMinBias2012A']={'INPUT':InputInfo(dataSet='/MinimumBias/Run2012A-v1/RAW',label='mb2012A',run=Run2012A, events=100000,location='STD')}
+steps['RunMinBias2012AOldAPE']={'INPUT':InputInfo(dataSet='/MinimumBias/Run2012A-v1/RAW',label='mb2012AOldAPE',run=Run2012AOldAPE, events=100000,location='STD')}
 steps['RunTau2012A']={'INPUT':InputInfo(dataSet='/Tau/Run2012A-v1/RAW',label='tau2012A', run=Run2012A, events=100000,location='STD')}
 steps['RunMET2012A']={'INPUT':InputInfo(dataSet='/MET/Run2012A-v1/RAW',label='met2012A', run=Run2012A, events=100000,location='STD')}
 steps['RunMu2012A']={'INPUT':InputInfo(dataSet='/SingleMu/Run2012A-v1/RAW',label='mu2012A', run=Run2012A, events=100000,location='STD')}
+steps['RunMu2012AOldAPE']={'INPUT':InputInfo(dataSet='/SingleMu/Run2012A-v1/RAW',label='Run2012AOldAPE', run=Run2012AOldAPE, events=100000,location='STD')}
 steps['RunElectron2012A']={'INPUT':InputInfo(dataSet='/SingleElectron/Run2012A-v1/RAW',label='electron2012A', run=Run2012A, events=100000,location='STD')}
 steps['RunJet2012A']={'INPUT':InputInfo(dataSet='/Jet/Run2012A-v1/RAW',label='jet2012A', run=Run2012A, events=100000,location='STD')}
 steps['ZMuSkim2012A']={'INPUT':InputInfo(dataSet='/SingleMu/Run2012A-ZMu-13Jul2012-v1/RAW-RECO',label='zMu2012A', run=Run2012A, events=100000,location='STD')}
@@ -174,11 +177,14 @@ steps['ZMuSkim2012A']={'INPUT':InputInfo(dataSet='/SingleMu/Run2012A-ZMu-13Jul20
 
 #Run2012B=[194533]
 Run2012B=[194533, 195397, 196453] # this is for TK
+Run2012BOldAPE=[194533] # this is for TK
 Run2012Bv1=[195397] # this is for TK
 Run2012Bv2=[196453] # this is for TK
 Run2012Bsk=Run2012B+[194912,195016]
 steps['RunMinBias2012B']={'INPUT':InputInfo(dataSet='/MinimumBias/Run2012B-v1/RAW',label='mb2012B',run=Run2012B, events=100000,location='STD')}
+steps['RunMinBias2012BOldAPE']={'INPUT':InputInfo(dataSet='/MinimumBias/Run2012B-v1/RAW',label='mb2012BOldAPE',run=Run2012BOldAPE, events=100000,location='STD')}
 steps['RunMu2012B']={'INPUT':InputInfo(dataSet='/SingleMu/Run2012B-v1/RAW',label='mu2012B',location='STD',run=Run2012B)}
+steps['RunMu2012BOldAPE']={'INPUT':InputInfo(dataSet='/SingleMu/Run2012B-v1/RAW',label='mu2012BOldAPE',location='STD',run=Run2012BOldAPE)}
 steps['RunPhoton2012B']={'INPUT':InputInfo(dataSet='/SinglePhoton/Run2012B-v1/RAW',label='photon2012B',location='STD',run=Run2012B)}
 steps['RunEl2012B']={'INPUT':InputInfo(dataSet='/SingleElectron/Run2012B-v1/RAW',label='electron2012B',location='STD',run=Run2012B)}
 steps['RunJet2012B']={'INPUT':InputInfo(dataSet='/JetHT/Run2012B-v1/RAW',label='jet2012B',location='STD',run=Run2012B)}
@@ -191,11 +197,14 @@ steps['ZElSkim2012B']={'INPUT':InputInfo(dataSet='/DoubleElectron/Run2012B-ZElec
 
 #Run2012C=[199812]
 Run2012C=[198230, 199812, 201278, 202504, 203002] # this is for TK,  to be extended
+Run2012COldAPE=[198230] # this is for TK,  to be extended
 Run2012Cv3=[199812, 201278, 202504, 203002] # this is for TK,  to be extended
 Run2012Cv2=[198230] # this is for TK,  to be extended
 Run2012Csk=Run2012C+[]
+steps['RunMinBias2012COldAPE']={'INPUT':InputInfo(dataSet='/MinimumBias/Run2012C-v1/RAW',label='mb2012COldAPE',run=Run2012COldAPE, events=100000,location='STD')}
 steps['RunMinBias2012C']={'INPUT':InputInfo(dataSet='/MinimumBias/Run2012C-v1/RAW',label='mb2012C',run=Run2012C, events=100000,location='STD')}
 steps['RunMu2012C']={'INPUT':InputInfo(dataSet='/SingleMu/Run2012C-v1/RAW',label='mu2012C',location='STD',run=Run2012C)}
+steps['RunMu2012COldAPE']={'INPUT':InputInfo(dataSet='/SingleMu/Run2012C-v1/RAW',label='mu2012COldAPE',location='STD',run=Run2012COldAPE)}
 steps['ZMuSkim2012Cv3']={'INPUT':InputInfo(dataSet='/SingleMu/Run2012C-ZMu-PromptSkim-v3/RAW-RECO',label='zMu2012C',location='STD',run=Run2012Cv3)}
 steps['ZMuSkim2012Cv2']={'INPUT':InputInfo(dataSet='/SingleMu/Run2012C-ZMu-PromptSkim-v2/RAW-RECO',label='zMu2012C',location='STD',run=Run2012Cv2)}
 #steps['ZMuSkim2012C']={'INPUT':InputInfo(dataSet='/SingleMu/Run2012C-ZMu-PromptSkim-v3/RAW-RECO',label='zMu2012C',location='CAF',run=Run2012B)}
