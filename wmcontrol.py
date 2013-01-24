@@ -800,6 +800,7 @@ def build_params_dict(section,cfg):
       
       task1_dict['GlobalTag'] = cfg.get_param('step1_globaltag',globaltag,section)
       task1_dict['ConfigCacheID'] = step1_docID
+      task1_dict['KeepOutput'] = keep_step1
       params['Task1']=task1_dict
       params['TaskChain']=1
       if step2_cfg or step2_docID:
@@ -811,6 +812,7 @@ def build_params_dict(section,cfg):
           task2_dict['ConfigCacheID'] = step2_docID
           task2_dict['InputFromOutputModule'] = step2_output
           task2_dict['InputTask'] = cfg.get_param('step2_input','Task1',section)
+          #task2_dict['KeepOutput'] = keep_step2
           params['Task2']=task2_dict
           params['TaskChain']=2
           if step3_cfg or step3_docID:
@@ -822,6 +824,7 @@ def build_params_dict(section,cfg):
               task3_dict['ConfigCacheID'] = step3_docID
               task3_dict['InputFromOutputModule'] = step3_output
               task3_dict['InputTask'] = cfg.get_param('step3_input','Task2',section)
+              #task3_dict['KeepOutput'] = keep_step3
               params['Task3']=task3_dict
               params['TaskChain']=3
               
