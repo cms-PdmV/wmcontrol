@@ -1,0 +1,38 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: configs/SpecialRequests2012/HI_DIGI-RECO_28122012.conf.
+No DocId found for section HiAllQCDPhotonsPtHat170. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    ca36f2f92a34d70b5a6f70154047d2b6
+  Revision: 3-f5831688632dc171fc254b5ff0b2098b
+ReDigi
+Injected workflow: casarsa_HiAllQCDPhotonsPtHat170_445p2_130128_144252_4289
+Approved workflow: casarsa_HiAllQCDPhotonsPtHat170_445p2_130128_144252_4289
+No DocId found for section HiAllQCDPhotonsPtHat120. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py.couchID
+
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py already uploaded with ID ca36f2f92a34d70b5a6f70154047d2b6 from /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py.couchID
+ReDigi
+Injected workflow: casarsa_HiAllQCDPhotonsPtHat120_445p2_130128_144259_7611
+Approved workflow: casarsa_HiAllQCDPhotonsPtHat120_445p2_130128_144259_7611
+No DocId found for section HiAllQCDPhotonsPtHat80. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py.couchID
+
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py already uploaded with ID ca36f2f92a34d70b5a6f70154047d2b6 from /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py.couchID
+ReDigi
+Injected workflow: casarsa_HiAllQCDPhotonsPtHat80_445p2_130128_144304_8734
+Approved workflow: casarsa_HiAllQCDPhotonsPtHat80_445p2_130128_144304_8734
+No DocId found for section HiAllQCDPhotonsPtHat50. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py.couchID
+
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py already uploaded with ID ca36f2f92a34d70b5a6f70154047d2b6 from /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py.couchID
+ReDigi
+Injected workflow: casarsa_HiAllQCDPhotonsPtHat50_445p2_130128_144309_5537
+Approved workflow: casarsa_HiAllQCDPhotonsPtHat50_445p2_130128_144309_5537
