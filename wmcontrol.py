@@ -611,7 +611,9 @@ def build_params_dict(section,cfg):
   step3_cfg = cfg.get_param('step3_cfg','',section)
   step3_docID = cfg.get_param('step3_docID','',section)
   step3_output = cfg.get_param('step3_output','',section)
-  
+
+  transient_output = cfg.get_param('transient_output',[],section)
+
   request_type = cfg.get_param('request_type',default_parameters['request_type'],section)
   request_id = cfg.get_param('request_id','',section)
   events_per_job = cfg.get_param('events_per_job','',section)
@@ -702,7 +704,8 @@ def build_params_dict(section,cfg):
   if request_type == "ReReco":
     params.update({"ConfigCacheID": step1_docID,
                    "Scenario": "pp",
-                   "IncludeParents" : includeparents})
+                   "IncludeParents" : includeparents,
+                   "TransientOutputModules":transient_output})
 
 
     if skim_docid != '':
