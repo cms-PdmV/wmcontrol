@@ -702,6 +702,10 @@ def build_params_dict(section,cfg):
           }
 
   if request_type == "ReReco":
+    if number_events:
+        ## this means someone is trying to get a certain number of events, while this is not supported
+        print "\n\n\n WARNING number_events is not functionnal \n\n\n"
+
     params.update({"ConfigCacheID": step1_docID,
                    "Scenario": "pp",
                    "IncludeParents" : includeparents,
@@ -765,6 +769,9 @@ def build_params_dict(section,cfg):
       params.pop('RunWhitelist')
       
   elif request_type == 'ReDigi':
+    if number_events:
+        ## this means someone is trying to get a certain number of events, while this is not supported
+        print "\n\n\n WARNING number_events is not functionnal \n\n\n"
     params.update({"RequestString": identifier,
                 "StepOneConfigCacheID": step1_docID,
                 "KeepStepOneOutput": keep_step1,
