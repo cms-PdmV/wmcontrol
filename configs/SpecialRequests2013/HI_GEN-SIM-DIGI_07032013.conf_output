@@ -1,0 +1,77 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: configs/SpecialRequests2013/HI_GEN-SIM-DIGI_07032013.conf.
+No DocId found for section HiDiJetPtHat350. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/Pyquen_DiJet_Pt350_TuneZ2_Unquenched_2760GeV_cfi_py_GEN_SIM_DIGI_L1_DIGI2RAW_HLT.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    01a410e102ca31ced58dc9373624e7a6
+  Revision: 3-2415db547ed9dac1d2496e00200c2ce7
+MonteCarloFromGEN
+Injected workflow: casarsa_HiDiJetPtHat350_445p2_130307_165057_3041
+Approved workflow: casarsa_HiDiJetPtHat350_445p2_130307_165057_3041
+No DocId found for section HiDiJetPtHat120. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/Pyquen_DiJet_Pt120_TuneZ2_Unquenched_2760GeV_cfi_py_GEN_SIM_DIGI_L1_DIGI2RAW_HLT.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    01a410e102ca31ced58dc937362579b7
+  Revision: 3-fb5cc666b8563888c267ffb06713ecb9
+MonteCarloFromGEN
+Injected workflow: casarsa_HiDiJetPtHat120_445p2_130307_165105_3162
+Approved workflow: casarsa_HiDiJetPtHat120_445p2_130307_165105_3162
+No DocId found for section HiDiJetPtHat80. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/Pyquen_DiJet_Pt80_TuneZ2_Unquenched_2760GeV_cfi_py_GEN_SIM_DIGI_L1_DIGI2RAW_HLT.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    01a410e102ca31ced58dc9373625dbb8
+  Revision: 3-acd18f69df3ba12b0e4bfd717f506ba7
+MonteCarloFromGEN
+Injected workflow: casarsa_HiDiJetPtHat80_445p2_130307_165112_6691
+Approved workflow: casarsa_HiDiJetPtHat80_445p2_130307_165112_6691
+No DocId found for section HiDiJetPtHat50. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/Pyquen_DiJet_Pt50_TuneZ2_Unquenched_2760GeV_cfi_py_GEN_SIM_DIGI_L1_DIGI2RAW_HLT.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    01a410e102ca31ced58dc9373626821e
+  Revision: 3-d09bebf12a73ba689fc21b336261f14f
+MonteCarloFromGEN
+Injected workflow: casarsa_HiDiJetPtHat50_445p2_130307_165122_5828
+Approved workflow: casarsa_HiDiJetPtHat50_445p2_130307_165122_5828
+No DocId found for section HiDiJetPtHat170. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/Pyquen_DiJet_Pt170_TuneZ2_Unquenched_2760GeV_cfi_py_GEN_SIM_DIGI_L1_DIGI2RAW_HLT.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    01a410e102ca31ced58dc93736270463
+  Revision: 3-5a60821e7a24c378d934f45fb280e175
+MonteCarloFromGEN
+Injected workflow: casarsa_HiDiJetPtHat170_445p2_130307_165129_2990
+Approved workflow: casarsa_HiDiJetPtHat170_445p2_130307_165129_2990
+No DocId found for section HiDiJetPtHat250. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/Pyquen_DiJet_Pt250_TuneZ2_Unquenched_2760GeV_cfi_py_GEN_SIM_DIGI_L1_DIGI2RAW_HLT.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    01a410e102ca31ced58dc93736275a2b
+  Revision: 3-1db1e7385c283e9dbce21f063cf7af26
+MonteCarloFromGEN
+Injected workflow: casarsa_HiDiJetPtHat250_445p2_130307_165136_1822
+Approved workflow: casarsa_HiDiJetPtHat250_445p2_130307_165136_1822
+No DocId found for section HiDiJetPtHat30. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/Pyquen_DiJet_Pt30_TuneZ2_Unquenched_2760GeV_cfi_py_GEN_SIM_DIGI_L1_DIGI2RAW_HLT.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    01a410e102ca31ced58dc937362a7310
+  Revision: 3-406b16515568f5cfbd2faa90ed2ddcec
+MonteCarloFromGEN
+Injected workflow: casarsa_HiDiJetPtHat30_445p2_130307_165143_6023
+Approved workflow: casarsa_HiDiJetPtHat30_445p2_130307_165143_6023
