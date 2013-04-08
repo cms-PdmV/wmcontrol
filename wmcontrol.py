@@ -75,7 +75,12 @@ class Configuration:
     def __init__ (self, parser):
         self.configparser=ConfigParser.SafeConfigParser()
 
-        options,args = parser.parse_args()
+        try:
+            options,args = parser.parse_args()
+        except SystemExit:
+            print "Error in parsing options"
+            sys.exit(-1)
+            
         global test_mode
         test_mode=options.test
 
@@ -698,7 +703,8 @@ def build_params_dict(section,cfg):
           "Campaign": campaign,
           "Memory": size_memory,
           "SizePerEvent": size_event,
-          "TimePerEvent": time_event
+          "TimePerEvent": time_event,
+#          "OpenRunningTimeout" : 43200
           }
 
   if request_type == "ReReco":
