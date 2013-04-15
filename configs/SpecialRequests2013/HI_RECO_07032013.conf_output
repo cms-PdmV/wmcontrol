@@ -1,0 +1,59 @@
+###########################################################################
+#                                                                         #
+#    WMAControl: the swiss army knife for central requests submission     #
+#                                                                         #
+###########################################################################
+
+We have a configfile: configs/SpecialRequests2013/HI_RECO_07032013.conf.
+No DocId found for section HiDiJetPtHat350. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py.couchID
+
+Importing the config, this may take a while... done.
+Added file to the config cache:
+  DocID:    d3647e936f2ab00993cbfceb4aa588c5
+  Revision: 3-9b7d0f332f8cfa501d444852958d6b5f
+ReDigi
+Injected workflow: casarsa_HiDiJetPtHat350_445p2_130415_140655_5527
+Approved workflow: casarsa_HiDiJetPtHat350_445p2_130415_140655_5527
+No DocId found for section HiDiJetPtHat120. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py.couchID
+
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py already uploaded with ID d3647e936f2ab00993cbfceb4aa588c5 from /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py.couchID
+ReDigi
+Injected workflow: casarsa_HiDiJetPtHat120_445p2_130415_140701_169
+Approved workflow: casarsa_HiDiJetPtHat120_445p2_130415_140701_169
+No DocId found for section HiDiJetPtHat80. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py.couchID
+
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py already uploaded with ID d3647e936f2ab00993cbfceb4aa588c5 from /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py.couchID
+ReDigi
+Injected workflow: casarsa_HiDiJetPtHat80_445p2_130415_140707_3417
+Approved workflow: casarsa_HiDiJetPtHat80_445p2_130415_140707_3417
+No DocId found for section HiDiJetPtHat50. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py.couchID
+
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py already uploaded with ID d3647e936f2ab00993cbfceb4aa588c5 from /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py.couchID
+ReDigi
+Injected workflow: casarsa_HiDiJetPtHat50_445p2_130415_140712_5156
+Approved workflow: casarsa_HiDiJetPtHat50_445p2_130415_140712_5156
+No DocId found for section HiDiJetPtHat170. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py.couchID
+
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py already uploaded with ID d3647e936f2ab00993cbfceb4aa588c5 from /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py.couchID
+ReDigi
+Injected workflow: casarsa_HiDiJetPtHat170_445p2_130415_140717_3845
+Approved workflow: casarsa_HiDiJetPtHat170_445p2_130415_140717_3845
+No DocId found for section HiDiJetPtHat250. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py.couchID
+
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py already uploaded with ID d3647e936f2ab00993cbfceb4aa588c5 from /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py.couchID
+ReDigi
+Injected workflow: casarsa_HiDiJetPtHat250_445p2_130415_140723_17
+Approved workflow: casarsa_HiDiJetPtHat250_445p2_130415_140723_17
+No DocId found for section HiDiJetPtHat30. Uploading the cfg to the couch.
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py.couchID
+
+/afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py already uploaded with ID d3647e936f2ab00993cbfceb4aa588c5 from /afs/cern.ch/user/c/casarsa/w0/prep/test/CMSSW_4_4_5_patch2/src/hiReco_RAW2DIGI_L1Reco_RECO.py.couchID
+ReDigi
+Injected workflow: casarsa_HiDiJetPtHat30_445p2_130415_140727_7467
+Approved workflow: casarsa_HiDiJetPtHat30_445p2_130415_140727_7467
