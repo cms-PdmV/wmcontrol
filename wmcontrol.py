@@ -79,6 +79,7 @@ class Configuration:
             options,args = parser.parse_args()
         except SystemExit:
             print "Error in parsing options"
+            sys.stderr.write("[wmcontrol exception] Error in parsing options")
             sys.exit(-1)
             
         global test_mode
@@ -217,7 +218,10 @@ def custodial(datasetpath):
 
 #   if lfn == None :
    url=wma.PHEDEX_ADDR %datasetpath
-   result = json.load(urllib.urlopen(url))
+   try:
+       result = json.load(urllib.urlopen(url))
+   except:
+       print 'Problems with url',url
    try:
            for block in result['phedex']['block']:
                name = block['name']
@@ -417,7 +421,8 @@ def loop_and_submit(cfg):
     params,service_params = build_params_dict(section,cfg)
     dataset_runs_dict = get_dataset_runs_dict (section,cfg)
     if (dataset_runs_dict == False):
-        sys.exit()
+        sys.stderr.write("[wmcontrol exception] No dataset_runs_dict provided")
+        sys.exit(-1)
     # Submit request!
     for dataset in sorted(dataset_runs_dict.keys()):      
       params['InputDataset']=dataset
@@ -648,7 +653,8 @@ def build_params_dict(section,cfg):
   # check if the request is valid
   if step1_docID=='':
     print "Invalid request, no docID configuration specified."
-    sys.exit(0)
+    sys.stderr.write("[wmcontrol exception] Invalid request, no docID configuration specified.")
+    sys.exit(-1)
  
   # Extract Campaign from PREP-ID if necessary
   campaign = cfg.get_param('campaign','',section)
