@@ -147,8 +147,8 @@ def upload_to_couch(cfg_name, section_name,user_name,group_name,test_mode=False,
 
   # create a file with the ID inside to avoid multiple injections
   oldID=cfg_name+'.couchID'
-  print oldID
-  print 
+  #print oldID
+  #print 
   if os.path.exists(oldID):
       f=open(oldID)
       the_id=f.readline().replace('\n','')
@@ -190,7 +190,11 @@ def time_per_events(campaign):
     'Fall11_R2' :  10.00,
     'Fall11_R4' :   7.00,
     'UpgradeL1TDR_DR6X' : 40.00,
+    'UpgradePhase2BE_2013_DR61SLHCx' : 90,
+    'UpgradePhase2LB4PS_2013_DR61SLHCx' : 90,
+    'UpgradePhase2LB6PS_2013_DR61SLHCx' : 90,
     }
+
   if campaign in addHoc:
     return addHoc[campaign]
   else:
