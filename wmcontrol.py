@@ -710,7 +710,8 @@ def build_params_dict(section,cfg):
           "Memory": size_memory,
           "SizePerEvent": size_event,
           "TimePerEvent": time_event,
-#          "OpenRunningTimeout" : 43200
+          "OpenRunningTimeout" : 43200,
+          #"ConfigCacheUrl": "https://cmsweb.cern.ch/couchdb",
           }
 
   if request_type == "ReReco":
@@ -757,11 +758,15 @@ def build_params_dict(section,cfg):
                 "ConfigCacheID": step1_docID,
                 "PrepID": request_id,
                 "TotalTime": 28800 })
+    if primary_dataset:
+        params.update({"PrimaryDataset": primary_dataset})
+        
   elif request_type == 'LHEStepZero':
       params.update({"RequestString": identifier,
                      "TimePerEvent": time_event,
                      "FirstEvent": 1,
                      "FirstLumi": 1,
+                     "LheInputFiles" : cfg.get_param('lhe_input',False,section),
                      "Memory": 2300,
                      "SizePerEvent": size_event,
                      "ConfigCacheID": step1_docID,
@@ -921,6 +926,7 @@ def build_parser():
   parser.add_option('--cfg_db_file', help='File containing the cfg name docid pairs' , dest='cfg_db_file')
   parser.add_option('--user', help='The registered username' , dest='user')
   parser.add_option('--group', help='The group to which the user belong' , dest='group')
+  parser.add_option('--lhe', help='specify that there is .lhe file in input', dest='lhe_input', default=False, action='store_true')
   
   ##New parametters as of 2012-08-22
   parser.add_option('--memory', help='RSS memory in MB (Default 1500)' , type='int', dest='size_memory', default=2300)
