@@ -148,6 +148,52 @@ class Configuration:
         
 #-------------------------------------------------------------------------------
 
+def get_blocks(dset_name, statistics):
+    statistics = float(statistics)
+    from DBSAPI.dbsApi import DbsApi
+    dbsapi = DbsApi()
+    blocks = dbsapi.listBlocks(str(dset_name))
+    n_blocks = len (blocks)
+    sum_blocks = sum( map( lambda b : b['NumberOfEvents'], blocks))
+    ## allow for 5% approximation
+    if statistics >= float(sum_blocks * 0.95):
+        ## returning an empty list means no block selection
+        print "required statistics (%d) and available (%d) are almost the same"%( statistics , sum_blocks)
+        return []
+
+    ## otherwise try to pick the best set of blocks to make up the number of events desired
+    s_sum = 0
+    s_blocks = []
+    
+    blocks.sort(reverse=True, key= lambda o : o['NumberOfEvents'])
+    while len(blocks) and float(s_sum + blocks[0]['NumberOfEvents']) < statistics:
+        s_sum+= blocks[0]['NumberOfEvents']
+        s_blocks.append(blocks[0])
+        blocks.remove(blocks[0])
+        #print s_sum, s_blocks
+        
+    blocks.sort(key= lambda o : o['NumberOfEvents'])
+    while len(blocks) and float( s_sum + blocks[0]['NumberOfEvents']) < statistics:
+        s_sum+= blocks[0]['NumberOfEvents']
+        s_blocks.append(blocks[0])
+        blocks.remove(blocks[0])
+        #print s_sum, s_blocks
+
+    if len(blocks) and float(s_sum)< statistics:
+        s_sum+=blocks[0]['NumberOfEvents']
+        s_blocks.append(blocks[0])
+        blocks.remove(blocks[0])
+        #print s_sum, s_blocks
+        
+    if len (s_blocks) == n_blocks:
+        print "block selection could not selec a sub-set to achieve the disered statistics. taking all block"
+        return []
+    else:
+        return map(lambda b :b['Name'] , s_blocks)
+    
+
+#-------------------------------------------------------------------------------
+
 def get_runs(dset_name,minrun=-1,maxrun=-1):
   '''
   Get the runs from the DBS via the DBS interface
@@ -446,7 +492,7 @@ def loop_and_submit(cfg):
           print "Keeping the blocks option (%s) instead of (%s)" % (str(sorted(new_blocks)), str(sorted(params['BlockWhitelist'])))
           params['BlockWhitelist']=new_blocks
       params['RequestString']= make_request_string(params,service_params,section)
-      if service_params['request_type'] == 'MonteCarlo' or service_params['request_type'] == 'LHEStepZero':
+      if service_params['request_type'] in ['MonteCarlo','LHEStepZero']:
           params.pop('InputDataset')
           params.pop('RunWhitelist')
       elif service_params['request_type'] == 'TaskChain':
@@ -454,6 +500,8 @@ def loop_and_submit(cfg):
           params.pop('InputDataset')
           params['Task1']['RunWhitelist'] = params['RunWhitelist']
           params.pop('RunWhitelist')
+      elif service_params['request_type'] in ['ReDigi','ReReco'] and 'RequestNumEvents' in params:
+          params['BlockWhitelist']= get_blocks( params['InputDataset'] , params['RequestNumEvents'] )
           
       if test_mode: # just print the parameters of the request you would have injected
         pp.pprint(params)
@@ -716,8 +764,12 @@ def build_params_dict(section,cfg):
 
   if request_type == "ReReco":
     if number_events:
-        ## this means someone is trying to get a certain number of events, while this is not supported
-        print "\n\n\n WARNING number_events is not functionnal \n\n\n"
+        if blocks:
+            ## cannot perform automatic block selection
+            print "\n\n\n WARNING number_events is not functionnal because you specified blocks in input\n\n\n"
+        else:
+            print "\n\n\n WARNING automated block selection performed \n\n\n"
+            params.update({"RequestNumEvents" : number_events})
 
     params.update({"ConfigCacheID": step1_docID,
                    "Scenario": "pp",
@@ -787,8 +839,14 @@ def build_params_dict(section,cfg):
       
   elif request_type == 'ReDigi':
     if number_events:
-        ## this means someone is trying to get a certain number of events, while this is not supported
-        print "\n\n\n WARNING number_events is not functionnal \n\n\n"
+        if blocks:
+            ## cannot perform automatic block selection
+            print "\n\n\n WARNING number_events is not functionnal because you specified blocks in input\n\n\n"
+        else:
+            print "\n\n\n WARNING automated block selection performed \n\n\n"
+            params.update({"RequestNumEvents" : number_events})
+
+        
     params.update({"RequestString": identifier,
                 "StepOneConfigCacheID": step1_docID,
                 "KeepStepOneOutput": keep_step1,
@@ -797,6 +855,7 @@ def build_params_dict(section,cfg):
                 "MCPileup": pileup_dataset,
                 #"Scenario": "pp",
                 "PrepID": request_id})
+
 
     if step2_cfg != '':
         params.update({"StepTwoConfigCacheID": step2_docID,
