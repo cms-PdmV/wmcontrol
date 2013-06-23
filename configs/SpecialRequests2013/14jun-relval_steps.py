@@ -154,7 +154,9 @@ step1['QQH1352T_Tauola']=merge([{'cfg':'QQH1352T_Tauola_7TeV_cfi'},K9by100,stCon
 
 step1['MinBias2INPUT']={'INPUT':InputInfo(dataSet='/RelValMinBias/CMSSW_4_2_0_pre2-START311_V1-v1/GEN-SIM',label='MinBiasrv',location='STD')}
 step1['Higgs200ChargedTausINPUT']={'INPUT':InputInfo(dataSet='/RelValHiggs200ChargedTaus/CMSSW_4_2_0_pre2-START311_V1-v1/GEN-SIM',label='Higgs200ChargedTausrv',location='STD')}
-step1['QCD_Pt_3000_3500_2INPUT']={'INPUT':InputInfo(dataSet='/RelValQCD_Pt_3000_3500/CMSSW_4_2_0_pre2-START311_V1-v1/GEN-SIM',label='QCD_Pt_3000_3500rv',location='STD')}
+#step1['QCD_Pt_3000_3500_2INPUT']={'INPUT':InputInfo(dataSet='/RelValQCD_Pt_3000_3500/CMSSW_4_2_0_pre2-START311_V1-v1/GEN-SIM',label='QCD_Pt_3000_3500rv',location='STD')}
+# fix the line above
+step1['QCD_Pt_3000_3500_2INPUT']={'INPUT':InputInfo(dataSet='/RelValQCD_Pt_3000_3500_2/CMSSW_4_2_0_pre2-START311_V1-v1/GEN-SIM',label='QCD_Pt_3000_3500rv',location='STD')}
 step1['QCD_Pt_80_120_2INPUT']={'INPUT':InputInfo(dataSet='/RelValQCD_Pt_80_120/CMSSW_4_2_0_pre2-START311_V1-v1/GEN-SIM',label='QCD_Pt_80_120rv',location='STD')}
 step1['JpsiMMINPUT']={'INPUT':InputInfo(dataSet='/RelValJpsiMM/CMSSW_4_2_0_pre2-START311_V1-v1/GEN-SIM',label='JpsiMMrv',location='STD')}
 step1['TTbar2INPUT']={'INPUT':InputInfo(dataSet='/RelValTTbar/CMSSW_4_2_0_pre2-START311_V1-v1/GEN-SIM',label='ttbarrv',location='STD')}
@@ -163,7 +165,14 @@ step1['ZEE2INPUT']={'INPUT':InputInfo(dataSet='/RelValZEE/CMSSW_4_2_0_pre2-START
 step1['ZTTINPUT']={'INPUT':InputInfo(dataSet='/RelValZTT/CMSSW_4_2_0_pre2-START311_V1-v1/GEN-SIM',label='ZTTrv',location='STD')}
 step1['H130GGgluonfusionINPUT']={'INPUT':InputInfo(dataSet='/RelValH130GGgluonfusion/CMSSW_4_2_0_pre2-START311_V1-v1/GEN-SIM',label='H130GGgluonfusionrv',location='STD')}
 step1['PhotonJets_Pt_10INPUT']={'INPUT':InputInfo(dataSet='/RelValPhotonJets_Pt_10/CMSSW_4_2_0_pre2-START311_V1-v1/GEN-SIM',label='PhotonJets_Pt_10rv',location='STD')}
-step1['QQH1352T_TauolaINPUT']={'INPUT':InputInfo(dataSet='/RelValQQH1352T_Tauola_cfi/CMSSW_4_2_0_pre2-START311_V1-v1/GEN-SIM',label='QQH1352T_Tauola_cfirv',location='STD')}
+# step1['QQH1352T_TauolaINPUT']={'INPUT':InputInfo(dataSet='/RelValQQH1352T_Tauola_cfi/CMSSW_4_2_0_pre2-START311_V1-v1/GEN-SIM',label='QQH1352T_Tauola_cfirv',location='STD')}
+# fix to the previous one: 
+step1['QQH1352T_TauolaINPUT']={'INPUT':InputInfo(dataSet='/RelValQQH1352T_Tauola/CMSSW_4_2_0_pre2-START311_V1-v1/GEN-SIM',label='QQH1352T_Tauola_cfirv',location='STD')}
+step1['WMINPUT']={'INPUT':InputInfo(dataSet='/RelValWM/CMSSW_4_2_0_pre2-START311_V1-v1/GEN-SIM',label='WMrv',location='STD')}
+step1['ZMMINPUT']={'INPUT':InputInfo(dataSet='/RelValZMM/CMSSW_4_2_0_pre2-START311_V1-v1/GEN-SIM',label='WMrv',location='STD')}
+
+
+
 
 step1['Cosmics']=merge([{'cfg':'UndergroundCosmicMu_cfi.py','--relval':'666000,7400','--scenario':'cosmics'},step1Defaults])
 step1['BeamHalo']=merge([{'cfg':'BeamHalo_cfi.py','--scenario':'cosmics'},K9by100,step1Defaults])
@@ -373,7 +382,7 @@ step1['H130GGgluonfusionFS']=merge([{'cfg':'H130GGgluonfusion_7TeV_cfi'},step1Fa
 # step2 
 step2Defaults = { 'cfg'           : 'step2',
                   '-s'            : 'DIGI,L1,DIGI2RAW,HLT:GRun,RAW2DIGI,L1Reco',
-                  '--datatier'    : 'GEN-SIM',
+                  '--datatier'    : 'GEN-SIM-DIGI-RAW-HLTDEBUG',
                   '--eventcontent': 'FEVTDEBUGHLT',
                   '--conditions'  : 'auto:mc',
                   }
