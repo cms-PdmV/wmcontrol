@@ -980,7 +980,7 @@ def build_parser():
   parser.add_option('--time-event',help='time per event in seconds (Default 10)' , dest='time_event', default=10)
   parser.add_option('--filter-eff',help='filter efficiency' ,dest='filter_eff')
   parser.add_option('--number-events',help='number of events' ,dest='number_events')
-  parser.add_option('--events-per-job', help='number of events per job (for LHE production)' , dest='events_per_job', default=10000)
+  parser.add_option('--events-per-job', help='number of events per job (for LHE production)' , dest='events_per_job', default=500000)
   parser.add_option('--version', help='submission version' , dest='version')
   parser.add_option('--cfg_db_file', help='File containing the cfg name docid pairs' , dest='cfg_db_file')
   parser.add_option('--user', help='The registered username' , dest='user')
