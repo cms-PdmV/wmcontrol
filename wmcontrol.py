@@ -500,7 +500,7 @@ def loop_and_submit(cfg):
           params.pop('InputDataset')
           params['Task1']['RunWhitelist'] = params['RunWhitelist']
           params.pop('RunWhitelist')
-      elif service_params['request_type'] in ['ReDigi','ReReco'] and 'RequestNumEvents' in params:
+      elif service_params['request_type'] in ['ReDigi','ReReco'] and 'RequestNumEvents' in params and params['BlockWhitelist']==[]:
           params['BlockWhitelist']= get_blocks( params['InputDataset'] , params['RequestNumEvents'] )
           
       if test_mode: # just print the parameters of the request you would have injected
@@ -857,12 +857,12 @@ def build_params_dict(section,cfg):
                 "PrepID": request_id})
 
 
-    if step2_cfg != '':
+    if step2_cfg != '' or step2_docID !='':
         params.update({"StepTwoConfigCacheID": step2_docID,
                        "KeepStepTwoOutput": keep_step2,
                        "StepTwoOutputModuleName": step2_output})
 
-        if step3_cfg != '':
+        if step3_cfg !='' or step3_docID!='':
             params['StepThreeConfigCacheID'] = step3_docID
         else:
             if not keep_step2:
