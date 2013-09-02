@@ -7,7 +7,8 @@ import urllib
 import httplib
 import imp
 import sys
-# from the wma
+import pprint
+
 
 try:
   from PSetTweaks.WMTweak import makeTweak
@@ -123,6 +124,8 @@ def makeRequest(url,params,encodeDict=False):
     data = response.read()
     if response.status != 303:
         print 'could not post request with following parameters:'
+        #pprint.pprint( params )
+        #print
         for item in params.keys():
             print item + ": " + str(params[item])
         print 'Response from http call:'
