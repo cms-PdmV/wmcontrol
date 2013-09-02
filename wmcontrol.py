@@ -610,8 +610,8 @@ def build_params_dict(section,cfg):
   
   ##new values for renewed Request Agent
   time_event = cfg.get_param('time_event',20,section)
-  size_memory = int(cfg.get_param('size_memory',2300,section))
-  size_event = int(cfg.get_param('size_event',1500,section))
+  size_memory = int(float(cfg.get_param('size_memory',2300,section)))
+  size_event = int(float(cfg.get_param('size_event',1500,section)))
   
   # parameters with fallback  
   scramarch = cfg.get_param('scramarch',default_parameters['scramarch'],section)
@@ -759,7 +759,8 @@ def build_params_dict(section,cfg):
           "SizePerEvent": size_event,
           "TimePerEvent": time_event,
           "OpenRunningTimeout" : 43200,
-          #"ConfigCacheUrl": "https://cmsweb.cern.ch/couchdb",
+          #"ConfigCacheUrl": wma.COUCH_DB_ADDRESS,
+          #"EnableHarvesting" : False
           }
 
   if request_type == "ReReco":
@@ -794,7 +795,7 @@ def build_params_dict(section,cfg):
                   "RequestNumEvents": number_events,
                   "ConfigCacheID": step1_docID,
                   "PrimaryDataset": primary_dataset,
-                  "DataPileup": "",
+                  #"DataPileup": "",
                   "MCPileup": "",
                   "PrepID": request_id,
                   "TotalTime": 28800 })
@@ -851,7 +852,7 @@ def build_params_dict(section,cfg):
                 "StepOneConfigCacheID": step1_docID,
                 "KeepStepOneOutput": keep_step1,
                 "StepOneOutputModuleName": step1_output,
-                "DataPileup": "",
+                #"DataPileup": "",
                 "MCPileup": pileup_dataset,
                 #"Scenario": "pp",
                 "PrepID": request_id})
