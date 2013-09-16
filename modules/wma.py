@@ -25,11 +25,14 @@ DATABASE_NAME = 'reqmgr_config_cache'
 COUCH_DB_ADDRESS = 'https://cmsweb.cern.ch/couchdb'
 WMAGENT_URL = 'cmsweb.cern.ch'
 
-def testbed():
+def testbed(to_url):
   global COUCH_DB_ADDRESS
   global WMAGENT_URL
-  COUCH_DB_ADDRESS = 'https://cmsweb-testbed.cern.ch/couchdb'
-  WMAGENT_URL = 'cmsweb-testbed.cern.ch'
+  WMAGENT_URL = to_url
+  #WMAGENT_URL = 'cmsweb-testbed.cern.ch'
+  #WMAGENT_URL = 'sryu-dev01.cern.ch'
+  COUCH_DB_ADDRESS = 'https://%s/couchdb'%( WMAGENT_URL )
+
   
 #-------------------------------------------------------------------------------
 

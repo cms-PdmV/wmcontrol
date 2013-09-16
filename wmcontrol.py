@@ -86,8 +86,8 @@ class Configuration:
         test_mode=options.test
 
         if options.wmtest:
-            print "Setting to injection in cmswebtest"
-            wma.testbed()
+            print "Setting to injection in cmswebtest : ", options.wmtesturl
+            wma.testbed(options.wmtesturl)
             
         if options.req_file != '' and options.req_file !=None:
             cfg_filename=options.req_file
@@ -507,9 +507,20 @@ def loop_and_submit(cfg):
         pp.pprint(params)
         #print wma.WMAGENT_URL
       else: # do it for real!
-        workflow = wma.makeRequest(wma.WMAGENT_URL,params,encodeDict=(service_params['request_type']=='TaskChain'))
-        wma.approveRequest(wma.WMAGENT_URL,workflow)      
-        random_sleep()
+          try:
+              workflow = wma.makeRequest(wma.WMAGENT_URL,params,encodeDict=(service_params['request_type']=='TaskChain'))
+          except:
+              random_sleep()
+              #just try a second time
+              workflow = wma.makeRequest(wma.WMAGENT_URL,params,encodeDict=(service_params['request_type']=='TaskChain'))
+
+          try:
+              wma.approveRequest(wma.WMAGENT_URL,workflow)
+          except:
+              random_sleep()
+              #just try a second time
+              wma.approveRequest(wma.WMAGENT_URL,workflow)
+          random_sleep()
 
 #-------------------------------------------------------------------------------
 
@@ -582,7 +593,11 @@ def build_params_dict(section,cfg):
   For the moment the defaults of the parameters are stored here.
   Put a dictionary on top?
   '''
-  
+
+  #wm testing
+  wmtest = cfg.get_param('wmtest', False, section)
+
+
   # fetch some important parameters
   #this trick is to make the uniformation smoother and be able to read old cfgfiles
   doc_id = step1_docID = ''
@@ -605,6 +620,9 @@ def build_params_dict(section,cfg):
   primary_dataset = cfg.get_param('primary_dataset','',section)
 
   filter_eff = cfg.get_param('filter_eff','',section)
+  if wmtest and not filter_eff:
+      filter_eff = 1.0
+      
   number_events = cfg.get_param('number_events','',section)
   version = cfg.get_param('version','',section)
   
@@ -646,6 +664,7 @@ def build_params_dict(section,cfg):
   
   #blocks
   blocks = cfg.get_param('blocks', [], section)  
+
   
   # Now the service ones
   # Service
@@ -795,11 +814,22 @@ def build_params_dict(section,cfg):
                   "RequestNumEvents": number_events,
                   "ConfigCacheID": step1_docID,
                   "PrimaryDataset": primary_dataset,
-                  #"DataPileup": "",
+                  "DataPileup": "",
                   "MCPileup": "",
                   "PrepID": request_id,
-                  "TotalTime": 28800 })
-
+                  "TotalTime": 28800,
+                   }
+                  )
+    if wmtest:
+        params.pop("MCPileup")
+        params.pop("DataPileup")
+        params.pop("TotalTime")
+        params.update({
+                   "LheInputFiles" : cfg.get_param('lhe_input',False,section),
+                   #"EventsPerLumi" : 300,
+                   "EventsPerJob" : int(events_per_job)
+                   })
+        
     params.pop('BlockBlacklist')
     params.pop('BlockWhitelist')
     params.pop('InputDataset')
@@ -993,6 +1023,7 @@ def build_parser():
   parser.add_option('--size-event', help='Expected size per event in KB (Default 2000)', dest='size_event', default=2000)
   parser.add_option('--test', help='To test things', action='store_true' , dest='test')
   parser.add_option('--wmtest', help='To inject requests to the cmsweb test bed', action='store_true' , dest='wmtest')
+  parser.add_option('--wmtesturl', help='To inject to a specific testbed', dest='wmtesturl', default='cmsweb-testbed.cern.ch')
   parser.add_option('--includeparents', help='Include parents', action='store_true' , dest='includeparents')
   parser.add_option('--req_name', help='Set the name of the request', dest='req_name')
   parser.add_option('--process-string', help='process string do be added in the second part of dataset name' , dest='process_string')
