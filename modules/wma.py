@@ -8,7 +8,7 @@ import httplib
 import imp
 import sys
 import pprint
-
+import time
 
 try:
   from PSetTweaks.WMTweak import makeTweak
@@ -162,9 +162,13 @@ def upload_to_couch(cfg_name, section_name,user_name,group_name,test_mode=False,
       print cfg_name,'already uploaded with ID',the_id,'from',oldID
       return the_id
 
- 
-  loadedConfig = __loadConfig(cfg_name)
-
+  try:
+    loadedConfig = __loadConfig(cfg_name)
+  except:
+    #just try again !!
+    time.sleep(2)
+    loadedConfig = __loadConfig(cfg_name)
+    
   where=COUCH_DB_ADDRESS
   if url:      where=url
   configCache = ConfigCache(where, DATABASE_NAME)
