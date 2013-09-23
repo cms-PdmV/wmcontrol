@@ -500,7 +500,7 @@ def loop_and_submit(cfg):
           params.pop('InputDataset')
           params['Task1']['RunWhitelist'] = params['RunWhitelist']
           params.pop('RunWhitelist')
-      elif service_params['request_type'] in ['ReDigi','ReReco'] and 'RequestNumEvents' in params and params['BlockWhitelist']==[]:
+      elif service_params['request_type'] in ['ReDigi','ReReco'] and 'RequestNumEvents' in params and (not 'BlockWhitelist' in params or params['BlockWhitelist']==[]):
           params['BlockWhitelist']= get_blocks( params['InputDataset'] , params['RequestNumEvents'] )
           
       if test_mode: # just print the parameters of the request you would have injected
@@ -620,7 +620,7 @@ def build_params_dict(section,cfg):
   primary_dataset = cfg.get_param('primary_dataset','',section)
 
   filter_eff = cfg.get_param('filter_eff','',section)
-  if wmtest and not filter_eff:
+  if not filter_eff:
       filter_eff = 1.0
       
   number_events = cfg.get_param('number_events','',section)
@@ -629,8 +629,10 @@ def build_params_dict(section,cfg):
   ##new values for renewed Request Agent
   time_event = cfg.get_param('time_event',20,section)
   size_memory = int(float(cfg.get_param('size_memory',2300,section)))
-  size_event = int(float(cfg.get_param('size_event',1500,section)))
-  
+  size_event = int(float(cfg.get_param('size_event',2000,section)))
+  if size_event <0:
+      size_event = 2000
+      
   # parameters with fallback  
   scramarch = cfg.get_param('scramarch',default_parameters['scramarch'],section)
   #group = cfg.get_param('group',default_parameters['group'],section)
@@ -806,34 +808,41 @@ def build_params_dict(section,cfg):
 
 
   elif request_type == 'MonteCarlo':
-    params.update({"RequestString": identifier,
-                  "FirstEvent": 1, 
-                  "FirstLumi": 1,
-                  "TimePerEvent": time_event,
-                  "FilterEfficiency": filter_eff,
-                  "RequestNumEvents": number_events,
-                  "ConfigCacheID": step1_docID,
-                  "PrimaryDataset": primary_dataset,
-                  "DataPileup": "",
-                  "MCPileup": "",
-                  "PrepID": request_id,
-                  "TotalTime": 28800,
-                   }
-                  )
-    if wmtest:
-        params.pop("MCPileup")
-        params.pop("DataPileup")
-        params.pop("TotalTime")
-        params.update({
-                   "LheInputFiles" : cfg.get_param('lhe_input',False,section),
-                   #"EventsPerLumi" : 300,
-                   "EventsPerJob" : int(events_per_job)
-                   })
+
+
+      params.update({"RequestString": identifier,
+                     "FirstEvent": 1, 
+                     "FirstLumi": 1,
+                     "TimePerEvent": time_event,
+                     "FilterEfficiency": filter_eff,
+                     "LheInputFiles" : cfg.get_param('lhe_input',False,section),
+                     "RequestNumEvents": number_events,
+                     "ConfigCacheID": step1_docID,
+                     "PrimaryDataset": primary_dataset,
+                     "PrepID": request_id,
+                     }
+                    )
+
+      if wmtest:
+          events_per_lumi = int(300. / filter_eff)
+          params.update({
+              "EventsPerLumi" : events_per_lumi,
+              })
+          
+      if params["LheInputFiles"]:
+          #max out to 500K for "lhe step zero"
+          events_per_job=500000
+          
+      if events_per_job and int(events_per_job):
+          params.update({
+              "EventsPerJob" : int(events_per_job)
+              })
+
         
-    params.pop('BlockBlacklist')
-    params.pop('BlockWhitelist')
-    params.pop('InputDataset')
-    params.pop('RunBlacklist')
+      params.pop('BlockBlacklist')
+      params.pop('BlockWhitelist')
+      params.pop('InputDataset')
+      params.pop('RunBlacklist')
 
   elif request_type == 'MonteCarloFromGEN':
     params.update({"TimePerEvent": time_event,
@@ -886,7 +895,6 @@ def build_params_dict(section,cfg):
                 "MCPileup": pileup_dataset,
                 #"Scenario": "pp",
                 "PrepID": request_id})
-
 
     if step2_cfg != '' or step2_docID !='':
         params.update({"StepTwoConfigCacheID": step2_docID,
@@ -958,7 +966,13 @@ def build_params_dict(section,cfg):
       params.update({"EnableDQMHarvest" : 1,
                      "DQMUploadUrl" : "https://cmsweb.cern.ch/dqm/offline",
                      "DQMConfigCacheID" : harvest_docID})
-      
+
+
+  ## pop any empty parameters
+  for (param,value) in params.items():
+      if value in ["",[]]:
+          params.pop(param)
+
   return params,service_params
 
 #-------------------------------------------------------------------------------
@@ -1011,7 +1025,7 @@ def build_parser():
   parser.add_option('--time-event',help='time per event in seconds (Default 10)' , dest='time_event', default=10)
   parser.add_option('--filter-eff',help='filter efficiency' ,dest='filter_eff')
   parser.add_option('--number-events',help='number of events' ,dest='number_events')
-  parser.add_option('--events-per-job', help='number of events per job (for LHE production)' , dest='events_per_job', default=500000)
+  parser.add_option('--events-per-job', help='number of events per job (for LHE production)' , dest='events_per_job', default=0)
   parser.add_option('--version', help='submission version' , dest='version')
   parser.add_option('--cfg_db_file', help='File containing the cfg name docid pairs' , dest='cfg_db_file')
   parser.add_option('--user', help='The registered username' , dest='user')
