@@ -824,13 +824,14 @@ def build_params_dict(section,cfg):
                     )
 
       if wmtest:
-          events_per_lumi = int(300. / filter_eff)
+          events_per_lumi = int(300. / float(filter_eff))
           params.update({
               "EventsPerLumi" : events_per_lumi,
               })
           
-      if params["LheInputFiles"]:
+      if bool(params["LheInputFiles"]):
           #max out to 500K for "lhe step zero"
+          print "Setting events per job here !!!!",type(params["LheInputFiles"])
           events_per_job=500000
           
       if events_per_job and int(events_per_job):
