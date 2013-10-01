@@ -823,11 +823,10 @@ def build_params_dict(section,cfg):
                      }
                     )
 
-      if wmtest:
-          events_per_lumi = int(100. / float(filter_eff))
-          params.update({
-              "EventsPerLumi" : events_per_lumi,
-              })
+      events_per_lumi = int(100. / float(filter_eff))
+      params.update({
+          "EventsPerLumi" : events_per_lumi,
+          })
           
       if params["LheInputFiles"]=='True' or params["LheInputFiles"]==True:
           #max out to 500K for "lhe step zero"
