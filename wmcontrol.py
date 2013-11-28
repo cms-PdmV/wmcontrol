@@ -896,6 +896,9 @@ def build_params_dict(section,cfg):
                 #"Scenario": "pp",
                 "PrepID": request_id})
 
+    if primary_dataset:
+        params.update({"PrimaryDataset": primary_dataset})
+
     if step2_cfg != '' or step2_docID !='':
         params.update({"StepTwoConfigCacheID": step2_docID,
                        "KeepStepTwoOutput": keep_step2,
