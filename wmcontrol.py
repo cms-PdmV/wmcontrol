@@ -502,7 +502,10 @@ def loop_and_submit(cfg):
           params.pop('RunWhitelist')
       elif service_params['request_type'] in ['ReDigi','ReReco'] and 'RequestNumEvents' in params and (not 'BlockWhitelist' in params or params['BlockWhitelist']==[]):
           params['BlockWhitelist']= get_blocks( params['InputDataset'] , params['RequestNumEvents'] )
-          
+      elif service_params['request_type'] in ['MonteCarloFromGEN'] and 'RequestNumEvents' in params and (not 'BlockWhitelist' in params or params['BlockWhitelist']==[]):
+          params['BlockWhitelist']= get_blocks( params['InputDataset'] , float(params['RequestNumEvents']) / float(params['FilterEfficiency']) )
+
+
       if test_mode: # just print the parameters of the request you would have injected
         pp.pprint(params)
         #print wma.WMAGENT_URL
@@ -847,6 +850,7 @@ def build_params_dict(section,cfg):
   elif request_type == 'MonteCarloFromGEN':
     params.update({"TimePerEvent": time_event,
                 "FilterEfficiency": filter_eff,
+                "RequestNumEvents": number_events,
                 "ConfigCacheID": step1_docID,
                 "PrepID": request_id,
                 "TotalTime": 28800 })
