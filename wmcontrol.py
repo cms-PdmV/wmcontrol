@@ -626,7 +626,7 @@ def build_params_dict(section,cfg):
   if not filter_eff:
       filter_eff = 1.0
       
-  number_events = cfg.get_param('number_events','',section)
+  number_events = cfg.get_param('number_events',0,section)
   version = cfg.get_param('version','',section)
   
   ##new values for renewed Request Agent
@@ -850,13 +850,16 @@ def build_params_dict(section,cfg):
   elif request_type == 'MonteCarloFromGEN':
     params.update({"TimePerEvent": time_event,
                 "FilterEfficiency": filter_eff,
-                "RequestNumEvents": number_events,
                 "ConfigCacheID": step1_docID,
                 "PrepID": request_id,
                 "TotalTime": 28800 })
     if primary_dataset:
         params.update({"PrimaryDataset": primary_dataset})
-        
+
+
+    if int(number_events):
+        params.update({"RequestNumEvents": number_events})
+                    
   elif request_type == 'LHEStepZero':
       params.update({"RequestString": identifier,
                      "TimePerEvent": time_event,
@@ -1031,7 +1034,7 @@ def build_parser():
   parser.add_option('--primary-dataset',help='primary dataset name' ,dest='primary_dataset')
   parser.add_option('--time-event',help='time per event in seconds (Default 10)' , dest='time_event', default=10)
   parser.add_option('--filter-eff',help='filter efficiency' ,dest='filter_eff')
-  parser.add_option('--number-events',help='number of events' ,dest='number_events')
+  parser.add_option('--number-events',help='number of events' ,dest='number_events', default=0)
   parser.add_option('--events-per-job', help='number of events per job (for LHE production)' , dest='events_per_job', default=0)
   parser.add_option('--version', help='submission version' , dest='version')
   parser.add_option('--cfg_db_file', help='File containing the cfg name docid pairs' , dest='cfg_db_file')
