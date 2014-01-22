@@ -41,12 +41,14 @@ def generic_get(base_url, query):
     headers  =  {"Content-type": "application/json"}
     conn  =  httplib.HTTPSConnection(base_url, cert_file = os.getenv('X509_USER_PROXY'), key_file = os.getenv('X509_USER_PROXY'))
     conn.request("GET", query.replace("#", "%23"))
+    #print "getting",base_url,query,"..."
     response = conn.getresponse()
     if response.status != 200:
         print "Problems quering DBS3 RESTAPI: %s" %(base_url+query.replace("#", "%23"))
         data = None
     else:
         data = response.read()
+        #print "...got"
     return data
 
 #-------------------------------------------------------------------------------
