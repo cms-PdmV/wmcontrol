@@ -24,6 +24,7 @@ PHEDEX_ADDR = 'https://cmsweb.cern.ch/phedex/datasvc/json/prod/blockreplicas?dat
 DATABASE_NAME = 'reqmgr_config_cache'
 COUCH_DB_ADDRESS = 'https://cmsweb.cern.ch/couchdb'
 WMAGENT_URL = 'cmsweb.cern.ch'
+DBS3_URL = "/dbs/prod/global/DBSReader/"
 
 def testbed(to_url):
   global COUCH_DB_ADDRESS
@@ -33,7 +34,21 @@ def testbed(to_url):
   #WMAGENT_URL = 'sryu-dev01.cern.ch'
   COUCH_DB_ADDRESS = 'https://%s/couchdb'%( WMAGENT_URL )
 
-  
+
+#-------------------------------------------------------------------------------
+
+def generic_get(base_url, query):
+    headers  =  {"Content-type": "application/json"}
+    conn  =  httplib.HTTPSConnection(base_url, cert_file = os.getenv('X509_USER_PROXY'), key_file = os.getenv('X509_USER_PROXY'))
+    conn.request("GET", query.replace("#", "%23"))
+    response = conn.getresponse()
+    if response.status != 200:
+        print "Problems quering DBS3 RESTAPI: %s" %(base_url+query.replace("#", "%23"))
+        data = None
+    else:
+        data = response.read()
+    return data
+
 #-------------------------------------------------------------------------------
 
 def __check_GT(gt):

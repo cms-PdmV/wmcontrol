@@ -150,12 +150,12 @@ class Configuration:
 
 def get_blocks(dset_name, statistics):
     statistics = float(statistics)
-    from DBSAPI.dbsApi import DbsApi
-    dbsapi = DbsApi()
-    blocks = dbsapi.listBlocks(str(dset_name))
-    n_blocks = len (blocks)
-    sum_blocks = sum( map( lambda b : b['NumberOfEvents'], blocks))
-    ## allow for 5% approximation
+    sum_blocks = json.loads(wma.generic_get(wma.WMAGENT_URL, wma.DBS3_URL+"blocksummaries?dataset=%s" %(dset_name)))
+    possible_blocks = json.loads(wma.generic_get(wma.WMAGENT_URL, wma.DBS3_URL+"blocks?dataset=%s" %(dset_name)))
+    n_blocks = len(possible_blocks)
+    for block in possible_blocks:
+        return_data = json.loads(wma.generic_get(wma.WMAGENT_URL, wma.DBS3_URL+"blocksummaries?block=%s" %(block["block_name"])))
+        block["NumberOfEvents"] = return_data[0]["num_event"]
     if statistics >= float(sum_blocks * 0.95):
         ## returning an empty list means no block selection
         print "required statistics (%d) and available (%d) are almost the same"%( statistics , sum_blocks)
@@ -195,36 +195,25 @@ def get_blocks(dset_name, statistics):
 #-------------------------------------------------------------------------------
 
 def get_runs(dset_name,minrun=-1,maxrun=-1):
-  '''
-  Get the runs from the DBS via the DBS interface
-  '''
-  print "Looking for runs in DBS for %s" %dset_name
-  minrun=int(minrun)
-  maxrun=int(maxrun)
+    '''
+    Get the runs from the DBS via the DBS interface
+    '''
+    print "Looking for runs in DBS for %s" %dset_name
+    minrun=int(minrun)
+    maxrun=int(maxrun)
 
-  # check if cmssw is set up for the dbs command
-  if not os.environ.has_key("CMSSW_BASE"):
-    raise Exception("No CMSSW environment set. You need it to query dbs.")
+    # check if cmssw is set up for the dbs command
+    if not os.environ.has_key("CMSSW_BASE"):
+        raise Exception("No CMSSW environment set. You need it to query dbs.")
 
-  dbs_cmd = 'dbs search --query="find run where dataset=\'%s\'"' %dset_name
-  p = subprocess.Popen(dbs_cmd, shell=True, 
-                       stdin=subprocess.PIPE, 
-                       stdout=subprocess.PIPE, 
-                       stderr=subprocess.STDOUT, 
-                       close_fds=True)
-  dbs_output = p.stdout.read()
+    return_data = json.loads(wma.generic_get(wma.WMAGENT_URL, wma.DBS3_URL+"runs?dataset=%s" %(dset_name)))
+    run_list = return_data[0]["run_num"]
+    if minrun >= 0:
+        run_list = filter(lambda n: n >= minrun,run_list)
+    if maxrun >= 0:
+        run_list = filter(lambda n: n <= maxrun,run_list)
 
-  run_list=[]
-  for line in dbs_output.split("\n"):
-    if line.isdigit():
-      run_list.append(int(line))
-
-  if minrun >= 0:
-    run_list = filter(lambda n: n >= minrun,run_list)
-  if maxrun >= 0:
-    run_list = filter(lambda n: n <= maxrun,run_list)
-
-  return sorted(run_list)
+    return sorted(run_list)
 
 #-------------------------------------------------------------------------------
 
