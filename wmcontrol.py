@@ -150,11 +150,12 @@ class Configuration:
 
 def get_blocks(dset_name, statistics):
     statistics = float(statistics)
-    sum_blocks = json.loads(wma.generic_get(wma.WMAGENT_URL, wma.DBS3_URL+"blocksummaries?dataset=%s" %(dset_name)))
-    possible_blocks = json.loads(wma.generic_get(wma.WMAGENT_URL, wma.DBS3_URL+"blocks?dataset=%s" %(dset_name)))
+    return_data = json.loads(wma.generic_get(wma.WMAGENT_URL, wma.DBS3_URL+"blocksummaries?dataset=%s" %(dset_name))) #get summaries of blocks -> return list of single object
+    sum_blocks = return_data[0]["num_event"]
+    possible_blocks = json.loads(wma.generic_get(wma.WMAGENT_URL, wma.DBS3_URL+"blocks?dataset=%s" %(dset_name))) #get list of all block -> return block_names
     n_blocks = len(possible_blocks)
     for block in possible_blocks:
-        return_data = json.loads(wma.generic_get(wma.WMAGENT_URL, wma.DBS3_URL+"blocksummaries?block=%s" %(block["block_name"])))
+        return_data = json.loads(wma.generic_get(wma.WMAGENT_URL, wma.DBS3_URL+"blocksummaries?block=%s" %(block["block_name"]))) #get a single block's numberOfEvents
         block["NumberOfEvents"] = return_data[0]["num_event"]
     if statistics >= float(sum_blocks * 0.95):
         ## returning an empty list means no block selection
