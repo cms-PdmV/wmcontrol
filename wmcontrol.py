@@ -158,25 +158,43 @@ def get_blocks(dset_name, statistics):
     sum_blocks = 0
     #blocks = json.loads(wma.generic_get(wma.WMAGENT_URL, wma.DBS3_URL+"blocks?dataset=%s" %(dset_name))) #get list of all block -> return block_names
     #n_blocks = len(blocks)
-    comm = 'python2.6 modules/das_client.py --query="block dataset=%s" --format=json --das-headers --limit=0'%(dset_name)
-    p = subprocess.Popen(comm, shell=True, 
-                       stdin=subprocess.PIPE, 
-                       stdout=subprocess.PIPE, 
-                       stderr=subprocess.STDOUT, 
-                       close_fds=True)
-    das_output = p.stdout.read()
+    #print os.getcwd()
+
+    ### DAS Crap
+    #comm = 'python /afs/cern.ch/cms/PPD/PdmV/tools/wmcontrol/modules/das_client.py --query="block dataset=%s" --format=json --das-headers --limit=0'%(dset_name)
+    # p = subprocess.Popen(comm, shell=True, 
+    #                    stdin=subprocess.PIPE, 
+    #                    stdout=subprocess.PIPE, 
+    #                    stderr=subprocess.STDOUT, 
+    #                    close_fds=True)
+    # das_output = p.stdout.read()
+    # try:
+    #     data = json.loads(das_output)["data"]
+    # except:
+    #         pprint.pprint( das_output)
+    #         raise Exception("What the FUCK is going on ???")
+    
+    # blocks = []
+    # n_blocks= len(data)
+    # for block in data:
+    #     try:
+    #         b = filter(lambda bl : 'nevents' in bl, block["block"])
+    #         if len(b):
+    #             blocks.append({'block_name': b["name"], 'NumberOfEvents': b["nevents"]}) #lets convert DAS data to our used format
+    #         else:
+    #             print block["block"],"has no events"
+    #     except:
+    #         raise Exception("Corrupted DAS data %s"%( pprint.pformat( block["block"] )))
         
-    data = json.loads(das_output)["data"]
-    blocks = []
-    n_blocks= len(data)
-    for block in data:
-        try:
-            b = filter(lambda bl : 'nevents' in bl, block["block"])[0]
-            blocks.append({'block_name': b["name"], 'NumberOfEvents': b["nevents"]}) #lets convert DAS data to our used format
-        except:
-            raise Exception("Corrupted DAS data %s" pprint.pformat( b ))
-        
-        sum_blocks += b["nevents"]
+    #     sum_blocks += b["nevents"]
+    blocks = json.loads(wma.generic_get(wma.WMAGENT_URL, wma.DBS3_URL+"blocks?dataset=%s" %(dset_name))) #get list of all block -> return block_names
+    n_blocks = len(blocks)
+    for block in blocks:
+        #print "a query"
+        return_data = json.loads(wma.generic_get(wma.WMAGENT_URL, wma.DBS3_URL+"blocksummaries?block_name=%s" %(block["block_name"]))) #get a single block's numberOfEvents
+        block["NumberOfEvents"] = return_data[0]["num_event"]
+        sum_blocks += return_data[0]["num_event"]
+
         
     if statistics >= float(sum_blocks * 0.95):
         ## returning an empty list means no block selection

@@ -18,7 +18,8 @@ except:
 #-------------------------------------------------------------------------------
 
 
-DBS_URL = "http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet"
+#DBS_URL = "http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet"
+DBS_URL = "https://cmsweb.cern.ch/dbs/prod/global/DBSReader"
 PHEDEX_ADDR = 'https://cmsweb.cern.ch/phedex/datasvc/json/prod/blockreplicas?dataset=%s*'
 
 DATABASE_NAME = 'reqmgr_config_cache'
@@ -43,12 +44,13 @@ def generic_get(base_url, query):
     conn.request("GET", query.replace("#", "%23"))
     #print "getting",base_url,query,"..."
     response = conn.getresponse()
+    
     if response.status != 200:
         print "Problems quering DBS3 RESTAPI: %s" %(base_url+query.replace("#", "%23"))
         data = None
     else:
         data = response.read()
-        #print "...got"
+        #print "...got",data
     return data
 
 #-------------------------------------------------------------------------------
