@@ -187,7 +187,14 @@ def get_blocks(dset_name, statistics):
     #         raise Exception("Corrupted DAS data %s"%( pprint.pformat( block["block"] )))
         
     #     sum_blocks += b["nevents"]
-    blocks = json.loads(wma.generic_get(wma.WMAGENT_URL, wma.DBS3_URL+"blocks?dataset=%s" %(dset_name))) #get list of all block -> return block_names
+    answer = wma.generic_get(wma.WMAGENT_URL, wma.DBS3_URL+"blocks?dataset=%s" %(dset_name)) #get list of all block -> return block_names
+    try:
+        blocks = json.loads( answer )
+    except:
+        #failed to load the json, so assume it's all fine
+        print "Could not load the answer from DBS3 %s"% answer
+        raise Exception("Could not load the answer from DBS3 %s"% answer)
+
     n_blocks = len(blocks)
     for block in blocks:
         #print "a query"

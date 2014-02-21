@@ -30,11 +30,12 @@ DBS3_URL = "/dbs/prod/global/DBSReader/"
 def testbed(to_url):
   global COUCH_DB_ADDRESS
   global WMAGENT_URL
+  global DBS3_URL
   WMAGENT_URL = to_url
   #WMAGENT_URL = 'cmsweb-testbed.cern.ch'
   #WMAGENT_URL = 'sryu-dev01.cern.ch'
   COUCH_DB_ADDRESS = 'https://%s/couchdb'%( WMAGENT_URL )
-
+  DBS3_URL = "/dbs/int/global/DBSReader/"
 
 #-------------------------------------------------------------------------------
 
