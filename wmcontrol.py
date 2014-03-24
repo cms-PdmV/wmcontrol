@@ -662,11 +662,12 @@ def build_params_dict(section,cfg):
   if not filter_eff:
       filter_eff = 1.0
       
-  number_events = cfg.get_param('number_events',0,section)
+  number_events = int(cfg.get_param('number_events',0,section))
+  #number_events = cfg.get_param('number_events',0,section)
   version = cfg.get_param('version','',section)
   
   ##new values for renewed Request Agent
-  time_event = cfg.get_param('time_event',20,section)
+  time_event = float(cfg.get_param('time_event',20,section))
   size_memory = int(float(cfg.get_param('size_memory',2300,section)))
   size_event = int(float(cfg.get_param('size_event',2000,section)))
   if size_event <0:
