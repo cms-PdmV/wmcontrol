@@ -465,7 +465,11 @@ def make_request_string(params,service_params,request):
           else:
             custname = "No_custT1"
           joinString = "_v"
-          identifier = "%s_%s_%s%s%s_%s" %(params['PrepID'],
+          if 'PrepID' in params:
+              pid=params['PrepID']
+          else:
+              pid=service_params['pid']
+          identifier = "%s_%s_%s%s%s_%s" %(pid,
                                    custname,
                                    service_params['batch'],
                                    joinString,
@@ -532,10 +536,14 @@ def loop_and_submit(cfg):
           params.pop('InputDataset')
           params.pop('RunWhitelist')
       elif service_params['request_type'] == 'TaskChain':
-          params['Task1']['InputDataset'] = params['InputDataset']
-          params.pop('InputDataset')
-          params['Task1']['RunWhitelist'] = params['RunWhitelist']
-          params.pop('RunWhitelist')
+          if params['InputDataset']:
+              params['Task1']['InputDataset'] = params['InputDataset']
+              params.pop('InputDataset')
+          if params['RunWhitelist']:
+              params['Task1']['RunWhitelist'] = params['RunWhitelist']
+              params.pop('RunWhitelist')
+          if not params['RunWhitelist']: params.pop('RunWhitelist')
+          if not params['InputDataset']: params.pop('InputDataset')
       elif service_params['request_type'] in ['ReDigi','ReReco'] and 'RequestNumEvents' in params and (not 'BlockWhitelist' in params or params['BlockWhitelist']==[]):
           params['BlockWhitelist']= get_blocks( params['InputDataset'] , params['RequestNumEvents'] )
       elif service_params['request_type'] in ['MonteCarloFromGEN'] and 'RequestNumEvents' in params and (not 'BlockWhitelist' in params or params['BlockWhitelist']==[]):
@@ -635,6 +643,8 @@ def build_params_dict(section,cfg):
 
   #wm testing
   wmtest = cfg.get_param('wmtest', False, section)
+
+  url_dict = cfg.get_param('url_dict',None,section)
 
 
   # fetch some important parameters
@@ -760,7 +770,7 @@ def build_params_dict(section,cfg):
       harvest_docID= wma.upload_to_couch(harvest_cfg , section, user, group,test_mode)
       
   # check if the request is valid
-  if step1_docID=='':
+  if step1_docID=='' and not url_dict:
     print "Invalid request, no docID configuration specified."
     sys.stderr.write("[wmcontrol exception] Invalid request, no docID configuration specified.")
     sys.exit(-1)
@@ -824,7 +834,18 @@ def build_params_dict(section,cfg):
           #"EnableHarvesting" : False
           }
 
-  if request_type == "ReReco":
+  if url_dict:
+      #print "This is the url",url_dict,"to get the dict from"
+      params = json.loads(os.popen('curl -s --insecure %s'%(url_dict)).read())
+      #print params
+      service_params["request_type"] = params["RequestType"]
+      service_params["version"] = params["ProcessingVersion"]
+      service_params["process_string"] = "T"
+      service_params["pid"] = params["RequestString"]
+      params["DbsUrl"] = "https://"+wma.WMAGENT_URL+wma.DBS3_URL
+      params["CouchURL"] = wma.COUCH_DB_ADDRESS
+      params["ConfigCacheURL"] = wma.COUCH_DB_ADDRESS
+  elif request_type == "ReReco":
     if number_events:
         if blocks:
             ## cannot perform automatic block selection
@@ -867,11 +888,15 @@ def build_params_dict(section,cfg):
       params.update({
           "EventsPerLumi" : events_per_lumi,
           })
+      if wmtest:
+          params.pop("EventsPerLumi")
           
       if params["LheInputFiles"]=='True' or params["LheInputFiles"]==True:
           #max out to 500K for "lhe step zero"
           print "Setting events per job here !!!!",type(params["LheInputFiles"]),params["LheInputFiles"]
           events_per_job=500000
+          if wmtest:
+              events_per_job=15000
           
       if events_per_job and int(events_per_job):
           params.update({
@@ -1094,6 +1119,7 @@ def build_parser():
   parser.add_option('--campaign', help='The campaign name' , dest='campaign', default = "")
   # The config file
   parser.add_option('--req_file', help='The ini configuration to launch requests' , dest='req_file')
+  parser.add_option('--url-dict', help='Pickup a dict from a given url', default=None, dest='url_dict')
   
   return parser
   
