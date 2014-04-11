@@ -450,10 +450,15 @@ def make_request_string(params,service_params,request):
 #      identifier=service_params['req_name']
     if request == Configuration.default_section:
         # Request ID string
+        if 'PrepID' in params:
+            pid=params['PrepID']
+        else:
+            pid=service_params['pid']
+
         joinString = ""
-        if request_type == 'MonteCarloFromGEN' or request_type == 'MonteCarlo' or request_type == 'LHEStepZero':          
+        if request_type in ['MonteCarloFromGEN', 'MonteCarlo', 'LHEStepZero', 'TaskChain']:          
           joinString = "_v"
-          identifier = "%s_%s%s%s_%s" %(params['PrepID'],
+          identifier = "%s_%s%s%s_%s" %(pid,
                                    service_params['batch'],
                                    joinString,
                                    service_params['version'],
@@ -465,10 +470,6 @@ def make_request_string(params,service_params,request):
           else:
             custname = "No_custT1"
           joinString = "_v"
-          if 'PrepID' in params:
-              pid=params['PrepID']
-          else:
-              pid=service_params['pid']
           identifier = "%s_%s_%s%s%s_%s" %(pid,
                                    custname,
                                    service_params['batch'],
