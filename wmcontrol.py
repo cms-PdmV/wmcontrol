@@ -644,7 +644,7 @@ def build_params_dict(section,cfg):
   #wm testing
   wmtest = cfg.get_param('wmtest', False, section)
 
-  url_dict = cfg.get_param('url_dict',None,section)
+  url_dict = cfg.get_param('url_dict',{},section)
 
 
   # fetch some important parameters
@@ -1119,7 +1119,7 @@ def build_parser():
   parser.add_option('--campaign', help='The campaign name' , dest='campaign', default = "")
   # The config file
   parser.add_option('--req_file', help='The ini configuration to launch requests' , dest='req_file')
-  parser.add_option('--url-dict', help='Pickup a dict from a given url', default=None, dest='url_dict')
+  parser.add_option('--url-dict', help='Pickup a dict from a given url', default={}, dest='url_dict')
   
   return parser
   
