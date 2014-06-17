@@ -645,7 +645,7 @@ def build_params_dict(section,cfg):
   #wm testing
   wmtest = cfg.get_param('wmtest', False, section)
 
-  url_dict = cfg.get_param('url_dict',{},section)
+  url_dict = cfg.get_param('url_dict',"",section)
 
 
   # fetch some important parameters
@@ -771,7 +771,7 @@ def build_params_dict(section,cfg):
       harvest_docID= wma.upload_to_couch(harvest_cfg , section, user, group,test_mode)
       
   # check if the request is valid
-  if step1_docID=='' and not url_dict:
+  if step1_docID=='' and url_dict=="":
     print "Invalid request, no docID configuration specified."
     sys.stderr.write("[wmcontrol exception] Invalid request, no docID configuration specified.")
     sys.exit(-1)
@@ -833,9 +833,10 @@ def build_params_dict(section,cfg):
           "OpenRunningTimeout" : 43200,
           #"ConfigCacheUrl": wma.COUCH_DB_ADDRESS,
           #"EnableHarvesting" : False
+          "ProcessingString": process_string
           }
 
-  if url_dict:
+  if url_dict != "":
       #print "This is the url",url_dict,"to get the dict from"
       params = json.loads(os.popen('curl -s --insecure %s'%(url_dict)).read())
       #print params
@@ -1120,7 +1121,7 @@ def build_parser():
   parser.add_option('--campaign', help='The campaign name' , dest='campaign', default = "")
   # The config file
   parser.add_option('--req_file', help='The ini configuration to launch requests' , dest='req_file')
-  parser.add_option('--url-dict', help='Pickup a dict from a given url', default={}, dest='url_dict')
+  parser.add_option('--url-dict', help='Pickup a dict from a given url', default="", dest='url_dict')
   
   return parser
   
