@@ -465,13 +465,12 @@ def make_request_string(params,service_params,request):
                                    service_params['process_string'])
                                    
         else: 
-          if custodial(params['InputDataset']):
-            custname = custodial(dataset)
-          else:
-            custname = "No_custT1"
+          #if custodial(params['InputDataset']):
+          #  custname = custodial(dataset)
+          #else:
+          #  custname = "No_custT1"
           joinString = "_v"
-          identifier = "%s_%s_%s%s%s_%s" %(pid,
-                                   custname,
+          identifier = "%s_%s%s%s_%s" %(pid,
                                    service_params['batch'],
                                    joinString,
                                    service_params['version'],
