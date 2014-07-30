@@ -56,7 +56,10 @@ def generic_get(base_url, query):
 
 #-------------------------------------------------------------------------------
 
-def __check_GT(gt):
+def __check_GT(gt, config_file=None):
+    if config_file:
+        __conf = __loadConfig(config_file)
+        __loaded_conf = makeTweak(__conf.process).jsondictionary()
     if not gt.endswith("::All"):
         raise Exception,"It seemslike the name of the GT '%s' has a typo in it!" %gt
 
