@@ -121,7 +121,7 @@ def __loadConfig(configPath):
 #-------------------------------------------------------------------------------    
 # DP leave this untouched even if less than optimal!
 def makeRequest(url,params,encodeDict=False):
-
+    params["ConfigCacheUrl"] = "https://cmsweb.cern.ch/couchdb"
     __check_request_params(params)
     for (k,v) in params.items():
       if type(v) ==dict:
@@ -147,8 +147,8 @@ def makeRequest(url,params,encodeDict=False):
     data = response.read()
     if response.status != 303:
         print 'could not post request with following parameters:'
-        #pprint.pprint( params )
-        #print
+        pprint.pprint( params )
+        print
         for item in params.keys():
             print item + ": " + str(params[item])
         print 'Response from http call:'
