@@ -58,7 +58,7 @@ def generic_get(base_url, query):
 
 def __check_GT(gt):
     if not gt.endswith("::All"):
-        raise Exception,"It seemslike the name of the GT '%s' has a typo in it!" %gt
+        print "It seemslike the name of the GT '%s' has a typo in it, missing the final ::All which will crash your job. If insted you're using CondDBv2, you're fine." %gt
 
 def __check_input_dataset(dataset):
     if dataset and dataset.count('/')!=3:
