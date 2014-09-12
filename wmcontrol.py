@@ -694,6 +694,7 @@ def build_params_dict(section,cfg):
   
   req_name=cfg.get_param('req_name','',section)
   process_string = cfg.get_param('process_string','',section)
+  processing_string = cfg.get_param('processing_string','',section)
   batch = cfg.get_param('batch','',section)
     
   # for the user and group
@@ -832,7 +833,8 @@ def build_params_dict(section,cfg):
           "OpenRunningTimeout" : 43200,
           #"ConfigCacheUrl": wma.COUCH_DB_ADDRESS,
           #"EnableHarvesting" : False
-          "ProcessingString": process_string
+          "ProcessingString": processing_string,
+          "AcquisitionEra" : campaign
           }
 
   if url_dict != "":
@@ -1113,7 +1115,8 @@ def build_parser():
   parser.add_option('--wmtesturl', help='To inject to a specific testbed', dest='wmtesturl', default='cmsweb-testbed.cern.ch')
   parser.add_option('--includeparents', help='Include parents', action='store_true' , dest='includeparents')
   parser.add_option('--req_name', help='Set the name of the request', dest='req_name')
-  parser.add_option('--process-string', help='process string do be added in the second part of dataset name' , dest='process_string')
+  parser.add_option('--process-string', help='string to be added in the name of the request' , dest='process_string',default='')
+  parser.add_option('--processing-string', help='process string do be added in the second part of dataset name' , dest='processing_string',default='') 
   parser.add_option('--batch', help='Include in the WF batch number' , dest='batch')
   
   # Param to be inline with prep wmcontrol
