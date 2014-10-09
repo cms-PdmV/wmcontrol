@@ -39,6 +39,7 @@ default_parameters = {
 'dbsurl':dbs_url_g,
 'keep_step1':False,
 'keep_step2':False,
+'keep_step3' : False,
 'priority':181983,
 'request_type':'ReReco',
 'scramarch':'slc5_amd64_gcc462',
@@ -700,16 +701,17 @@ def build_params_dict(section,cfg):
   harvest_docID = cfg.get_param('harvest_docID','',section)
 
   step1_output = cfg.get_param('step1_output','',section)
-  keep_step1 = cfg.get_param('keep_step1',False,section)
-
+  keep_step1 = cfg.get_param('keep_step1',default_parameters['keep_step1'],section)
+  
   step2_cfg = cfg.get_param('step2_cfg','',section)
   step2_docID = cfg.get_param('step2_docID','',section)
   step2_output = cfg.get_param('step2_output','',section)
-  keep_step2 = cfg.get_param('keep_step2',False,section)
-
+  keep_step2 = cfg.get_param('keep_step2',default_parameters['keep_step2'],section)
+  
   step3_cfg = cfg.get_param('step3_cfg','',section)
   step3_docID = cfg.get_param('step3_docID','',section)
   step3_output = cfg.get_param('step3_output','',section)
+  keep_step3 = cfg.get_param('keep_step3',,default_parameters['keep_step3'],section)
 
   transient_output = cfg.get_param('transient_output',[],section)
 
@@ -766,6 +768,7 @@ def build_params_dict(section,cfg):
   service_params={"section": section,
                   "version": version,
                   "request_type": request_type,
+
                   "step1_cfg": step1_cfg,
                   "step1_output": step1_output,
                   "keep_step1":keep_step1,
@@ -776,6 +779,7 @@ def build_params_dict(section,cfg):
 #
                   "step3_cfg": step3_cfg,
                   "step3_output": step3_output,
+                  "keep_step3":keep_step3,
                   #
                   'cfg_docid_dict' : cfg_docid_dict,
                   'req_name': req_name,
@@ -956,13 +960,20 @@ def build_params_dict(section,cfg):
     if primary_dataset:
         params.update({"PrimaryDataset": primary_dataset})
 
-    if step2_cfg != '' or step2_docID !='':
+    if step2_docID:
         params.update({"StepTwoConfigCacheID": step2_docID,
                        "KeepStepTwoOutput": keep_step2,
                        "StepTwoOutputModuleName": step2_output})
 
-        if step3_cfg !='' or step3_docID!='':
-            params['StepThreeConfigCacheID'] = step3_docID
+        if step3_docID:
+            if not keep_step3:
+                print 'Request not keeping its step 3 output'
+                raise Exception("The request has a third step, and not keeping it's output")
+
+            params.update({'StepThreeConfigCacheID': step3_docID,
+                           "KeepStepThreeOutput" : keep_step3,
+                           #"StepThreeOutputModuleName" : step3_output ## would be usuful with a fourth step
+                           })
         else:
             if not keep_step2:
                 print 'Request not keeping its step 2 output'
@@ -1081,17 +1092,17 @@ def build_parser():
   parser.add_option('--input-ds', help='Input Data Set name' , dest='input_name')
   parser.add_option('--blocks', help='comma separated list of input blocks to be processed' , dest='blocks')  
   parser.add_option('--pileup-ds', help='Pile-Up input Data Set name' , dest='pu_dataset')
-  parser.add_option('--step1-cfg', help='step 1 configuration' , dest='step1_cfg')
-  parser.add_option('--step1-output', help='step 1 output' , dest='step1_output')
-  parser.add_option('--keep-step1', help='step1 output keeping flag'  ,action='store_true', dest='keep_step1')
-  parser.add_option('--step1-docID', help='step 1 configuration' , dest='step1_docID')
   parser.add_option('--cfg_path', help='Alias for step 1 configuration' , dest='cfg_path')
-  parser.add_option('--step2-cfg',help='step 2 configuration' ,dest='step2_cfg')
-  parser.add_option('--step2-output',help='step 2 output' ,dest='step2_output')
-  parser.add_option('--keep-step2',help='step2 output keeping flag',  action='store_true',dest='keep_step2')
-  parser.add_option('--step2-docID',help='step 2 configuration' ,dest='step2_docID')
-  parser.add_option('--step3-cfg',help='step 3 configuration' ,dest='step3_cfg')
-  parser.add_option('--step3-docID',help='step 3 configuration' ,dest='step3_docID')
+
+  max_step=3 ## watch out, increasing this does not percolate automatically to a good configuration of the request.
+  for i in range(max_step):
+      s=i+1
+      parser.add_option('--step%d-cfg'%s, help='step %d configuration'%s, dest='step%d_cfg'%s)
+      parser.add_option('--step%d--docID'%s, help='step %d configuration docId'%s, dest='step%d_docID'%s)
+      parser.add_option('--keep-step%d'%s, help='step %d output keeping flag'%s, dest='keep_step%d'%s, action='store_true')
+      parser.add_option('--step%d-output'%s, help='step %d output moule'%s, dest='step%d_output'%s)
+
+      
   parser.add_option('--priority',help='priority flag' ,dest='priority')
   parser.add_option('--primary-dataset',help='primary dataset name' ,dest='primary_dataset')
   parser.add_option('--time-event',help='time per event in seconds (Default 10)' , dest='time_event', default=10)
