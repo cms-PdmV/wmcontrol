@@ -747,6 +747,7 @@ def build_params_dict(section,cfg):
   request_type = cfg.get_param('request_type',default_parameters['request_type'],section)
   request_id = cfg.get_param('request_id','',section)
   events_per_job = cfg.get_param('events_per_job','',section)
+  events_per_lumi = cfg.get_param('events_per_lumi',100,section)
 
   # Upload to couch if needed or check in the cfg dict if there
   docIDs=[step1_docID,step2_docID,step3_docID]
@@ -887,7 +888,7 @@ def build_params_dict(section,cfg):
                      }
                     )
 
-      events_per_lumi = int(100. / float(filter_eff))
+      events_per_lumi = int(events_per_lumi / float(filter_eff))
       params.update({
           "EventsPerLumi" : events_per_lumi,
           })
@@ -940,7 +941,7 @@ def build_params_dict(section,cfg):
                      "TotalTime": 28800 ,
                      "EventsPerLumi":300,
                      "ProdJobSplitAlgo" : "EventBased",
-                     "ProdJobSplitArgs" : {"events_per_job": int(events_per_job),"events_per_lumi": 300}
+                     "ProdJobSplitArgs" : {"events_per_job": int(events_per_job),"events_per_lumi": events_per_lumi}
                     })
 
       params.pop('BlockBlacklist')
@@ -1101,6 +1102,7 @@ def build_parser():
   parser.add_option('--filter-eff',help='filter efficiency' ,dest='filter_eff')
   parser.add_option('--number-events',help='number of events' ,dest='number_events', default=0)
   parser.add_option('--events-per-job', help='number of events per job (for LHE production)' , dest='events_per_job', default=0)
+  parser.add_option('--events-per-lumi',help='number of events per lumisection (for request from scratch)', dest='events_per_lumi', default=100)
   parser.add_option('--version', help='submission version' , dest='version')
   parser.add_option('--cfg_db_file', help='File containing the cfg name docid pairs' , dest='cfg_db_file')
   parser.add_option('--user', help='The registered username' , dest='user')
