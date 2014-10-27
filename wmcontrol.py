@@ -33,15 +33,23 @@ dbs_url_g = wma.DBS_URL
 
 test_mode = False # Put True not to upload the requests
 
+max_step=9
+## you find me the right lib, I take it !!!
+step_words=['Zero','One','Two','Three', 'Four','Five','Six','Seven','Eight','Nine']
+if max_step > len(step_words)-1:
+    raise Exception ("Not enough word for all steps")
+
+
 default_parameters = {
 'dbsurl':dbs_url_g,
-'keep_step1':False,
-'keep_step2':False,
 'priority':181983,
 'request_type':'ReReco',
 'scramarch':'slc5_amd64_gcc462', 
 'includeparents': 'False'
   }
+for i in range(max_step):
+    default_parameters['keep_step%d'%(i+1)]=False
+
 
 if os.getenv('SCRAM_ARCH'):
     default_parameters['scramarch']=os.getenv('SCRAM_ARCH')
@@ -649,15 +657,6 @@ def build_params_dict(section,cfg):
 
   # fetch some important parameters
   #this trick is to make the uniformation smoother and be able to read old cfgfiles
-  doc_id = step1_docID = ''
-  doc_id = step1_docID = cfg.get_param('docID','',section)
-  dummy = cfg.get_param('step1_docID','',section)
-  if dummy!='':
-    doc_id = step1_docID = dummy
-  step2_docid = cfg.get_param('step2_docID','',section)
-  #print step2_docid
-  step3_docid = cfg.get_param('step3_docID','',section)
-  #print step3_docid
   # elaborate the file containing the name docid pairs
   cfg_db_file = cfg.get_param('cfg_db_file','',section)
   #print cfg_db_file
@@ -721,26 +720,26 @@ def build_params_dict(section,cfg):
   
   # Now the service ones
   # Service
-  step1_cfg = cfg_path = ''
-  step1_cfg = cfg_path = cfg.get_param('cfg_path','',section)  
-  dummy = cfg.get_param('step1_cfg','',section)
-  if dummy != '':
-    step1_cfg = cfg_path = dummy
 
   harvest_cfg = cfg.get_param('harvest_cfg','',section)
   harvest_docID = cfg.get_param('harvest_docID','',section)
-  
-  step1_output = cfg.get_param('step1_output','',section)
-  keep_step1 = cfg.get_param('keep_step1',False,section)
-  
-  step2_cfg = cfg.get_param('step2_cfg','',section)
-  step2_docID = cfg.get_param('step2_docID','',section)
-  step2_output = cfg.get_param('step2_output','',section)
-  keep_step2 = cfg.get_param('keep_step2',False,section)
-  
-  step3_cfg = cfg.get_param('step3_cfg','',section)
-  step3_docID = cfg.get_param('step3_docID','',section)
-  step3_output = cfg.get_param('step3_output','',section)
+
+  stepN_output=[]
+  keep_stepN=[]
+  stepN_cfg=[]
+  stepN_docID=[]  
+  for i in range(max_step):
+      s=i+1
+      stepN_output = cfg.get_param('step%d_output'%s,'',section)
+      keep_stepN = cfg.get_param('keep_step%d'%s,default_parameters['keep_step%d'%s],section)
+      if i==0:
+          cfg_path = cfg.get_param('cfg_path','',section)
+          stepN_cfg = cfg.get_param('step%d_cfg'%s,cfg_path,section) # defaults it to cfg_path if not specified
+          doc_id = cfg.get_param('doc_id','',section)
+          stepN_docID = cfg.get_param('step%d_docID'%s,doc_id,section) # defaults itto doc_id if not specified
+      else:
+          stepN_cfg = cfg.get_param('step%d_cfg'%s,'',section)
+          stepN_docID = cfg.get_param('step%d_docID'%s,'',section)
 
   transient_output = cfg.get_param('transient_output',[],section)
 
@@ -750,11 +749,9 @@ def build_params_dict(section,cfg):
   events_per_lumi = cfg.get_param('events_per_lumi',100,section)
 
   # Upload to couch if needed or check in the cfg dict if there
-  docIDs=[step1_docID,step2_docID,step3_docID]
-  cfgs=[step1_cfg,step2_cfg,step3_cfg]
-  for step in xrange(3):
-    step_cfg_name= cfgs[step]
-    step_docid = docIDs[step]
+  for step in range(max_step):
+    step_cfg_name= stepN_cfg[step]
+    step_docid = stepN_docID[step]
     #print step_cfg_name, step_docid
     
     if step_cfg_name!='' and step_docid=='' :
@@ -762,17 +759,17 @@ def build_params_dict(section,cfg):
       # try to see if it is in the cfg name dict
       if cfg_docid_dict.has_key(step_cfg_name):
         print "Using the one in the cfg-docid dictionary." 
-        docIDs[step] = cfg_docid_dict[step_cfg_name]
+        stepN_docID[step] = cfg_docid_dict[step_cfg_name]
       else:
         print "No DocId found for section %s. Uploading the cfg to the couch." %section
-        docIDs[step]= wma.upload_to_couch(step_cfg_name, section, user, group,test_mode)
+        stepN_docID[step]= wma.upload_to_couch(step_cfg_name, section, user, group,test_mode)
 
-  step1_docID,step2_docID,step3_docID=docIDs
   if harvest_docID=='' and harvest_cfg!='':
       harvest_docID= wma.upload_to_couch(harvest_cfg , section, user, group,test_mode)
       
-  # check if the request is valid
-  if step1_docID=='' and url_dict=="":
+  ## check if the request is valid
+  #there could be more checks here !!!
+  if stepN_docID[0]=='' and url_dict=="":
     print "Invalid request, no docID configuration specified."
     sys.stderr.write("[wmcontrol exception] Invalid request, no docID configuration specified.")
     sys.exit(-1)
@@ -794,23 +791,22 @@ def build_params_dict(section,cfg):
   service_params={"section": section,
                   "version": version,
                   "request_type": request_type,
-                  "step1_cfg": step1_cfg,
-                  "step1_output": step1_output,
-                  "keep_step1":keep_step1,
-#
-                  "step2_cfg": step2_cfg,
-                  "step2_output": step2_output,
-                  "keep_step2":keep_step2,
-#
-                  "step3_cfg": step3_cfg,
-                  "step3_output": step3_output,
-                  #
+
                   'cfg_docid_dict' : cfg_docid_dict,
                   'req_name': req_name,
                   "batch": batch,
                   "process_string": process_string,
                   }
   
+  for i in range(max_step):
+      s=i+1
+      ## not sure that this is necessary actually to put in the service params
+      service_params.update({ 'step%d_cfg'%s : stepN_cfg[i],
+                              'step%d_docID'%s : stepN_docID[i],
+                              'keep_step%d'%s : keep_stepN[i],
+                              'step%d_output'%s : stepN_output[i]
+                              })
+
   # According to the rerquest type, cook a request!
   params={"CMSSWVersion": release,
           "ScramArch": scramarch,
@@ -858,7 +854,7 @@ def build_params_dict(section,cfg):
             print "\n\n\n WARNING automated block selection performed \n\n\n"
             params.update({"RequestNumEvents" : number_events})
 
-    params.update({"ConfigCacheID": step1_docID,
+    params.update({"ConfigCacheID": stepN_docID[0],
                    "Scenario": "pp",
                    "IncludeParents" : includeparents,
                    "TransientOutputModules":transient_output})
@@ -882,7 +878,7 @@ def build_params_dict(section,cfg):
                      "FilterEfficiency": filter_eff,
                      "LheInputFiles" : cfg.get_param('lhe_input',False,section),
                      "RequestNumEvents": number_events,
-                     "ConfigCacheID": step1_docID,
+                     "ConfigCacheID": stepN_docID[0],
                      "PrimaryDataset": primary_dataset,
                      "PrepID": request_id,
                      }
@@ -916,7 +912,7 @@ def build_params_dict(section,cfg):
   elif request_type == 'MonteCarloFromGEN':
     params.update({"TimePerEvent": time_event,
                 "FilterEfficiency": filter_eff,
-                "ConfigCacheID": step1_docID,
+                "ConfigCacheID": stepN_docID[0],
                 "PrepID": request_id,
                 "TotalTime": 28800 })
     if primary_dataset:
@@ -934,7 +930,7 @@ def build_params_dict(section,cfg):
                      "LheInputFiles" : cfg.get_param('lhe_input',False,section),
                      "Memory": 2300,
                      "SizePerEvent": size_event,
-                     "ConfigCacheID": step1_docID,
+                     "ConfigCacheID": stepN_docID[0],
                      "RequestNumEvents": number_events,
                      "PrimaryDataset": primary_dataset,
                      "PrepID": request_id,
@@ -961,32 +957,29 @@ def build_params_dict(section,cfg):
 
         
     params.update({"RequestString": identifier,
-                "StepOneConfigCacheID": step1_docID,
-                "KeepStepOneOutput": keep_step1,
-                "StepOneOutputModuleName": step1_output,
-                #"DataPileup": "",
-                "MCPileup": pileup_dataset,
-                #"Scenario": "pp",
-                "PrepID": request_id})
+                   "MCPileup": pileup_dataset,
+                   #"Scenario": "pp",
+                   "PrepID": request_id})
 
     if primary_dataset:
         params.update({"PrimaryDataset": primary_dataset})
 
-    if step2_cfg != '' or step2_docID !='':
-        params.update({"StepTwoConfigCacheID": step2_docID,
-                       "KeepStepTwoOutput": keep_step2,
-                       "StepTwoOutputModuleName": step2_output})
-
-        if step3_cfg !='' or step3_docID!='':
-            params['StepThreeConfigCacheID'] = step3_docID
+    last=0
+    for i in range(max_step):
+        sname=step_words[s+1]
+        if stepN_docID[i]:
+            params.update({"Step%sConfigCacheID"%sname : stepN_docID[i],
+                           "KeepStep%sOutput"%sname : keep_StepN[i],
+                           "Step%sOutputModuleName"%sname : stepN_output[i]
+                           })
+            last=i
         else:
-            if not keep_step2:
-                print 'Request not keeping its step 2 output'
-                raise Exception("The request has a second step, no third step and not keeping it's second output")
-    else:
-        if not keep_step1:
-            print 'Request not keeping anything'
-            raise Exception('The request has one step and not keeping anything')
+            ## there is no more valid docID
+            break
+
+    if not keep_StepN[last]:
+        print "Request not keeping its last output"
+        raise Exception("The request step %s output is not kept"% step_word[last])
 
   elif request_type == 'TaskChain':
 
@@ -1000,30 +993,30 @@ def build_params_dict(section,cfg):
                   }
       
       task1_dict['GlobalTag'] = cfg.get_param('step1_globaltag',globaltag,section)
-      task1_dict['ConfigCacheID'] = step1_docID
-      task1_dict['KeepOutput'] = keep_step1
+      task1_dict['ConfigCacheID'] = stepN_docID[0]
+      task1_dict['KeepOutput'] = keep_stepN[0]
       params['Task1']=task1_dict
       params['TaskChain']=1
-      if step2_cfg or step2_docID:
+      if stepN_docID[1]:
           task2_dict={'SplittingAlgorithm': 'LumiBased',
                       'SplittingArguments': {'lumis_per_job': 8},
                       'TaskName':'Task2'
                       }
           task2_dict['GlobalTag'] = cfg.get_param('step2_globaltag',globaltag,section)
-          task2_dict['ConfigCacheID'] = step2_docID
-          task2_dict['InputFromOutputModule'] = step2_output
+          task2_dict['ConfigCacheID'] = stepN_docID[1]
+          task2_dict['InputFromOutputModule'] = stepN_output[1]
           task2_dict['InputTask'] = cfg.get_param('step2_input','Task1',section)
           #task2_dict['KeepOutput'] = keep_step2
           params['Task2']=task2_dict
           params['TaskChain']=2
-          if step3_cfg or step3_docID:
+          if stepN_docID[2]:
               task3_dict={'SplittingAlgorithm': 'LumiBased',
                           'SplittingArguments': {'lumis_per_job': 8},
                           'TaskName':'Task3'
                           }
               task3_dict['GlobalTag'] = cfg.get_param('step3_globaltag',globaltag,section)
-              task3_dict['ConfigCacheID'] = step3_docID
-              task3_dict['InputFromOutputModule'] = step3_output
+              task3_dict['ConfigCacheID'] = stepN_docID[2]
+              task3_dict['InputFromOutputModule'] = stepN_output[2]
               task3_dict['InputTask'] = cfg.get_param('step3_input','Task2',section)
               #task3_dict['KeepOutput'] = keep_step3
               params['Task3']=task3_dict
@@ -1085,17 +1078,16 @@ def build_parser():
   parser.add_option('--input-ds', help='Input Data Set name' , dest='input_name')
   parser.add_option('--blocks', help='comma separated list of input blocks to be processed' , dest='blocks')  
   parser.add_option('--pileup-ds', help='Pile-Up input Data Set name' , dest='pu_dataset')
-  parser.add_option('--step1-cfg', help='step 1 configuration' , dest='step1_cfg')
-  parser.add_option('--step1-output', help='step 1 output' , dest='step1_output')
-  parser.add_option('--keep-step1', help='step1 output keeping flag'  ,action='store_true', dest='keep_step1')
-  parser.add_option('--step1-docID', help='step 1 configuration' , dest='step1_docID')
   parser.add_option('--cfg_path', help='Alias for step 1 configuration' , dest='cfg_path')
-  parser.add_option('--step2-cfg',help='step 2 configuration' ,dest='step2_cfg')
-  parser.add_option('--step2-output',help='step 2 output' ,dest='step2_output')
-  parser.add_option('--keep-step2',help='step2 output keeping flag',  action='store_true',dest='keep_step2')
-  parser.add_option('--step2-docID',help='step 2 configuration' ,dest='step2_docID')
-  parser.add_option('--step3-cfg',help='step 3 configuration' ,dest='step3_cfg')
-  parser.add_option('--step3-docID',help='step 3 configuration' ,dest='step3_docID')
+
+  for i in range(max_step):
+      s=i+1
+      parser.add_option('--step%d-cfg'%s, help='step %d configuration'%s, dest='step%d_cfg'%s)
+      parser.add_option('--step%d--docID'%s, help='step %d configuration docId'%s, dest='step%d_docID'%s)
+      parser.add_option('--keep-step%d'%s, help='step %d output keeping flag'%s, dest='keep_step%d'%s, action='store_true')
+      parser.add_option('--step%d-output'%s, help='step %d output moule'%s, dest='step%d_output'%s)
+
+      
   parser.add_option('--priority',help='priority flag' ,dest='priority')
   parser.add_option('--primary-dataset',help='primary dataset name' ,dest='primary_dataset')
   parser.add_option('--time-event',help='time per event in seconds (Default 10)' , dest='time_event', default=10)
