@@ -33,7 +33,7 @@ from modules import wma # here u have all the components to interact with the wm
 
 dbs_url_g = wma.DBS_URL
 
-test_mode = True # Put True not to upload the requests
+test_mode = False # Put True not to upload the requests
 
 default_parameters = {
 'dbsurl':dbs_url_g,
