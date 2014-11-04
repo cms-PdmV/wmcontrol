@@ -22,8 +22,10 @@ import pprint
 import ConfigParser
 import traceback
 import re
+import time
 
 sys.path.append(os.path.join(sys.path[0], 'modules'))
+from modules import helper
 from modules import wma # here u have all the components to interact with the wma
 
 #-------------------------------------------------------------------------------
@@ -31,7 +33,7 @@ from modules import wma # here u have all the components to interact with the wm
 
 dbs_url_g = wma.DBS_URL
 
-test_mode = False # Put True not to upload the requests
+test_mode = True # Put True not to upload the requests
 
 default_parameters = {
 'dbsurl':dbs_url_g,
@@ -147,7 +149,23 @@ class Configuration:
         return ret_val
         
 #-------------------------------------------------------------------------------
+def get_subset_by_lumis(dset_name, stats):
+    """Match statistics with lumis
+    
+    Arguments
+    dset_name -- dataset name
+    stats -- number of events in a subset
+    """
+    #measure time of the execution
+    t = time.time()
+    espl = helper.SubsetByLumi(dset_name)
+    #ll = {}
+    #ll["LumiList"] = espl.run(stats)
+    ll = espl.run(stats)
+    print 'Executed in %sms' % ((time.time() - t)*1000)
+    return json.dumps(ll)
 
+#-------------------------------------------------------------------------------
 def get_blocks(dset_name, statistics):
     statistics = float(statistics)
     ####
