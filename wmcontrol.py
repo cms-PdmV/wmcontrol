@@ -111,6 +111,7 @@ class Configuration:
           if param_value == None: 
             param_value = "__NOT-DEFINED__"
           #print "Setting params in cfg: %s with default %s" %(param,param_value)
+          ### HOLLY SHIT THE SYSTEMATIC RECASTING TO STR
           self.configparser.set(self.__class__.default_section, param, str(param_value))
         #with open('example.cfg', 'wb') as configfile:
             #self.ConfigParser.write(configfile)
@@ -920,7 +921,7 @@ def build_params_dict(section,cfg):
                      }
                     )
 
-      events_per_lumi = int(float(events_per_lumi) / float(filter_eff))
+      events_per_lumi = int(int(events_per_lumi) / float(filter_eff))
       params.update({
           "EventsPerLumi" : events_per_lumi,
           })
@@ -973,7 +974,7 @@ def build_params_dict(section,cfg):
                      "TotalTime": 28800 ,
                      "EventsPerLumi":300,
                      "ProdJobSplitAlgo" : "EventBased",
-                     "ProdJobSplitArgs" : {"events_per_job": int(events_per_job),"events_per_lumi": events_per_lumi}
+                     "ProdJobSplitArgs" : {"events_per_job": int(events_per_job),"events_per_lumi": int(events_per_lumi)}
                     })
 
       params.pop('BlockBlacklist')
