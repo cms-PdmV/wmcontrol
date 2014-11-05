@@ -62,9 +62,9 @@ class Generate():
                 new_bin['space'] = d['events']
                 bins.append(new_bin)
 
-        # if for some reason there is no bins raise exception
+        # if for some reason there is no bins
         if not len(bins):
-            raise Exception("Couldn't generate desired subset")
+            return ([], target_num_events)
 
         # check which bin has smallest deviation
         max_space = None

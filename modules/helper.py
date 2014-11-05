@@ -3,6 +3,7 @@
 import json
 import subset
 import wma
+import time
 
 
 class SubsetByLumi():
@@ -17,6 +18,9 @@ class SubsetByLumi():
         self.dataset = dset_name
         self.approximation = approx
 
+    def abort(self, reason=""):
+        raise Exception("Something went wrong. Aboarting. " + reason)
+
     def api(self, method, field, value, detail=False):
         """Constructs query and returns DBS3 response
         """
@@ -30,7 +34,7 @@ class SubsetByLumi():
         try:
             return json.loads(res)
         except:
-            raise Exception("Could not load the answer from DBS3")
+            self.abort("Could not load the answer from DBS3")
 
     def parse_files(self, files):
         """Parse DBS3 JSON
@@ -55,28 +59,37 @@ class SubsetByLumi():
         # get files per dataset
         files = self.api('files', 'dataset', self.dataset, True)
         files, total = self.parse_files(files)
-        # break if the input is incorrect
-        if total * self.approximation < events:
-            raise Exception("Couldn't generate desired subset." +
-                            "Desired subset is almost equal or bigger" +
-                            "than total number of events")
-        job = subset.Generate(brute)
-        # get best fit list and deviation
-        data, devi = job.run(files, events)
 
-        # if deviation to big, raise exception
-        if devi <= total * self.approximation:
-            rep = {}
-            for d in data:
-                # get run number and lumis per file
-                res = self.api('filelumis', 'logical_file_name', d['name'])
-                try:
-                    rep[str(res[0]['run_num'])] += res[0]['lumi_section_num']
-                except KeyError:
-                    rep[str(res[0]['run_num'])] = res[0]['lumi_section_num']
+        # if total number of events is not valid number, abort
+        if not total:
+            self.abort("Reason 1")
+
+        # break if the input is incorrect
+        if total * (1 - self.approximation) < events:
+            print ("Couldn't generate desired subset. Desired subset is " +
+                   "almost equal or bigger than total number of events")
+            data, devi = (files, 0)
         else:
-            raise Exception("Couldn't generate desired subset." +
-                            "Deviation too big. Perhaps try brute force")
+            # get best fit list and deviation
+            job = subset.Generate(brute)
+            data, devi = job.run(files, events)
+            if not len(data):
+                self.abort("Reason 2")
+        
+        # if deviation to big, inform but proceed
+        if devi > total * self.approximation:
+            print ("Couldn't generate desired subset. Deviation too big. " +
+                   "Perhaps try brute force. Proceeding anyway")
+
+        # proceed for best fit
+        rep = {}
+        for d in data:
+            # get run number and lumis per file
+            res = self.api('filelumis', 'logical_file_name', d['name'])
+            try:
+                rep[str(res[0]['run_num'])] += res[0]['lumi_section_num']
+            except KeyError:
+                rep[str(res[0]['run_num'])] = res[0]['lumi_section_num']
 
         # generate ranges
         for run, lumis in rep.iteritems():
