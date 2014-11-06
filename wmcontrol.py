@@ -22,8 +22,10 @@ import pprint
 import ConfigParser
 import traceback
 import re
+import time
 
 sys.path.append(os.path.join(sys.path[0], 'modules'))
+from modules import helper
 from modules import wma # here u have all the components to interact with the wma
 
 #-------------------------------------------------------------------------------
@@ -81,9 +83,9 @@ class Configuration:
             print "Error in parsing options"
             sys.stderr.write("[wmcontrol exception] Error in parsing options")
             sys.exit(-1)
-            
+
         global test_mode
-        test_mode=options.test
+        test_mode = test_mode or options.test
 
         if options.wmtest:
             print "Setting to injection in cmswebtest : ", options.wmtesturl
@@ -97,6 +99,8 @@ class Configuration:
             print "We have a commandline."
             self.__fill_configparser(options)
 
+
+
     def __fill_configparser(self,options):
         '''
         Convert the option parser into a configparser.
@@ -107,6 +111,7 @@ class Configuration:
           if param_value == None: 
             param_value = "__NOT-DEFINED__"
           #print "Setting params in cfg: %s with default %s" %(param,param_value)
+          ### HOLLY SHIT THE SYSTEMATIC RECASTING TO STR
           self.configparser.set(self.__class__.default_section, param, str(param_value))
         #with open('example.cfg', 'wb') as configfile:
             #self.ConfigParser.write(configfile)
@@ -147,7 +152,17 @@ class Configuration:
         return ret_val
         
 #-------------------------------------------------------------------------------
+def get_subset_by_lumis(dset_name, stats):
+    """Match statistics with lumis
+    
+    Arguments
+    dset_name -- dataset name
+    stats -- number of events in a subset
+    """
+    espl = helper.SubsetByLumi(dset_name)
+    return espl.run(stats)
 
+#-------------------------------------------------------------------------------
 def get_blocks(dset_name, statistics):
     statistics = float(statistics)
     ####
@@ -433,7 +448,6 @@ def get_dataset_runs_dict(section,cfg):
 def make_request_string(params,service_params,request):
     request_type = service_params['request_type']
     identifier=''
-    print request_type
     dataset=params['InputDataset']
     # Make a string a la prep if needed: #old version
 #    if request == Configuration.default_section:
@@ -499,7 +513,6 @@ def loop_and_submit(cfg):
   '''
   pp = pprint.PrettyPrinter(indent=4)
 
-  
   for section in cfg.configparser.sections():
     # Warning muted
     #print '\n---> Processing request "%s"' %section
@@ -523,7 +536,6 @@ def loop_and_submit(cfg):
           else:
             runs.append(item)
       params['RunWhitelist']=runs
-          
       if params.has_key("BlockWhitelist"):
         if params['BlockWhitelist']==[]:
           params['BlockWhitelist']=new_blocks
@@ -544,15 +556,34 @@ def loop_and_submit(cfg):
               params.pop('RunWhitelist')
           if not params['RunWhitelist']: params.pop('RunWhitelist')
           if not params['InputDataset']: params.pop('InputDataset')
-      elif service_params['request_type'] in ['ReDigi','ReReco'] and 'RequestNumEvents' in params and (not 'BlockWhitelist' in params or params['BlockWhitelist']==[]):
-          params['BlockWhitelist']= get_blocks( params['InputDataset'] , params['RequestNumEvents'] )
-      elif service_params['request_type'] in ['MonteCarloFromGEN'] and 'RequestNumEvents' in params and (not 'BlockWhitelist' in params or params['BlockWhitelist']==[]):
-          params['BlockWhitelist']= get_blocks( params['InputDataset'] , float(params['RequestNumEvents']) / float(params['FilterEfficiency']) )
 
+      # use block based splitting algo
+      elif not service_params['lumi_based_split']:
+          if service_params['request_type'] in ['ReDigi','ReReco'] and 'RequestNumEvents' in params and (not 'BlockWhitelist' in params or params['BlockWhitelist']==[]):
+              params['BlockWhitelist']= get_blocks( params['InputDataset'] , params['RequestNumEvents'] )
+          elif service_params['request_type'] in ['MonteCarloFromGEN'] and 'RequestNumEvents' in params and (not 'BlockWhitelist' in params or params['BlockWhitelist']==[]):
+              params['BlockWhitelist']= get_blocks( params['InputDataset'] , float(params['RequestNumEvents']) / float(params['FilterEfficiency']) )
 
-      if test_mode: # just print the parameters of the request you would have injected
-        pp.pprint(params)
-        #print wma.WMAGENT_URL
+      # use lumi based splitting algo
+      elif (service_params['lumi_based_split'] and 'RequestNumEvents' in params and
+            (not 'RunWhitelist' in params or params['RunWhitelist']==[])):
+
+          if service_params['request_type'] in ['ReDigi','ReReco']:
+              params['LumiList'] = get_subset_by_lumis(params['InputDataset'],
+                                                       params['RequestNumEvents'])
+              params['SplittingAlgo'] = 'LumiBased'
+              params.pop('RunWhitelist')
+
+          elif service_params['request_type'] in ['MonteCarloFromGEN']:
+              params['LumiList'] = get_subset_by_lumis(params['InputDataset'],
+                                                       float(params['RequestNumEvents'])
+                                                       / float(params['FilterEfficiency']))
+              params['SplittingAlgo'] = 'LumiBased'
+              params.pop('RunWhitelist')
+
+      # just print the parameters of the request you would have injected
+      if test_mode:
+          pp.pprint(params)
       else: # do it for real!
           try:
               workflow = wma.makeRequest(wma.WMAGENT_URL,params,encodeDict=(service_params['request_type']=='TaskChain'))
@@ -747,7 +778,9 @@ def build_params_dict(section,cfg):
   request_type = cfg.get_param('request_type',default_parameters['request_type'],section)
   request_id = cfg.get_param('request_id','',section)
   events_per_job = cfg.get_param('events_per_job','',section)
+  events_per_lumi = cfg.get_param('events_per_lumi',100,section)
 
+  lumi_based = cfg.get_param('lumi_based', False, section)
   # Upload to couch if needed or check in the cfg dict if there
   docIDs=[step1_docID,step2_docID,step3_docID]
   cfgs=[step1_cfg,step2_cfg,step3_cfg]
@@ -808,6 +841,7 @@ def build_params_dict(section,cfg):
                   'req_name': req_name,
                   "batch": batch,
                   "process_string": process_string,
+                  "lumi_based_split": lumi_based
                   }
   
   # According to the rerquest type, cook a request!
@@ -887,7 +921,7 @@ def build_params_dict(section,cfg):
                      }
                     )
 
-      events_per_lumi = int(100. / float(filter_eff))
+      events_per_lumi = int(int(events_per_lumi) / float(filter_eff))
       params.update({
           "EventsPerLumi" : events_per_lumi,
           })
@@ -940,7 +974,7 @@ def build_params_dict(section,cfg):
                      "TotalTime": 28800 ,
                      "EventsPerLumi":300,
                      "ProdJobSplitAlgo" : "EventBased",
-                     "ProdJobSplitArgs" : {"events_per_job": int(events_per_job),"events_per_lumi": 300}
+                     "ProdJobSplitArgs" : {"events_per_job": int(events_per_job),"events_per_lumi": int(events_per_lumi)}
                     })
 
       params.pop('BlockBlacklist')
@@ -1101,6 +1135,7 @@ def build_parser():
   parser.add_option('--filter-eff',help='filter efficiency' ,dest='filter_eff')
   parser.add_option('--number-events',help='number of events' ,dest='number_events', default=0)
   parser.add_option('--events-per-job', help='number of events per job (for LHE production)' , dest='events_per_job', default=0)
+  parser.add_option('--events-per-lumi',help='number of events per lumisection (for request from scratch)', dest='events_per_lumi', default=100)
   parser.add_option('--version', help='submission version' , dest='version')
   parser.add_option('--cfg_db_file', help='File containing the cfg name docid pairs' , dest='cfg_db_file')
   parser.add_option('--user', help='The registered username' , dest='user')
@@ -1124,6 +1159,9 @@ def build_parser():
   # The config file
   parser.add_option('--req_file', help='The ini configuration to launch requests' , dest='req_file')
   parser.add_option('--url-dict', help='Pickup a dict from a given url', default="", dest='url_dict')
+
+  parser.add_option('--lumi-based', help='Lumi based splitting algorithm',
+                    action='store_true', dest='lumi_based', default="False")
   
   return parser
   
