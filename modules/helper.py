@@ -19,7 +19,7 @@ class SubsetByLumi():
         self.approximation = approx
 
     def abort(self, reason=""):
-        raise Exception("Something went wrong. Aboarting. " + reason)
+        raise Exception("Something went wrong. Aborting. " + reason)
 
     def api(self, method, field, value, detail=False):
         """Constructs query and returns DBS3 response
