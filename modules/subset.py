@@ -86,4 +86,4 @@ class Generate():
                 the_bin = bin
 
         return (the_bin['content'],
-                abs(target_num_events - the_bin['space']))
+                target_num_events - the_bin['space'])

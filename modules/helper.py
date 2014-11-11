@@ -75,21 +75,65 @@ class SubsetByLumi():
             data, devi = job.run(files, events)
             if not len(data):
                 self.abort("Reason 2")
-        
-        # if deviation to big, inform but proceed
-        if devi > total * self.approximation:
-            print ("Couldn't generate desired subset. Deviation too big. " +
-                   "Perhaps try brute force. Proceeding anyway")
+
+        extended = {}
+        extended['data'] = []
+        # if deviation to big, create file backup or trash some lumis
+        if abs(devi) > total * self.approximation:
+            treshold = abs(devi)
+            # extend list of lumis
+            extended['add'] = (devi > 0)
+            if extended['add']:
+                for f in sorted(files, key=lambda e: e['events'], reverse=True):
+                    if not f in data:
+                        extended['data'].append(f)
+                        treshold = treshold - f['events']
+                    if treshold < 0:
+                        break
+            else:
+                for f in sorted(data, key=lambda e: e['events'], reverse=True):
+                    extended['data'].append(f)
+                    data.remove(f)
+                    treshold = treshold - f['events']
+                    if treshold < 0:
+                        break
 
         # proceed for best fit
         rep = {}
         for d in data:
-            # get run number and lumis per file
-            res = self.api('filelumis', 'logical_file_name', d['name'])
-            try:
-                rep[str(res[0]['run_num'])] += res[0]['lumi_section_num']
-            except KeyError:
-                rep[str(res[0]['run_num'])] = res[0]['lumi_section_num']
+            if d not in extended['data']:
+                # get run number and lumis per file
+                # if we could have one post query here with a list of files that'd be great
+                res = self.api('filelumis', 'logical_file_name', d['name'])
+                try:
+                    rep[str(res[0]['run_num'])] += res[0]['lumi_section_num']
+                except KeyError:
+                    rep[str(res[0]['run_num'])] = res[0]['lumi_section_num']
+
+        if extended['data']:
+            # remove/add some lumis from trash for fit
+            devi = abs(devi)
+            for ex in extended['data']:
+                # if we could have one post query here with a list of files that'd be great
+                res = self.api('filelumis', 'logical_file_name', ex['name'])
+                if devi < ex['events']:
+                    index = int(abs(devi) / (float(ex['events'] / len(res[0]['lumi_section_num']))))
+                    devi -= index * (ex['events']) / len(res[0]['lumi_section_num'])
+                    if extended['add']:
+                        res[0]['lumi_section_num'] = res[0]['lumi_section_num'][:index]
+                    else:
+                        res[0]['lumi_section_num'] = res[0]['lumi_section_num'][index:]
+                else:
+                    devi -= ex['events']
+                try:
+                    rep[str(res[0]['run_num'])] += res[0]['lumi_section_num']
+                except KeyError:
+                    rep[str(res[0]['run_num'])] = res[0]['lumi_section_num']
+
+        # if still too big, inform and proceed
+        if abs(devi) > total * self.approximation:
+            print ("Couldn't generate desired subset. Deviation too big. " +
+                   "Perhaps try brute force. Proceeding anyway")
 
         # generate ranges
         for run, lumis in rep.iteritems():
