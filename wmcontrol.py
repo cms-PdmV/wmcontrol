@@ -73,8 +73,11 @@ class Configuration:
     The key is to build a ConfigParser object with a single section out 
     of the option parser.
     '''
+
     default_section= '__OptionParser__'
     def __init__ (self, parser):
+        # assume you have a .conf input file, first...
+        # see : https://docs.python.org/2/library/configparser.html
         self.configparser=ConfigParser.SafeConfigParser()
 
         try:
@@ -95,7 +98,7 @@ class Configuration:
             cfg_filename=options.req_file
             print "We have a configfile: %s." %cfg_filename
             self.configparser.read(cfg_filename)
-        else: #we have to convert an option parser to a cfg
+        else: # ... otherwise, we have to convert the command line option parser to a .conf, and populate self.configparser
             print "We have a commandline."
             self.__fill_configparser(options)
 
@@ -103,7 +106,7 @@ class Configuration:
 
     def __fill_configparser(self,options):
         '''
-        Convert the option parser into a configparser.
+        Convert the option parser (from command line) into a configparser (as if it was .conf file).
         '''
         # loop on all option parser parameters and fille the cp
         self.configparser.add_section(self.__class__.default_section)
@@ -166,10 +169,9 @@ def get_subset_by_lumis(dset_name, stats):
 def get_blocks(dset_name, statistics):
     statistics = float(statistics)
     ####
-    ### during the migration, we have been forced to go from one single query to 1+N. If ever someone complains about high query rate
-    ### a) fuck you
-    ### b) https://github.com/dmwm/DBS/issues/280
+    ### during the migration, we have been forced to go from one single query to 1+N. If ever someone complains about high query rate ==> https://github.com/dmwm/DBS/issues/280
     ####
+    # an all the followig comments be cleaned up ? GF Tue Nov 11 14:29:35 CET 2014
     sum_blocks = 0
     #blocks = json.loads(wma.generic_get(wma.WMAGENT_URL, wma.DBS3_URL+"blocks?dataset=%s" %(dset_name))) #get list of all block -> return block_names
     #n_blocks = len(blocks)
@@ -280,7 +282,8 @@ def get_runs(dset_name,minrun=-1,maxrun=-1):
 #-------------------------------------------------------------------------------
 
 def custodial(datasetpath):
-  
+# not clear if this custodial method is actually used anywhere; otherwise clean it up ?
+
    if test_mode:
      return "custodialSite1"
 
@@ -510,6 +513,7 @@ def make_request_string(params,service_params,request):
 def loop_and_submit(cfg):
   '''
   Loop on all the sections of the configparser, build and submit the request.
+  This is the orchestra director function.
   '''
   pp = pprint.PrettyPrinter(indent=4)
 
@@ -667,7 +671,7 @@ def get_user_group(cfg,section):
 def build_params_dict(section,cfg):
   global couch_pass
   '''
-  Build the parameters dictionary for the request.
+  Build the parameters dictionary for the request. Assumes the presence of an input .conf file or commandline.
   For the moment the defaults of the parameters are stored here.
   Put a dictionary on top?
   '''
@@ -1107,7 +1111,7 @@ def build_parser():
   usage = 'usage: %prog <options>\n'
   usage+= '\n\nExample cfg:\n'
   usage+= example_cfg    
-  
+  # https://docs.python.org/2/library/optparse.html
   parser = optparse.OptionParser(usage,option_class=ExtendedOption)
     
   parser.add_option('--arch', help='SCRAM_ARCH', dest='scramarch')  
@@ -1179,6 +1183,7 @@ if __name__ == "__main__":
     print banner
 
     # Build a parser
+    # https://docs.python.org/2/library/optparse.html
     parser = build_parser()
 
     # here we have all parameters, taken from commandline or config
