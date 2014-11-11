@@ -3,7 +3,6 @@
 import json
 import subset
 import wma
-import time
 
 
 class SubsetByLumi():
@@ -36,29 +35,58 @@ class SubsetByLumi():
         except:
             self.abort("Could not load the answer from DBS3")
 
-    def parse_files(self, files):
+    def parse(self, inlist, name, events):
         """Parse DBS3 JSON
         """
-        f_list = []
-        e = 0
-        for f in files:
-            f_dict = {}
-            f_dict['name'] = f['logical_file_name']
-            f_dict['events'] = f['event_count']
-            e += f['event_count']
-            f_list.append(f_dict)
-        return f_list, e
+        ret = []
+        total = 0
+        for i in inlist:
+            i_dict = {}
+            i_dict['name'] = i[name]
+            i_dict['events'] = i[events]
+            ret.append(i_dict)
+            total += i[events]
+        return ret, total
 
-    def run(self, events, brute=False):
+    def run(self, events, brute=False, only_lumis=False):
         """Runs subset generation
 
         Arguments
         events -- number of events in subset
         brute -- if brute force
+        only_lumis -- skip trying to split by block
         """
+        if not only_lumis:
+            # try with blocks first
+            blocks = self.api('blocks', 'dataset', self.dataset)
+            r = []
+            for b in blocks:
+                res = self.api('blocksummaries', 'block_name', b['block_name'])
+                res[0]['block_name'] = b['block_name']
+                r += res
+            blocks, total = self.parse(r, 'block_name', 'num_event')
+
+            # break if the input is incorrect
+            if total * (1 - self.approximation) < events:
+                print ("Couldn't generate desired subset. Desired subset is " +
+                       "almost equal or bigger than total number of events")
+                data, devi = (blocks, 0)
+            else:
+                # get best fit list and deviation
+                job = subset.Generate(brute)
+                data, devi = job.run(blocks, events)
+                if not len(data):
+                    self.abort("Reason 2")
+
+            if abs(devi) <= total * self.approximation:
+                res = []
+                for d in data:
+                    res.append(d['name'])
+                return ('blocks', map(lambda x: x.encode('ascii'), res))
+
         # get files per dataset
         files = self.api('files', 'dataset', self.dataset, True)
-        files, total = self.parse_files(files)
+        files, total = self.parse(files, 'logical_file_name', 'event_count')
 
         # if total number of events is not valid number, abort
         if not total:
@@ -85,15 +113,15 @@ class SubsetByLumi():
             extended['add'] = (devi > 0)
             if extended['add']:
                 for f in sorted(files, key=lambda e: e['events'], reverse=True):
-                    if not f in data:
+                    if f not in data:
                         extended['data'].append(f)
                         treshold = treshold - f['events']
                     if treshold < 0:
                         break
             else:
                 for f in sorted(data, key=lambda e: e['events'], reverse=True):
-                    extended['data'].append(f)
                     data.remove(f)
+                    extended['data'].append(f)
                     treshold = treshold - f['events']
                     if treshold < 0:
                         break
@@ -103,7 +131,8 @@ class SubsetByLumi():
         for d in data:
             if d not in extended['data']:
                 # get run number and lumis per file
-                # if we could have one post query here with a list of files that'd be great
+                # if we could have one post query here with a list of files
+                # that'd be great
                 res = self.api('filelumis', 'logical_file_name', d['name'])
                 try:
                     rep[str(res[0]['run_num'])] += res[0]['lumi_section_num']
@@ -114,11 +143,14 @@ class SubsetByLumi():
             # remove/add some lumis from trash for fit
             devi = abs(devi)
             for ex in extended['data']:
-                # if we could have one post query here with a list of files that'd be great
+                # if we could have one post query here with a list of files
+                # that'd be great
                 res = self.api('filelumis', 'logical_file_name', ex['name'])
                 if devi < ex['events']:
-                    index = int(abs(devi) / (float(ex['events'] / len(res[0]['lumi_section_num']))))
-                    devi -= index * (ex['events']) / len(res[0]['lumi_section_num'])
+                    index = int(abs(devi) / float(ex['events'] / len(
+                                res[0]['lumi_section_num'])))
+                    devi -= index * ex['events'] / len(
+                        res[0]['lumi_section_num'])
                     if extended['add']:
                         res[0]['lumi_section_num'] = res[0]['lumi_section_num'][:index]
                     else:
@@ -153,4 +185,4 @@ class SubsetByLumi():
             sections.append(t)
             rep[run] = sections
 
-        return rep
+        return 'lumis', rep

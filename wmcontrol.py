@@ -151,18 +151,6 @@ class Configuration:
           print "I am returning the value #%s#" %(ret_val)
         return ret_val
         
-#-------------------------------------------------------------------------------
-def get_subset_by_lumis(dset_name, stats):
-    """Match statistics with lumis
-    
-    Arguments
-    dset_name -- dataset name
-    stats -- number of events in a subset
-    """
-    espl = helper.SubsetByLumi(dset_name)
-    return espl.run(stats)
-
-#-------------------------------------------------------------------------------
 def get_blocks(dset_name, statistics):
     statistics = float(statistics)
     ####
@@ -519,7 +507,7 @@ def loop_and_submit(cfg):
     # build the dictionary for the request
     params,service_params = build_params_dict(section,cfg)
     dataset_runs_dict = get_dataset_runs_dict (section,cfg)
-    if (dataset_runs_dict == False):
+    if not dataset_runs_dict:
         sys.stderr.write("[wmcontrol exception] No dataset_runs_dict provided")
         sys.exit(-1)
     # Submit request!
@@ -554,32 +542,39 @@ def loop_and_submit(cfg):
           if params['RunWhitelist']:
               params['Task1']['RunWhitelist'] = params['RunWhitelist']
               params.pop('RunWhitelist')
-          if not params['RunWhitelist']: params.pop('RunWhitelist')
-          if not params['InputDataset']: params.pop('InputDataset')
-
-      # use block based splitting algo
+          if not params['RunWhitelist']: 
+              params.pop('RunWhitelist')
+          if not params['InputDataset']: 
+              params.pop('InputDataset')
+      # use old splitting algo
       elif not service_params['lumi_based_split']:
-          if service_params['request_type'] in ['ReDigi','ReReco'] and 'RequestNumEvents' in params and (not 'BlockWhitelist' in params or params['BlockWhitelist']==[]):
+          if service_params['request_type'] in ['ReDigi','ReReco'] and 'RequestNumEvents' in params and ('BlockWhitelist' not in params or params['BlockWhitelist']==[]):
               params['BlockWhitelist']= get_blocks( params['InputDataset'] , params['RequestNumEvents'] )
-          elif service_params['request_type'] in ['MonteCarloFromGEN'] and 'RequestNumEvents' in params and (not 'BlockWhitelist' in params or params['BlockWhitelist']==[]):
+          elif service_params['request_type'] in ['MonteCarloFromGEN'] and 'RequestNumEvents' in params and ('BlockWhitelist' not in params or params['BlockWhitelist']==[]):
               params['BlockWhitelist']= get_blocks( params['InputDataset'] , float(params['RequestNumEvents']) / float(params['FilterEfficiency']) )
 
-      # use lumi based splitting algo
+      # use new splitting algo
       elif (service_params['lumi_based_split'] and 'RequestNumEvents' in params and
-            (not 'RunWhitelist' in params or params['RunWhitelist']==[])):
+            ('RunWhitelist' not in params or params['RunWhitelist']==[])):
 
           if service_params['request_type'] in ['ReDigi','ReReco']:
-              params['LumiList'] = get_subset_by_lumis(params['InputDataset'],
-                                                       params['RequestNumEvents'])
-              params['SplittingAlgo'] = 'LumiBased'
-              params.pop('RunWhitelist')
-
+              events = float(params['RequestNumEvents'])
           elif service_params['request_type'] in ['MonteCarloFromGEN']:
-              params['LumiList'] = get_subset_by_lumis(params['InputDataset'],
-                                                       float(params['RequestNumEvents'])
-                                                       / float(params['FilterEfficiency']))
-              params['SplittingAlgo'] = 'LumiBased'
-              params.pop('RunWhitelist')
+              events = float(params['RequestNumEvents'] / float(params['FilterEfficiency']))
+
+          if events:
+              if test_mode:
+                  t = time.time()
+              espl = helper.SubsetByLumi(params['InputDataset'], float(service_params['margin']))
+              split, details = espl.run(int(events), service_params['brute_force'], service_params['force_lumis'])
+              if split == 'blocks':
+                  params['BlockWhitelist'] = details
+              elif split == 'lumis':
+                  params['LumiList'] = details
+                  params['SplittingAlgo'] = 'LumiBased'
+                  # params.pop('RunWhitelist')                  
+              if test_mode:
+                  print "Finished in ", int((time.time()-t)*1000), "ms"
 
       # just print the parameters of the request you would have injected
       if test_mode:
@@ -781,6 +776,9 @@ def build_params_dict(section,cfg):
   events_per_lumi = cfg.get_param('events_per_lumi',100,section)
 
   lumi_based = cfg.get_param('lumi_based', False, section)
+  force_lumis = cfg.get_param('force_lumis', False, section)
+  brute_force = cfg.get_param('brute_force', False, section)
+  margin = cfg.get_param('margin', section)
   # Upload to couch if needed or check in the cfg dict if there
   docIDs=[step1_docID,step2_docID,step3_docID]
   cfgs=[step1_cfg,step2_cfg,step3_cfg]
@@ -841,7 +839,10 @@ def build_params_dict(section,cfg):
                   'req_name': req_name,
                   "batch": batch,
                   "process_string": process_string,
-                  "lumi_based_split": lumi_based
+                  "lumi_based_split": lumi_based,
+                  'force_lumis': force_lumis,
+                  'brute_force': brute_force,
+                  'margin': margin
                   }
   
   # According to the rerquest type, cook a request!
@@ -1160,8 +1161,14 @@ def build_parser():
   parser.add_option('--req_file', help='The ini configuration to launch requests' , dest='req_file')
   parser.add_option('--url-dict', help='Pickup a dict from a given url', default="", dest='url_dict')
 
-  parser.add_option('--lumi-based', help='Lumi based splitting algorithm',
-                    action='store_true', dest='lumi_based', default="False")
+  parser.add_option('--lumi-based', help='New splitting algorithm',
+                    action='store_true', dest='lumi_based')
+  parser.add_option('--force-lumis', help='Force lumis-based splitting',
+                    action='store_true', dest='force_lumis')
+  parser.add_option('--brute-force', help='Use brute force algorithm',
+                    action='store_true', dest='brute_force')
+  parser.add_option('--margin', help='Specify margin for splitting',
+                    default=0.05, dest='margin')
   
   return parser
   
