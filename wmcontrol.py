@@ -1158,7 +1158,7 @@ def build_parser():
   parser.add_option('--process-string', help='string to be added in the name of the request' , dest='process_string',default='')
   parser.add_option('--processing-string', help='process string do be added in the second part of dataset name' , dest='processing_string',default='') 
   parser.add_option('--batch', help='Include in the WF batch number' , dest='batch')
-  parser.add_option('--open-running-timeout', help='how long(finite) a request should remain opened, in seconds' , dest='open_running_timeout')
+  parser.add_option('--open-running-timeout', help='how long(finite) a request should remain opened, in seconds' , dest='open_running_timeout',default=43200)
   
   # Param to be inline with prep wmcontrol
   parser.add_option('--campaign', help='The name of the era (was: campaign; NO LNOGER)' , dest='campaign', default = "")
