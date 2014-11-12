@@ -67,7 +67,7 @@ class SubsetByLumi():
             blocks, total = self.parse(r, 'block_name', 'num_event')
 
             # break if the input is incorrect
-            if total * (1 - self.approximation) < events:
+            if total - events * (1 - self.approximation) < events:
                 print ("Couldn't generate desired subset. Desired subset is " +
                        "almost equal or bigger than total number of events")
                 data, devi = (blocks, 0)
@@ -78,7 +78,7 @@ class SubsetByLumi():
                 if not len(data):
                     self.abort("Reason 2")
 
-            if abs(devi) <= total * self.approximation:
+            if abs(devi) <= events * self.approximation:
                 res = []
                 for d in data:
                     res.append(d['name'])
@@ -93,7 +93,7 @@ class SubsetByLumi():
             self.abort("Reason 1")
 
         # break if the input is incorrect
-        if total * (1 - self.approximation) < events:
+        if total - events * (1 - self.approximation) < events:
             print ("Couldn't generate desired subset. Desired subset is " +
                    "almost equal or bigger than total number of events")
             data, devi = (files, 0)
@@ -107,7 +107,7 @@ class SubsetByLumi():
         extended = {}
         extended['data'] = []
         # if deviation to big, create file backup or trash some lumis
-        if abs(devi) > total * self.approximation:
+        if abs(devi) > events * self.approximation:
             treshold = abs(devi)
             # extend list of lumis
             extended['add'] = (devi > 0)
@@ -163,7 +163,7 @@ class SubsetByLumi():
                     rep[str(res[0]['run_num'])] = res[0]['lumi_section_num']
 
         # if still too big, inform and proceed
-        if abs(devi) > total * self.approximation:
+        if abs(devi) > events * self.approximation:
             print ("Couldn't generate desired subset. Deviation too big. " +
                    "Perhaps try brute force. Proceeding anyway")
 
