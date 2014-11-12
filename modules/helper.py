@@ -4,6 +4,9 @@ import json
 import subset
 import wma
 
+CONNECTION = None
+CONNECTION_ATTEMPTS = 5
+
 
 class SubsetByLumi():
 
@@ -23,13 +26,21 @@ class SubsetByLumi():
     def api(self, method, field, value, detail=False):
         """Constructs query and returns DBS3 response
         """
-        if detail:
-            res = wma.generic_get(wma.WMAGENT_URL,
-                                  wma.DBS3_URL + "%s?%s=%s&detail=%s"
-                                  % (method, field, value, detail))
-        else:
-            res = wma.generic_get(wma.WMAGENT_URL, wma.DBS3_URL
-                                  + "%s?%s=%s" % (method, field, value))
+        global CONNECTION, CONNECTION_ATTEMPTS
+
+        for i in range(CONNECTION_ATTEMPTS):
+            try:
+                if detail:
+                    res = wma.httpget(CONNECTION,
+                                      wma.DBS3_URL + "%s?%s=%s&detail=%s"
+                                      % (method, field, value, detail))
+                else:
+                    res = wma.httpget(CONNECTION, wma.DBS3_URL
+                                      + "%s?%s=%s" % (method, field, value))
+                break
+            except Exception:
+                # most likely connection terminated
+                self.refresh_connection(wma.WMAGENT_URL)
         try:
             return json.loads(res)
         except:
@@ -48,6 +59,10 @@ class SubsetByLumi():
             total += i[events]
         return ret, total
 
+    def refresh_connection(self, url):
+        global CONNECTION
+        CONNECTION = wma.init_connection(url)
+
     def run(self, events, brute=False, only_lumis=False):
         """Runs subset generation
 
@@ -56,6 +71,7 @@ class SubsetByLumi():
         brute -- if brute force
         only_lumis -- skip trying to split by block
         """
+        self.refresh_connection(wma.WMAGENT_URL)
         if not only_lumis:
             # try with blocks first
             blocks = self.api('blocks', 'dataset', self.dataset)
@@ -112,7 +128,8 @@ class SubsetByLumi():
             # extend list of lumis
             extended['add'] = (devi > 0)
             if extended['add']:
-                for f in sorted(files, key=lambda e: e['events'], reverse=True):
+                for f in sorted(files,
+                                key=lambda e: e['events'], reverse=True):
                     if f not in data:
                         extended['data'].append(f)
                         treshold = treshold - f['events']
@@ -152,9 +169,11 @@ class SubsetByLumi():
                     devi -= index * ex['events'] / len(
                         res[0]['lumi_section_num'])
                     if extended['add']:
-                        res[0]['lumi_section_num'] = res[0]['lumi_section_num'][:index]
+                        res[0]['lumi_section_num'] = res[0][
+                            'lumi_section_num'][:index]
                     else:
-                        res[0]['lumi_section_num'] = res[0]['lumi_section_num'][index:]
+                        res[0]['lumi_section_num'] = res[0][
+                            'lumi_section_num'][index:]
                 else:
                     devi -= ex['events']
                 try:
