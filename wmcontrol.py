@@ -731,7 +731,8 @@ def build_params_dict(section,cfg):
   process_string = cfg.get_param('process_string','',section)
   processing_string = cfg.get_param('processing_string','',section)
   batch = cfg.get_param('batch','',section)
-    
+  open_running_timeout = int(float(cfg.get_param('open_running_timeout','43200',section))) # 12h is legacy
+
   # for the user and group
   user,group = get_user_group(cfg,section)
   
@@ -782,7 +783,7 @@ def build_params_dict(section,cfg):
   request_type = cfg.get_param('request_type',default_parameters['request_type'],section)
   request_id = cfg.get_param('request_id','',section)
   events_per_job = cfg.get_param('events_per_job','',section)
-  events_per_lumi = cfg.get_param('events_per_lumi',100,section)
+  events_per_lumi = int(float(cfg.get_param('events_per_lumi',100,section))) # 100 is legacy
 
   lumi_based = cfg.get_param('lumi_based', False, section)
   # Upload to couch if needed or check in the cfg dict if there
@@ -868,7 +869,7 @@ def build_params_dict(section,cfg):
           "Memory": size_memory,
           "SizePerEvent": size_event,
           "TimePerEvent": time_event,
-          "OpenRunningTimeout" : 43200,
+          "OpenRunningTimeout" : open_running_timeout,
           #"ConfigCacheUrl": wma.COUCH_DB_ADDRESS,
           #"EnableHarvesting" : False
           "ProcessingString": processing_string,
@@ -925,7 +926,7 @@ def build_params_dict(section,cfg):
                      }
                     )
 
-      events_per_lumi = int(int(events_per_lumi) / float(filter_eff))
+      events_per_lumi = int(float( events_per_lumi ) / float(filter_eff))
       params.update({
           "EventsPerLumi" : events_per_lumi,
           })
@@ -1157,9 +1158,10 @@ def build_parser():
   parser.add_option('--process-string', help='string to be added in the name of the request' , dest='process_string',default='')
   parser.add_option('--processing-string', help='process string do be added in the second part of dataset name' , dest='processing_string',default='') 
   parser.add_option('--batch', help='Include in the WF batch number' , dest='batch')
+  parser.add_option('--open-running-timeout', help='how long(finite) a request should remain opened, in seconds' , dest='open_running_timeout')
   
   # Param to be inline with prep wmcontrol
-  parser.add_option('--campaign', help='The campaign name' , dest='campaign', default = "")
+  parser.add_option('--campaign', help='The name of the era (was: campaign; NO LNOGER)' , dest='campaign', default = "")
   # The config file
   parser.add_option('--req_file', help='The ini configuration to launch requests' , dest='req_file')
   parser.add_option('--url-dict', help='Pickup a dict from a given url', default="", dest='url_dict')
