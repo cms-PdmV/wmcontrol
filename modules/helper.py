@@ -5,7 +5,7 @@ import subset
 import wma
 
 CONNECTION = None
-CONNECTION_ATTEMPTS = 5
+CONNECTION_ATTEMPTS = 3
 
 
 class SubsetByLumi():
@@ -72,34 +72,49 @@ class SubsetByLumi():
         only_lumis -- skip trying to split by block
         """
         self.refresh_connection(wma.WMAGENT_URL)
+        # try with blocks first
         if not only_lumis:
-            # try with blocks first
-            blocks = self.api('blocks', 'dataset', self.dataset)
-            r = []
-            for b in blocks:
+            # if we could have one get query with details flag
+            # that'd be great
+            resp = self.api('blocks', 'dataset', self.dataset)
+            blocks = []
+            total = 0
+            # as it is cheaper to run the algo than query api, we'll do the
+            # check every sqrt of the block length. TODO: change this if the
+            # DBS api will change (query for a list ro having details flag in
+            # block query
+            jump = int(len(resp)**(0.5))
+            mid_check = jump
+            for i, b in enumerate(resp):
+                # if we could have one post query here with a list of blocks
+                # that'd be great
                 res = self.api('blocksummaries', 'block_name', b['block_name'])
                 res[0]['block_name'] = b['block_name']
-                r += res
-            blocks, total = self.parse(r, 'block_name', 'num_event')
-
-            # break if the input is incorrect
-            if total - events * (1 - self.approximation) < events:
-                print ("Couldn't generate desired subset. Desired subset is " +
-                       "almost equal or bigger than total number of events")
-                data, devi = (blocks, 0)
-            else:
-                # get best fit list and deviation
-                job = subset.Generate(brute)
-                data, devi = job.run(blocks, events)
-                if not len(data):
-                    self.abort("Reason 2")
-
-            if abs(devi) <= events * self.approximation:
-                res = []
-                for d in data:
-                    res.append(d['name'])
-                return ('blocks', map(lambda x: x.encode('ascii'), res))
-
+                bl, to = self.parse(res, 'block_name', 'num_event')
+                blocks += bl
+                total += to
+                if i == mid_check:
+                    mid_check = min(mid_check+jump, len(resp)-1)
+                    if total >= events * (1 - self.approximation):
+                        # break if there is no need of splitting
+                        if i+1 == len(resp) and (total - events * self.
+                                                 approximation) < events:
+                            print ("Desired subset is almost equal or bigger" +
+                                   " than total number of events")
+                            data, devi = (blocks, 0)
+                        else:
+                            # get best fit list and deviation
+                            job = subset.Generate(brute)
+                            data, devi = job.run(blocks, events)
+                            if not len(data):
+                                self.abort("Reason 2")
+                        if abs(devi) <= events * self.approximation:
+                            res = []
+                            for d in data:
+                                res.append(d['name'])
+                            return ('blocks',
+                                    map(lambda x: x.encode('ascii'), res))
+        print "Block based splitting not enough. Trying with lumis."
         # get files per dataset
         files = self.api('files', 'dataset', self.dataset, True)
         files, total = self.parse(files, 'logical_file_name', 'event_count')
@@ -109,7 +124,7 @@ class SubsetByLumi():
             self.abort("Reason 1")
 
         # break if the input is incorrect
-        if total - events * (1 - self.approximation) < events:
+        if total - events * self.approximation < events:
             print ("Couldn't generate desired subset. Desired subset is " +
                    "almost equal or bigger than total number of events")
             data, devi = (files, 0)
@@ -164,6 +179,7 @@ class SubsetByLumi():
                 # that'd be great
                 res = self.api('filelumis', 'logical_file_name', ex['name'])
                 if devi < ex['events']:
+                    # sorry
                     index = int(abs(devi) / float(ex['events'] / len(
                                 res[0]['lumi_section_num'])))
                     devi -= index * ex['events'] / len(
