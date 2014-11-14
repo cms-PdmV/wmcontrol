@@ -3,7 +3,9 @@
 import json
 import subset
 import wma
-import time
+
+CONNECTION = None
+CONNECTION_ATTEMPTS = 3
 
 
 class SubsetByLumi():
@@ -19,53 +21,110 @@ class SubsetByLumi():
         self.approximation = approx
 
     def abort(self, reason=""):
-        raise Exception("Something went wrong. Aboarting. " + reason)
+        raise Exception("Something went wrong. Aborting. " + reason)
 
     def api(self, method, field, value, detail=False):
         """Constructs query and returns DBS3 response
         """
-        if detail:
-            res = wma.generic_get(wma.WMAGENT_URL,
-                                  wma.DBS3_URL + "%s?%s=%s&detail=%s"
-                                  % (method, field, value, detail))
-        else:
-            res = wma.generic_get(wma.WMAGENT_URL, wma.DBS3_URL
-                                  + "%s?%s=%s" % (method, field, value))
+        global CONNECTION, CONNECTION_ATTEMPTS
+
+        for i in range(CONNECTION_ATTEMPTS):
+            try:
+                if detail:
+                    res = wma.httpget(CONNECTION,
+                                      wma.DBS3_URL + "%s?%s=%s&detail=%s"
+                                      % (method, field, value, detail))
+                else:
+                    res = wma.httpget(CONNECTION, wma.DBS3_URL
+                                      + "%s?%s=%s" % (method, field, value))
+                break
+            except Exception:
+                # most likely connection terminated
+                self.refresh_connection(wma.WMAGENT_URL)
         try:
             return json.loads(res)
         except:
             self.abort("Could not load the answer from DBS3")
 
-    def parse_files(self, files):
+    def parse(self, inlist, name, events):
         """Parse DBS3 JSON
         """
-        f_list = []
-        e = 0
-        for f in files:
-            f_dict = {}
-            f_dict['name'] = f['logical_file_name']
-            f_dict['events'] = f['event_count']
-            e += f['event_count']
-            f_list.append(f_dict)
-        return f_list, e
+        ret = []
+        total = 0
+        for i in inlist:
+            i_dict = {}
+            i_dict['name'] = i[name]
+            i_dict['events'] = i[events]
+            ret.append(i_dict)
+            total += i[events]
+        return ret, total
 
-    def run(self, events, brute=False):
+    def refresh_connection(self, url):
+        global CONNECTION
+        CONNECTION = wma.init_connection(url)
+
+    def run(self, events, brute=False, only_lumis=False):
         """Runs subset generation
 
         Arguments
         events -- number of events in subset
         brute -- if brute force
+        only_lumis -- skip trying to split by block
         """
+        self.refresh_connection(wma.WMAGENT_URL)
+        # try with blocks first
+        if not only_lumis:
+            # if we could have one get query with details flag
+            # that'd be great
+            resp = self.api('blocks', 'dataset', self.dataset)
+            blocks = []
+            total = 0
+            # as it is cheaper to run the algo than query api, we'll do the
+            # check every sqrt of the block length. TODO: change this if the
+            # DBS api will change (query for a list ro having details flag in
+            # block query
+            jump = int(len(resp)**(0.5))
+            mid_check = jump
+            for i, b in enumerate(resp):
+                # if we could have one post query here with a list of blocks
+                # that'd be great
+                res = self.api('blocksummaries', 'block_name', b['block_name'])
+                res[0]['block_name'] = b['block_name']
+                bl, to = self.parse(res, 'block_name', 'num_event')
+                blocks += bl
+                total += to
+                if i == mid_check:
+                    mid_check = min(mid_check+jump, len(resp)-1)
+                    if total >= events * (1 - self.approximation):
+                        # break if there is no need of splitting
+                        if i+1 == len(resp) and (total - events * self.
+                                                 approximation) < events:
+                            print ("Desired subset is almost equal or bigger" +
+                                   " than total number of events")
+                            data, devi = (blocks, 0)
+                        else:
+                            # get best fit list and deviation
+                            job = subset.Generate(brute)
+                            data, devi = job.run(blocks, events)
+                            if not len(data):
+                                self.abort("Reason 2")
+                        if abs(devi) <= events * self.approximation:
+                            res = []
+                            for d in data:
+                                res.append(d['name'])
+                            return ('blocks',
+                                    map(lambda x: x.encode('ascii'), res))
+        print "Block based splitting not enough. Trying with lumis."
         # get files per dataset
         files = self.api('files', 'dataset', self.dataset, True)
-        files, total = self.parse_files(files)
+        files, total = self.parse(files, 'logical_file_name', 'event_count')
 
         # if total number of events is not valid number, abort
         if not total:
             self.abort("Reason 1")
 
         # break if the input is incorrect
-        if total * (1 - self.approximation) < events:
+        if total - events * self.approximation < events:
             print ("Couldn't generate desired subset. Desired subset is " +
                    "almost equal or bigger than total number of events")
             data, devi = (files, 0)
@@ -75,21 +134,73 @@ class SubsetByLumi():
             data, devi = job.run(files, events)
             if not len(data):
                 self.abort("Reason 2")
-        
-        # if deviation to big, inform but proceed
-        if devi > total * self.approximation:
-            print ("Couldn't generate desired subset. Deviation too big. " +
-                   "Perhaps try brute force. Proceeding anyway")
+
+        extended = {}
+        extended['data'] = []
+        # if deviation to big, create file backup or trash some lumis
+        if abs(devi) > events * self.approximation:
+            treshold = abs(devi)
+            # extend list of lumis
+            extended['add'] = (devi > 0)
+            if extended['add']:
+                for f in sorted(files,
+                                key=lambda e: e['events'], reverse=True):
+                    if f not in data:
+                        extended['data'].append(f)
+                        treshold = treshold - f['events']
+                    if treshold < 0:
+                        break
+            else:
+                for f in sorted(data, key=lambda e: e['events'], reverse=True):
+                    data.remove(f)
+                    extended['data'].append(f)
+                    treshold = treshold - f['events']
+                    if treshold < 0:
+                        break
 
         # proceed for best fit
         rep = {}
         for d in data:
-            # get run number and lumis per file
-            res = self.api('filelumis', 'logical_file_name', d['name'])
-            try:
-                rep[str(res[0]['run_num'])] += res[0]['lumi_section_num']
-            except KeyError:
-                rep[str(res[0]['run_num'])] = res[0]['lumi_section_num']
+            if d not in extended['data']:
+                # get run number and lumis per file
+                # if we could have one post query here with a list of files
+                # that'd be great
+                res = self.api('filelumis', 'logical_file_name', d['name'])
+                try:
+                    rep[str(res[0]['run_num'])] += res[0]['lumi_section_num']
+                except KeyError:
+                    rep[str(res[0]['run_num'])] = res[0]['lumi_section_num']
+
+        if extended['data']:
+            # remove/add some lumis from trash for fit
+            devi = abs(devi)
+            for ex in extended['data']:
+                # if we could have one post query here with a list of files
+                # that'd be great
+                res = self.api('filelumis', 'logical_file_name', ex['name'])
+                if devi < ex['events']:
+                    # sorry
+                    index = int(abs(devi) / float(ex['events'] / len(
+                                res[0]['lumi_section_num'])))
+                    devi -= index * ex['events'] / len(
+                        res[0]['lumi_section_num'])
+                    if extended['add']:
+                        res[0]['lumi_section_num'] = res[0][
+                            'lumi_section_num'][:index]
+                    else:
+                        res[0]['lumi_section_num'] = res[0][
+                            'lumi_section_num'][index:]
+                else:
+                    devi -= ex['events']
+                try:
+                    rep[str(res[0]['run_num'])] += res[0]['lumi_section_num']
+                except KeyError:
+                    rep[str(res[0]['run_num'])] = res[0]['lumi_section_num']
+
+        # if still too big, inform and proceed
+        if abs(devi) > events * self.approximation:
+            print ("Couldn't generate desired subset. Deviation too big. " +
+                   "Perhaps try brute force. Proceeding anyway")
 
         # generate ranges
         for run, lumis in rep.iteritems():
@@ -109,4 +220,4 @@ class SubsetByLumi():
             sections.append(t)
             rep[run] = sections
 
-        return rep
+        return 'lumis', rep

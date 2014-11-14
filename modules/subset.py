@@ -11,34 +11,45 @@ class Generate():
         """
         self.brute_force = bf
 
-    def run(self, data, target):
+    def run(self, data, target, approx=0.00):
         data = sorted(data, key=lambda e: e['events'], reverse=True)
         if self.brute_force:
-            return self.knapsack_variant(data, target)
+            return self.knapsack_variant(data, target, approx)
         else:
             return self.first_fit_decreasing(data, target)
 
-    def knapsack_variant(self, dataset, target_num_events):
+    def knapsack_variant(self, dataset, target, approx=0.00):
         """Brute force solution
+
+        dataset -- input array of dicts {events, name}
+        target -- (int) target number of events
+        approx -- (float) acceptable margin
         """
-        local_min = target_num_events
+        deviation = target
         subset = []
         for i, d in enumerate(dataset):
-            diff = target_num_events - d['events']
-            if abs(local_min) > abs(diff):
-                local_min = diff
+            diff = target - d['events']
+
+            # if stored deviation is bigger then the difference
+            if abs(deviation) > abs(diff):
+                deviation = diff
                 subset = [d]
-            if diff == 0:
-                return subset, local_min
+
+            # break algo if subset is good enough
+            if abs(diff) <= target*float(approx):
+                return subset, deviation
+
+            # if diff gt 0, check rest of array recursively
             if diff > 0:
                 s, m = self.run(dataset[i+1:], diff)
-                if abs(local_min) > abs(m):
-                    local_min = m
+                if abs(deviation) > abs(m):
+                    deviation = m
                     subset = [d]
                     subset += s
-                    if local_min == 0:
-                        return subset, local_min
-        return subset, local_min
+                    if abs(diff) <= target*float(approx):
+                        return subset, deviation
+
+        return subset, deviation
 
     def first_fit_decreasing(self, dataset, target_num_events):
         """Solution based on first fit decreasing algo
@@ -75,4 +86,4 @@ class Generate():
                 the_bin = bin
 
         return (the_bin['content'],
-                abs(target_num_events - the_bin['space']))
+                target_num_events - the_bin['space'])

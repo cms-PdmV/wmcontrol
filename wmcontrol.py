@@ -73,8 +73,11 @@ class Configuration:
     The key is to build a ConfigParser object with a single section out 
     of the option parser.
     '''
+
     default_section= '__OptionParser__'
     def __init__ (self, parser):
+        # assume you have a .conf input file, first...
+        # see : https://docs.python.org/2/library/configparser.html
         self.configparser=ConfigParser.SafeConfigParser()
 
         try:
@@ -95,7 +98,7 @@ class Configuration:
             cfg_filename=options.req_file
             print "We have a configfile: %s." %cfg_filename
             self.configparser.read(cfg_filename)
-        else: #we have to convert an option parser to a cfg
+        else: # ... otherwise, we have to convert the command line option parser to a .conf, and populate self.configparser
             print "We have a commandline."
             self.__fill_configparser(options)
 
@@ -103,7 +106,7 @@ class Configuration:
 
     def __fill_configparser(self,options):
         '''
-        Convert the option parser into a configparser.
+        Convert the option parser (from command line) into a configparser (as if it was .conf file).
         '''
         # loop on all option parser parameters and fille the cp
         self.configparser.add_section(self.__class__.default_section)
@@ -151,25 +154,12 @@ class Configuration:
           print "I am returning the value #%s#" %(ret_val)
         return ret_val
         
-#-------------------------------------------------------------------------------
-def get_subset_by_lumis(dset_name, stats):
-    """Match statistics with lumis
-    
-    Arguments
-    dset_name -- dataset name
-    stats -- number of events in a subset
-    """
-    espl = helper.SubsetByLumi(dset_name)
-    return espl.run(stats)
-
-#-------------------------------------------------------------------------------
 def get_blocks(dset_name, statistics):
     statistics = float(statistics)
     ####
-    ### during the migration, we have been forced to go from one single query to 1+N. If ever someone complains about high query rate
-    ### a) fuck you
-    ### b) https://github.com/dmwm/DBS/issues/280
+    ### during the migration, we have been forced to go from one single query to 1+N. If ever someone complains about high query rate ==> https://github.com/dmwm/DBS/issues/280
     ####
+    # an all the followig comments be cleaned up ? GF Tue Nov 11 14:29:35 CET 2014
     sum_blocks = 0
     #blocks = json.loads(wma.generic_get(wma.WMAGENT_URL, wma.DBS3_URL+"blocks?dataset=%s" %(dset_name))) #get list of all block -> return block_names
     #n_blocks = len(blocks)
@@ -280,7 +270,8 @@ def get_runs(dset_name,minrun=-1,maxrun=-1):
 #-------------------------------------------------------------------------------
 
 def custodial(datasetpath):
-  
+# not clear if this custodial method is actually used anywhere; otherwise clean it up ?
+
    if test_mode:
      return "custodialSite1"
 
@@ -510,6 +501,7 @@ def make_request_string(params,service_params,request):
 def loop_and_submit(cfg):
   '''
   Loop on all the sections of the configparser, build and submit the request.
+  This is the orchestra director function.
   '''
   pp = pprint.PrettyPrinter(indent=4)
 
@@ -519,7 +511,7 @@ def loop_and_submit(cfg):
     # build the dictionary for the request
     params,service_params = build_params_dict(section,cfg)
     dataset_runs_dict = get_dataset_runs_dict (section,cfg)
-    if (dataset_runs_dict == False):
+    if not dataset_runs_dict:
         sys.stderr.write("[wmcontrol exception] No dataset_runs_dict provided")
         sys.exit(-1)
     # Submit request!
@@ -554,32 +546,39 @@ def loop_and_submit(cfg):
           if params['RunWhitelist']:
               params['Task1']['RunWhitelist'] = params['RunWhitelist']
               params.pop('RunWhitelist')
-          if not params['RunWhitelist']: params.pop('RunWhitelist')
-          if not params['InputDataset']: params.pop('InputDataset')
-
-      # use block based splitting algo
+          if not params['RunWhitelist']: 
+              params.pop('RunWhitelist')
+          if not params['InputDataset']: 
+              params.pop('InputDataset')
+      # use old splitting algo
       elif not service_params['lumi_based_split']:
-          if service_params['request_type'] in ['ReDigi','ReReco'] and 'RequestNumEvents' in params and (not 'BlockWhitelist' in params or params['BlockWhitelist']==[]):
+          if service_params['request_type'] in ['ReDigi','ReReco'] and 'RequestNumEvents' in params and ('BlockWhitelist' not in params or params['BlockWhitelist']==[]):
               params['BlockWhitelist']= get_blocks( params['InputDataset'] , params['RequestNumEvents'] )
-          elif service_params['request_type'] in ['MonteCarloFromGEN'] and 'RequestNumEvents' in params and (not 'BlockWhitelist' in params or params['BlockWhitelist']==[]):
+          elif service_params['request_type'] in ['MonteCarloFromGEN'] and 'RequestNumEvents' in params and ('BlockWhitelist' not in params or params['BlockWhitelist']==[]):
               params['BlockWhitelist']= get_blocks( params['InputDataset'] , float(params['RequestNumEvents']) / float(params['FilterEfficiency']) )
 
-      # use lumi based splitting algo
+      # use new splitting algo
       elif (service_params['lumi_based_split'] and 'RequestNumEvents' in params and
-            (not 'RunWhitelist' in params or params['RunWhitelist']==[])):
+            ('RunWhitelist' not in params or params['RunWhitelist']==[])):
 
           if service_params['request_type'] in ['ReDigi','ReReco']:
-              params['LumiList'] = get_subset_by_lumis(params['InputDataset'],
-                                                       params['RequestNumEvents'])
-              params['SplittingAlgo'] = 'LumiBased'
-              params.pop('RunWhitelist')
-
+              events = float(params['RequestNumEvents'])
           elif service_params['request_type'] in ['MonteCarloFromGEN']:
-              params['LumiList'] = get_subset_by_lumis(params['InputDataset'],
-                                                       float(params['RequestNumEvents'])
-                                                       / float(params['FilterEfficiency']))
-              params['SplittingAlgo'] = 'LumiBased'
-              params.pop('RunWhitelist')
+              events = float(params['RequestNumEvents'] / float(params['FilterEfficiency']))
+
+          if events:
+              if test_mode:
+                  t = time.time()
+              espl = helper.SubsetByLumi(params['InputDataset'], float(service_params['margin']))
+              split, details = espl.run(int(events), service_params['brute_force'], service_params['force_lumis'])
+              if split == 'blocks':
+                  params['BlockWhitelist'] = details
+              elif split == 'lumis':
+                  params['LumiList'] = details
+                  params['SplittingAlgo'] = 'LumiBased'
+                  # params.pop('RunWhitelist')                  
+              if test_mode:
+                  print "Finished in ", int((time.time()-t)*1000), "ms"
 
       # just print the parameters of the request you would have injected
       if test_mode:
@@ -667,7 +666,7 @@ def get_user_group(cfg,section):
 def build_params_dict(section,cfg):
   global couch_pass
   '''
-  Build the parameters dictionary for the request.
+  Build the parameters dictionary for the request. Assumes the presence of an input .conf file or commandline.
   For the moment the defaults of the parameters are stored here.
   Put a dictionary on top?
   '''
@@ -727,7 +726,8 @@ def build_params_dict(section,cfg):
   process_string = cfg.get_param('process_string','',section)
   processing_string = cfg.get_param('processing_string','',section)
   batch = cfg.get_param('batch','',section)
-    
+  open_running_timeout = int(float(cfg.get_param('open_running_timeout','43200',section))) # 12h is legacy
+
   # for the user and group
   user,group = get_user_group(cfg,section)
   
@@ -778,9 +778,12 @@ def build_params_dict(section,cfg):
   request_type = cfg.get_param('request_type',default_parameters['request_type'],section)
   request_id = cfg.get_param('request_id','',section)
   events_per_job = cfg.get_param('events_per_job','',section)
-  events_per_lumi = cfg.get_param('events_per_lumi',100,section)
+  events_per_lumi = int(float(cfg.get_param('events_per_lumi',100,section))) # 100 is legacy
 
   lumi_based = cfg.get_param('lumi_based', False, section)
+  force_lumis = cfg.get_param('force_lumis', False, section)
+  brute_force = cfg.get_param('brute_force', False, section)
+  margin = cfg.get_param('margin', section)
   # Upload to couch if needed or check in the cfg dict if there
   docIDs=[step1_docID,step2_docID,step3_docID]
   cfgs=[step1_cfg,step2_cfg,step3_cfg]
@@ -841,7 +844,10 @@ def build_params_dict(section,cfg):
                   'req_name': req_name,
                   "batch": batch,
                   "process_string": process_string,
-                  "lumi_based_split": lumi_based
+                  "lumi_based_split": lumi_based,
+                  'force_lumis': force_lumis,
+                  'brute_force': brute_force,
+                  'margin': margin
                   }
   
   # According to the rerquest type, cook a request!
@@ -864,7 +870,7 @@ def build_params_dict(section,cfg):
           "Memory": size_memory,
           "SizePerEvent": size_event,
           "TimePerEvent": time_event,
-          "OpenRunningTimeout" : 43200,
+          "OpenRunningTimeout" : open_running_timeout,
           #"ConfigCacheUrl": wma.COUCH_DB_ADDRESS,
           #"EnableHarvesting" : False
           "ProcessingString": processing_string,
@@ -921,7 +927,7 @@ def build_params_dict(section,cfg):
                      }
                     )
 
-      events_per_lumi = int(int(events_per_lumi) / float(filter_eff))
+      events_per_lumi = int(float( events_per_lumi ) / float(filter_eff))
       params.update({
           "EventsPerLumi" : events_per_lumi,
           })
@@ -1107,7 +1113,7 @@ def build_parser():
   usage = 'usage: %prog <options>\n'
   usage+= '\n\nExample cfg:\n'
   usage+= example_cfg    
-  
+  # https://docs.python.org/2/library/optparse.html
   parser = optparse.OptionParser(usage,option_class=ExtendedOption)
     
   parser.add_option('--arch', help='SCRAM_ARCH', dest='scramarch')  
@@ -1153,15 +1159,22 @@ def build_parser():
   parser.add_option('--process-string', help='string to be added in the name of the request' , dest='process_string',default='')
   parser.add_option('--processing-string', help='process string do be added in the second part of dataset name' , dest='processing_string',default='') 
   parser.add_option('--batch', help='Include in the WF batch number' , dest='batch')
+  parser.add_option('--open-running-timeout', help='how long(finite) a request should remain opened, in seconds' , dest='open_running_timeout',default=43200)
   
   # Param to be inline with prep wmcontrol
-  parser.add_option('--campaign', help='The campaign name' , dest='campaign', default = "")
+  parser.add_option('--campaign', help='The name of the era (was: campaign; NO LNOGER)' , dest='campaign', default = "")
   # The config file
   parser.add_option('--req_file', help='The ini configuration to launch requests' , dest='req_file')
   parser.add_option('--url-dict', help='Pickup a dict from a given url', default="", dest='url_dict')
 
-  parser.add_option('--lumi-based', help='Lumi based splitting algorithm',
-                    action='store_true', dest='lumi_based', default="False")
+  parser.add_option('--lumi-based', help='New splitting algorithm',
+                    action='store_true', dest='lumi_based')
+  parser.add_option('--force-lumis', help='Force lumis-based splitting',
+                    action='store_true', dest='force_lumis')
+  parser.add_option('--brute-force', help='Use brute force algorithm',
+                    action='store_true', dest='brute_force')
+  parser.add_option('--margin', help='Specify margin for splitting',
+                    default=0.05, dest='margin')
   
   return parser
   
@@ -1179,6 +1192,7 @@ if __name__ == "__main__":
     print banner
 
     # Build a parser
+    # https://docs.python.org/2/library/optparse.html
     parser = build_parser()
 
     # here we have all parameters, taken from commandline or config
