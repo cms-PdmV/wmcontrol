@@ -19,7 +19,7 @@ except:
     print "Probably no WMClient was set up. Trying to proceed anyway..."
 
 # DBS_URL = "http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet"
-URL = 'https://cmsweb.cern.ch/'
+URL = 'https://cmsweb.cern.ch'
 DBS_URL = URL + '/dbs/prod/global/DBSReader'
 PHEDEX_ADDR = URL + '/phedex/datasvc/json/prod/blockreplicas?dataset=%s*'
 DATABASE_NAME = 'reqmgr_config_cache'
