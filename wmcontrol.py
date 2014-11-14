@@ -779,11 +779,11 @@ def build_params_dict(section,cfg):
   request_id = cfg.get_param('request_id','',section)
   events_per_job = cfg.get_param('events_per_job','',section)
   events_per_lumi = int(float(cfg.get_param('events_per_lumi',100,section))) # 100 is legacy
-
   lumi_based = cfg.get_param('lumi_based', False, section)
   force_lumis = cfg.get_param('force_lumis', False, section)
   brute_force = cfg.get_param('brute_force', False, section)
-  margin = cfg.get_param('margin', section)
+  margin = cfg.get_param('margin', 0.05, section)
+
   # Upload to couch if needed or check in the cfg dict if there
   docIDs=[step1_docID,step2_docID,step3_docID]
   cfgs=[step1_cfg,step2_cfg,step3_cfg]
