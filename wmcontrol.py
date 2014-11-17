@@ -578,7 +578,7 @@ def loop_and_submit(cfg):
                   params['SplittingAlgo'] = 'LumiBased'
                   # params.pop('RunWhitelist')                  
               if test_mode:
-                  print "Finished in ", int((time.time()-t)*1000), "ms"
+                  print "Finished in", int((time.time()-t)*1000), "\bms"
 
       # just print the parameters of the request you would have injected
       if test_mode:
