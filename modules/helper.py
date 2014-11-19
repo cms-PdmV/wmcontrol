@@ -18,6 +18,8 @@ class SubsetByLumi():
         self.approximation = approx
         self.connection = None
         self.connection_attempts = 3
+        self.wmagenturl = 'cmsweb.cern.ch'
+        self.dbs3url = '/dbs/prod/global/DBSReader/'
 
     def abort(self, reason=""):
         raise Exception("Something went wrong. Aborting. " + reason)
@@ -26,26 +28,27 @@ class SubsetByLumi():
         """Constructs query and returns DBS3 response
         """
         if not self.connection:
-            self.refresh_connection(wma.WMAGENT_URL)
+            self.refresh_connection(self.wmagenturl)
 
         # this way saves time for creating connection per every request
         for i in range(self.connection_attempts):
             try:
                 if detail:
-                    res = wma.httpget(self.connection,
-                                      wma.DBS3_URL + "%s?%s=%s&detail=%s"
+                    res = wma.httpget(self.connection, self.dbs3url
+                                      + "%s?%s=%s&detail=%s"
                                       % (method, field, value, detail))
                 else:
-                    res = wma.httpget(self.connection, wma.DBS3_URL
+                    res = wma.httpget(self.connection, self.dbs3url
                                       + "%s?%s=%s" % (method, field, value))
                 break
             except Exception:
                 # most likely connection terminated
-                self.refresh_connection(wma.WMAGENT_URL)
+                self.refresh_connection(self.wmagenturl)
         try:
             return json.loads(res)
         except:
-            self.abort("Could not load the answer from DBS3")
+            self.abort("Could not load the answer from DBS3: " + wma.DBS3_URL
+                       + "%s?%s=%s&detail=%s" % (method, field, value, detail))
 
     def parse(self, inlist, name, events):
         """Parse DBS3 JSON
@@ -135,6 +138,7 @@ class SubsetByLumi():
                     data.remove(f)
                     extended['data'].append(f)
                     treshold = treshold - f['events']
+                    devi += f['events']
                     if treshold < 0:
                         break
 
@@ -144,7 +148,7 @@ class SubsetByLumi():
             if d not in extended['data']:
                 # get run number and lumis per file
                 # if we could have one post query here with a list of files
-                # that'd be great
+                # that'd be great - https://github.com/dmwm/DBS/issues/428
                 res = self.api('filelumis', 'logical_file_name', d['name'])
                 try:
                     rep[str(res[0]['run_num'])] += res[0]['lumi_section_num']
@@ -152,30 +156,23 @@ class SubsetByLumi():
                     rep[str(res[0]['run_num'])] = res[0]['lumi_section_num']
 
         if extended['data']:
-            # remove/add some lumis from trash for fit
-            devi = abs(devi)
             for ex in extended['data']:
                 # if we could have one post query here with a list of files
-                # that'd be great
-                res = self.api('filelumis', 'logical_file_name', ex['name'])
-                if devi < ex['events']:
-                    # sorry
-                    index = int(abs(devi) / float(ex['events'] / len(
-                                res[0]['lumi_section_num'])))
-                    devi -= index * ex['events'] / len(
-                        res[0]['lumi_section_num'])
-                    if extended['add']:
-                        res[0]['lumi_section_num'] = res[0][
-                            'lumi_section_num'][:index]
-                    else:
-                        res[0]['lumi_section_num'] = res[0][
-                            'lumi_section_num'][index:]
+                # that'd be great - https://github.com/dmwm/DBS/issues/428
+                r = self.api('filelumis', 'logical_file_name', ex['name'])
+                if abs(devi) < ex['events']:
+                    # process only part of res
+                    avlum = float(ex['events']) / len(r[0]['lumi_section_num'])
+                    i = int(len(r[0]['lumi_section_num']) - abs(devi)/avlum)
+                    devi -= (len(r[0]['lumi_section_num']) - abs(i))*avlum
+                    r[0]['lumi_section_num'] = r[0]['lumi_section_num'][i:]
                 else:
+                    # process full res
                     devi -= ex['events']
                 try:
-                    rep[str(res[0]['run_num'])] += res[0]['lumi_section_num']
+                    rep[str(r[0]['run_num'])] += r[0]['lumi_section_num']
                 except KeyError:
-                    rep[str(res[0]['run_num'])] = res[0]['lumi_section_num']
+                    rep[str(r[0]['run_num'])] = r[0]['lumi_section_num']
 
         # if still too big, inform and proceed
         if abs(devi) > events * self.approximation:
