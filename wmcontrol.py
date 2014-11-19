@@ -551,14 +551,14 @@ def loop_and_submit(cfg):
           if not params['InputDataset']: 
               params.pop('InputDataset')
       # use old splitting algo
-      elif not service_params['lumi_based_split']:
+      elif service_params['block_based_split']:
           if service_params['request_type'] in ['ReDigi','ReReco'] and 'RequestNumEvents' in params and ('BlockWhitelist' not in params or params['BlockWhitelist']==[]):
               params['BlockWhitelist']= get_blocks( params['InputDataset'] , params['RequestNumEvents'] )
           elif service_params['request_type'] in ['MonteCarloFromGEN'] and 'RequestNumEvents' in params and ('BlockWhitelist' not in params or params['BlockWhitelist']==[]):
               params['BlockWhitelist']= get_blocks( params['InputDataset'] , float(params['RequestNumEvents']) / float(params['FilterEfficiency']) )
 
       # use new splitting algo
-      elif (service_params['lumi_based_split'] and 'RequestNumEvents' in params and
+      elif (not service_params['block_based_split'] and 'RequestNumEvents' in params and
             ('RunWhitelist' not in params or params['RunWhitelist']==[])):
 
           if service_params['request_type'] in ['ReDigi','ReReco']:
@@ -779,7 +779,7 @@ def build_params_dict(section,cfg):
   request_id = cfg.get_param('request_id','',section)
   events_per_job = cfg.get_param('events_per_job','',section)
   events_per_lumi = int(float(cfg.get_param('events_per_lumi',100,section))) # 100 is legacy
-  lumi_based = cfg.get_param('lumi_based', False, section)
+  block_based = cfg.get_param('block_based', False, section)
   force_lumis = cfg.get_param('force_lumis', False, section)
   brute_force = cfg.get_param('brute_force', False, section)
   margin = cfg.get_param('margin', 0.05, section)
@@ -844,7 +844,7 @@ def build_params_dict(section,cfg):
                   'req_name': req_name,
                   "batch": batch,
                   "process_string": process_string,
-                  "lumi_based_split": lumi_based,
+                  "block_based_split": block_based,
                   'force_lumis': force_lumis,
                   'brute_force': brute_force,
                   'margin': margin
@@ -1167,8 +1167,8 @@ def build_parser():
   parser.add_option('--req_file', help='The ini configuration to launch requests' , dest='req_file')
   parser.add_option('--url-dict', help='Pickup a dict from a given url', default="", dest='url_dict')
 
-  parser.add_option('--lumi-based', help='New splitting algorithm',
-                    action='store_true', dest='lumi_based')
+  parser.add_option('--old-algo', help='Old splitting algorithm',
+                    action='store_true', dest='block_based')
   parser.add_option('--force-lumis', help='Force lumis-based splitting',
                     action='store_true', dest='force_lumis')
   parser.add_option('--brute-force', help='Use brute force algorithm',
