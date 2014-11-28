@@ -140,7 +140,7 @@ def __loadConfig(configPath):
 #-------------------------------------------------------------------------------    
 # DP leave this untouched even if less than optimal!
 def makeRequest(url,params,encodeDict=False):
-    #params["ConfigCacheUrl"] = "https://cmsweb.cern.ch/couchdb"
+
     __check_request_params(params)
     for (k,v) in params.items():
       if type(v) ==dict:
@@ -159,6 +159,7 @@ def makeRequest(url,params,encodeDict=False):
 
     headers  =  {"Content-type": "application/x-www-form-urlencoded",
                  "Accept": "text/plain"}
+
     conn  =  httplib.HTTPSConnection(url, cert_file = os.getenv('X509_USER_PROXY'), key_file = os.getenv('X509_USER_PROXY'))
     conn.request("POST",  "/reqmgr/create/makeSchema", encodedParams, headers)
     response = conn.getresponse()
