@@ -4,9 +4,6 @@ import json
 import subset
 import wma
 
-CONNECTION = None
-CONNECTION_ATTEMPTS = 3
-
 
 class SubsetByLumi():
 
@@ -19,6 +16,8 @@ class SubsetByLumi():
         """
         self.dataset = dset_name
         self.approximation = approx
+        self.connection = None
+        self.connection_attempts = 3
 
     def abort(self, reason=""):
         raise Exception("Something went wrong. Aborting. " + reason)
@@ -26,16 +25,18 @@ class SubsetByLumi():
     def api(self, method, field, value, detail=False):
         """Constructs query and returns DBS3 response
         """
-        global CONNECTION, CONNECTION_ATTEMPTS
+        if not self.connection:
+            self.refresh_connection(wma.WMAGENT_URL)
 
-        for i in range(CONNECTION_ATTEMPTS):
+        # this way saves time for creating connection per every request
+        for i in range(self.connection_attempts):
             try:
                 if detail:
-                    res = wma.httpget(CONNECTION,
+                    res = wma.httpget(self.connection,
                                       wma.DBS3_URL + "%s?%s=%s&detail=%s"
                                       % (method, field, value, detail))
                 else:
-                    res = wma.httpget(CONNECTION, wma.DBS3_URL
+                    res = wma.httpget(self.connection, wma.DBS3_URL
                                       + "%s?%s=%s" % (method, field, value))
                 break
             except Exception:
@@ -60,8 +61,7 @@ class SubsetByLumi():
         return ret, total
 
     def refresh_connection(self, url):
-        global CONNECTION
-        CONNECTION = wma.init_connection(url)
+        self.connection = wma.init_connection(url)
 
     def run(self, events, brute=False, only_lumis=False):
         """Runs subset generation
@@ -71,50 +71,30 @@ class SubsetByLumi():
         brute -- if brute force
         only_lumis -- skip trying to split by block
         """
-        self.refresh_connection(wma.WMAGENT_URL)
-        # try with blocks first
         if not only_lumis:
-            # if we could have one get query with details flag
-            # that'd be great
-            resp = self.api('blocks', 'dataset', self.dataset)
-            blocks = []
-            total = 0
-            # as it is cheaper to run the algo than query api, we'll do the
-            # check every sqrt of the block length. TODO: change this if the
-            # DBS api will change (query for a list ro having details flag in
-            # block query
-            jump = int(len(resp)**(0.5))
-            mid_check = jump
-            for i, b in enumerate(resp):
-                # if we could have one post query here with a list of blocks
-                # that'd be great
-                res = self.api('blocksummaries', 'block_name', b['block_name'])
-                res[0]['block_name'] = b['block_name']
-                bl, to = self.parse(res, 'block_name', 'num_event')
-                blocks += bl
-                total += to
-                if i == mid_check:
-                    mid_check = min(mid_check+jump, len(resp)-1)
-                    if total >= events * (1 - self.approximation):
-                        # break if there is no need of splitting
-                        if i+1 == len(resp) and (total - events * self.
-                                                 approximation) < events:
-                            print ("Desired subset is almost equal or bigger" +
-                                   " than total number of events")
-                            data, devi = (blocks, 0)
-                        else:
-                            # get best fit list and deviation
-                            job = subset.Generate(brute)
-                            data, devi = job.run(blocks, events)
-                            if not len(data):
-                                self.abort("Reason 2")
-                        if abs(devi) <= events * self.approximation:
-                            res = []
-                            for d in data:
-                                res.append(d['name'])
-                            return ('blocks',
-                                    map(lambda x: x.encode('ascii'), res))
-        print "Block based splitting not enough. Trying with lumis."
+            # try with blocks first
+            res = self.api('blocksummaries', 'dataset', self.dataset, True)
+            blocks, total = self.parse(res, 'block_name', 'num_evernt')
+            if total - events * self.approximation < events:
+                # if there is no need of splitting read whole dataset
+                print ("Desired subset is almost equal or bigger than total " +
+                       "number of events")
+                data, devi = (blocks, 0)
+            else:
+                # get best fit list and deviation
+                job = subset.Generate(brute)
+                data, devi = job.run(blocks, events)
+            if not len(data):
+                # when no data something is wrong with the response
+                self.abort("Reason 2")
+            if abs(devi) <= events * self.approximation:
+                # deviation good enough to return block
+                res = []
+                for d in data:
+                    res.append(d['name'])
+                return ('blocks', map(lambda x: x.encode('ascii'), res))
+            print "Block based splitting not enough. Trying with lumis."
+
         # get files per dataset
         files = self.api('files', 'dataset', self.dataset, True)
         files, total = self.parse(files, 'logical_file_name', 'event_count')

@@ -51,25 +51,26 @@ def httpget(conn, query):
     except httplib.BadStatusLine:
         raise RuntimeError('Something is really wrong')
     if response.status != 200:
-        print "Problems quering DBS3 RESTAPI with %s" % (
-            base_url + query.replace('#', '%23'))
+        print "Problems quering DBS3 RESTAPI with %s: %s" % (
+            base_url + query.replace('#', '%23'), response.read())
         return None
     return response.read()
 
 
 def generic_get(base_url, query):
-    headers  =  {"Content-type": "application/json"}
-    conn  =  httplib.HTTPSConnection(base_url, cert_file = os.getenv('X509_USER_PROXY'), key_file = os.getenv('X509_USER_PROXY'))
+    headers = {"Content-type": "application/json"}
+    conn = httplib.HTTPSConnection(base_url,
+                                   cert_file=os.getenv('X509_USER_PROXY'),
+                                   key_file=os.getenv('X509_USER_PROXY'))
     conn.request("GET", query.replace("#", "%23"))
-    #print "getting",base_url,query,"..."
     response = conn.getresponse()
-    
+
     if response.status != 200:
-        print "Problems quering DBS3 RESTAPI: %s" %(base_url+query.replace("#", "%23"))
+        print "Problems quering DBS3 RESTAPI: %s" % (
+            base_url+query.replace("#", "%23"))
         data = None
     else:
         data = response.read()
-        #print "...got",data
     return data
 
 #-------------------------------------------------------------------------------
