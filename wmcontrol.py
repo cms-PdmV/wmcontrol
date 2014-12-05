@@ -873,8 +873,7 @@ def build_params_dict(section,cfg):
           "OpenRunningTimeout" : open_running_timeout,
           #"ConfigCacheUrl": wma.COUCH_DB_ADDRESS,
           #"EnableHarvesting" : False
-          "ProcessingString": processing_string,
-          "AcquisitionEra" : campaign
+          "ProcessingString": processing_string
           }
 
   if url_dict != "":
