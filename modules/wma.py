@@ -57,24 +57,6 @@ def httpget(conn, query):
     return response.read()
 
 
-def generic_get(base_url, query):
-    headers = {"Content-type": "application/json"}
-    conn = httplib.HTTPSConnection(base_url,
-                                   cert_file=os.getenv('X509_USER_PROXY'),
-                                   key_file=os.getenv('X509_USER_PROXY'))
-    conn.request("GET", query.replace("#", "%23"))
-    response = conn.getresponse()
-
-    if response.status != 200:
-        print "Problems quering DBS3 RESTAPI: %s" % (
-            base_url+query.replace("#", "%23"))
-        data = None
-    else:
-        data = response.read()
-    return data
-
-#-------------------------------------------------------------------------------
-
 def __check_GT(gt):
     if not gt.endswith("::All"):
         print "It seemslike the name of the GT '%s' has a typo in it, missing the final ::All which will crash your job. If insted you're using CondDBv2, you're fine." %gt

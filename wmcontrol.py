@@ -154,97 +154,6 @@ class Configuration:
           print "I am returning the value #%s#" %(ret_val)
         return ret_val
         
-def get_blocks(dset_name, statistics):
-    statistics = float(statistics)
-    ####
-    ### during the migration, we have been forced to go from one single query to 1+N. If ever someone complains about high query rate ==> https://github.com/dmwm/DBS/issues/280
-    ####
-    # an all the followig comments be cleaned up ? GF Tue Nov 11 14:29:35 CET 2014
-    sum_blocks = 0
-    #blocks = json.loads(wma.generic_get(wma.WMAGENT_URL, wma.DBS3_URL+"blocks?dataset=%s" %(dset_name))) #get list of all block -> return block_names
-    #n_blocks = len(blocks)
-    #print os.getcwd()
-
-    ### DAS Crap
-    #comm = 'python /afs/cern.ch/cms/PPD/PdmV/tools/wmcontrol/modules/das_client.py --query="block dataset=%s" --format=json --das-headers --limit=0'%(dset_name)
-    # p = subprocess.Popen(comm, shell=True, 
-    #                    stdin=subprocess.PIPE, 
-    #                    stdout=subprocess.PIPE, 
-    #                    stderr=subprocess.STDOUT, 
-    #                    close_fds=True)
-    # das_output = p.stdout.read()
-    # try:
-    #     data = json.loads(das_output)["data"]
-    # except:
-    #         pprint.pprint( das_output)
-    #         raise Exception("What the FUCK is going on ???")
-    
-    # blocks = []
-    # n_blocks= len(data)
-    # for block in data:
-    #     try:
-    #         b = filter(lambda bl : 'nevents' in bl, block["block"])
-    #         if len(b):
-    #             blocks.append({'block_name': b["name"], 'NumberOfEvents': b["nevents"]}) #lets convert DAS data to our used format
-    #         else:
-    #             print block["block"],"has no events"
-    #     except:
-    #         raise Exception("Corrupted DAS data %s"%( pprint.pformat( block["block"] )))
-        
-    #     sum_blocks += b["nevents"]
-    answer = wma.generic_get(wma.WMAGENT_URL, wma.DBS3_URL+"blocks?dataset=%s" %(dset_name)) #get list of all block -> return block_names
-    try:
-        blocks = json.loads( answer )
-    except:
-        #failed to load the json, so assume it's all fine
-        print "Could not load the answer from DBS3 %s"% answer
-        raise Exception("Could not load the answer from DBS3 %s"% answer)
-
-    n_blocks = len(blocks)
-    for block in blocks:
-        #print "a query"
-        return_data = json.loads(wma.generic_get(wma.WMAGENT_URL, wma.DBS3_URL+"blocksummaries?block_name=%s" %(block["block_name"]))) #get a single block's numberOfEvents
-        block["NumberOfEvents"] = return_data[0]["num_event"]
-        sum_blocks += return_data[0]["num_event"]
-
-        
-    if statistics >= float(sum_blocks * 0.95):
-        ## returning an empty list means no block selection
-        print "required statistics (%d) and available (%d) are almost the same"%( statistics , sum_blocks)
-        return []
-
-    ## otherwise try to pick the best set of blocks to make up the number of events desired
-    s_sum = 0
-    s_blocks = []
-    
-    blocks.sort(reverse=True, key= lambda o : o['NumberOfEvents'])
-    while len(blocks) and float(s_sum + blocks[0]['NumberOfEvents']) < statistics:
-        s_sum+= blocks[0]['NumberOfEvents']
-        s_blocks.append(blocks[0])
-        blocks.remove(blocks[0])
-        #print s_sum, s_blocks
-        
-    blocks.sort(key= lambda o : o['NumberOfEvents'])
-    while len(blocks) and float( s_sum + blocks[0]['NumberOfEvents']) < statistics:
-        s_sum+= blocks[0]['NumberOfEvents']
-        s_blocks.append(blocks[0])
-        blocks.remove(blocks[0])
-        #print s_sum, s_blocks
-
-    if len(blocks) and float(s_sum)< statistics:
-        s_sum+=blocks[0]['NumberOfEvents']
-        s_blocks.append(blocks[0])
-        blocks.remove(blocks[0])
-        #print s_sum, s_blocks
-        
-    if len (s_blocks) == n_blocks:
-        print "block selection could not selec a sub-set to achieve the disered statistics. taking all block"
-        return []
-    else:
-        return map(lambda b : str(b['block_name']) , s_blocks)
-    
-
-#-------------------------------------------------------------------------------
 
 def get_runs(dset_name,minrun=-1,maxrun=-1):
     '''
@@ -550,15 +459,7 @@ def loop_and_submit(cfg):
               params.pop('RunWhitelist')
           if not params['InputDataset']: 
               params.pop('InputDataset')
-      # use old splitting algo
-      elif service_params['block_based_split']:
-          if service_params['request_type'] in ['ReDigi','ReReco'] and 'RequestNumEvents' in params and ('BlockWhitelist' not in params or params['BlockWhitelist']==[]):
-              params['BlockWhitelist']= get_blocks( params['InputDataset'] , params['RequestNumEvents'] )
-          elif service_params['request_type'] in ['MonteCarloFromGEN'] and 'RequestNumEvents' in params and ('BlockWhitelist' not in params or params['BlockWhitelist']==[]):
-              params['BlockWhitelist']= get_blocks( params['InputDataset'] , float(params['RequestNumEvents']) / float(params['FilterEfficiency']) )
-
-      # use new splitting algo
-      elif (not service_params['block_based_split'] and 'RequestNumEvents' in params and
+      elif ('RequestNumEvents' in params and
             ('RunWhitelist' not in params or params['RunWhitelist']==[])):
 
           if service_params['request_type'] in ['ReDigi','ReReco']:
@@ -569,8 +470,13 @@ def loop_and_submit(cfg):
           if events:
               if test_mode:
                   t = time.time()
-              espl = helper.SubsetByLumi(params['InputDataset'], float(service_params['margin']))
-              split, details = espl.run(int(events), service_params['brute_force'], service_params['force_lumis'])
+              espl = helper.SubsetByLumi(params['InputDataset'],
+                                         float(service_params['margin']))
+              split, details = espl.run(int(events),
+                                        service_params['brute_force'],
+                                        service_params['force_lumis'])
+              # https://github.com/dmwm/DBS/issues/280
+              # https://github.com/dmwm/DBS/issues/428
               if split == 'blocks':
                   params['BlockWhitelist'] = details
               elif split == 'lumis':
@@ -779,7 +685,6 @@ def build_params_dict(section,cfg):
   request_id = cfg.get_param('request_id','',section)
   events_per_job = cfg.get_param('events_per_job','',section)
   events_per_lumi = int(float(cfg.get_param('events_per_lumi',100,section))) # 100 is legacy
-  block_based = cfg.get_param('block_based', False, section)
   force_lumis = cfg.get_param('force_lumis', False, section)
   brute_force = cfg.get_param('brute_force', False, section)
   margin = cfg.get_param('margin', 0.05, section)
@@ -844,7 +749,6 @@ def build_params_dict(section,cfg):
                   'req_name': req_name,
                   "batch": batch,
                   "process_string": process_string,
-                  "block_based_split": block_based,
                   'force_lumis': force_lumis,
                   'brute_force': brute_force,
                   'margin': margin
@@ -1166,8 +1070,6 @@ def build_parser():
   parser.add_option('--req_file', help='The ini configuration to launch requests' , dest='req_file')
   parser.add_option('--url-dict', help='Pickup a dict from a given url', default="", dest='url_dict')
 
-  parser.add_option('--old-algo', help='Old splitting algorithm',
-                    action='store_true', dest='block_based')
   parser.add_option('--force-lumis', help='Force lumis-based splitting',
                     action='store_true', dest='force_lumis')
   parser.add_option('--brute-force', help='Use brute force algorithm',
