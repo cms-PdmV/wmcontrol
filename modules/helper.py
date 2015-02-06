@@ -77,7 +77,7 @@ class SubsetByLumi():
         if not only_lumis:
             # try with blocks first
             res = self.api('blocksummaries', 'dataset', self.dataset, True)
-            blocks, total = self.parse(res, 'block_name', 'num_evernt')
+            blocks, total = self.parse(res, 'block_name', 'num_event')
             if total - events * self.approximation < events:
                 # if there is no need of splitting read whole dataset
                 print ("Desired subset is almost equal or bigger than total " +
