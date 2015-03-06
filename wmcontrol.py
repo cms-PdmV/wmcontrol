@@ -451,13 +451,12 @@ def loop_and_submit(cfg):
       elif service_params['request_type'] == 'TaskChain':
           if params['InputDataset']:
               params['Task1']['InputDataset'] = params['InputDataset']
-              params.pop('InputDataset')
           if params['RunWhitelist']:
               params['Task1']['RunWhitelist'] = params['RunWhitelist']
-              params.pop('RunWhitelist')
-          if not params['RunWhitelist']: 
-              params.pop('RunWhitelist')
-          if not params['InputDataset']: 
+
+          if 'RunWhitelist' in params: #if params has key we remove it
+              params.pop('RunWhitelist') #because it was set as Task parameter
+          if 'InputDataset' in params:
               params.pop('InputDataset')
       elif ('RequestNumEvents' in params and
             ('RunWhitelist' not in params or params['RunWhitelist']==[])):
