@@ -11,6 +11,7 @@ import imp
 import sys
 import pprint
 import time
+import json
 
 try:
     from PSetTweaks.WMTweak import makeTweak
@@ -40,7 +41,8 @@ def testbed(to_url):
 
 
 def init_connection(url):
-    return httplib.HTTPSConnection(url, cert_file=os.getenv('X509_USER_PROXY'),
+    return httplib.HTTPSConnection(url, port=443,
+                                   cert_file=os.getenv('X509_USER_PROXY'),
                                    key_file=os.getenv('X509_USER_PROXY'))
 
 
@@ -53,6 +55,20 @@ def httpget(conn, query):
     if response.status != 200:
         print "Problems quering DBS3 RESTAPI with %s: %s" % (
             base_url + query.replace('#', '%23'), response.read())
+        return None
+    return response.read()
+
+
+def httppost(conn, where, params):
+    headers = {"Content-type": "application/json", "Accept": "text/plain"}
+    conn.request("POST", where, json.dumps(params), headers)
+    try:
+        response = conn.getresponse()
+    except httplib.BadStatusLine:
+        raise RuntimeError('Something is really wrong')
+    if response.status != 200:
+        print "Problems quering DBS3 RESTAPI with %s: %s" % (
+            params, response.read())
         return None
     return response.read()
 

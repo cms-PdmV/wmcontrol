@@ -2,6 +2,7 @@
 
 import json
 import subset
+import urllib
 import wma
 
 
@@ -24,7 +25,7 @@ class SubsetByLumi():
     def abort(self, reason=""):
         raise Exception("Something went wrong. Aborting. " + reason)
 
-    def api(self, method, field, value, detail=False):
+    def api(self, method, field, value, detail=False, post=False):
         """Constructs query and returns DBS3 response
         """
         if not self.connection:
@@ -33,13 +34,19 @@ class SubsetByLumi():
         # this way saves time for creating connection per every request
         for i in range(self.connection_attempts):
             try:
-                if detail:
-                    res = wma.httpget(self.connection, self.dbs3url
-                                      + "%s?%s=%s&detail=%s"
-                                      % (method, field, value, detail))
+                if post:
+                    params = {}
+                    params[field] = value
+                    res = wma.httppost(self.connection, self.dbs3url +
+                                       method, params).replace("'", '"')
                 else:
-                    res = wma.httpget(self.connection, self.dbs3url
-                                      + "%s?%s=%s" % (method, field, value))
+                    if detail:
+                        res = wma.httpget(self.connection, self.dbs3url
+                                          + "%s?%s=%s&detail=%s"
+                                          % (method, field, value, detail))
+                    else:
+                        res = wma.httpget(self.connection, self.dbs3url +
+                                          "%s?%s=%s" % (method, field, value))
                 break
             except Exception:
                 # most likely connection terminated
@@ -74,6 +81,10 @@ class SubsetByLumi():
         brute -- if brute force
         only_lumis -- skip trying to split by block
         """
+
+        if not self.connection:
+            self.refresh_connection(self.wmagenturl)
+
         if not only_lumis:
             # try with blocks first
             res = self.api('blocksummaries', 'dataset', self.dataset, True)
@@ -142,37 +153,43 @@ class SubsetByLumi():
                     if treshold < 0:
                         break
 
-        # proceed for best fit
+        # get a list of lumis (full list added)
         rep = {}
-        for d in data:
-            if d not in extended['data']:
-                # get run number and lumis per file
-                # if we could have one post query here with a list of files
-                # that'd be great - https://github.com/dmwm/DBS/issues/428
-                res = self.api('filelumis', 'logical_file_name', d['name'])
+        if len(data):
+            res = self.api('filelumis', 'logical_file_name',
+                           [d['name'] for d in data if d not
+                            in extended['data']], post=True)
+            for r in res:
                 try:
-                    rep[str(res[0]['run_num'])] += res[0]['lumi_section_num']
+                    rep[str(r['run_num'])] += r['lumi_section_num']
                 except KeyError:
-                    rep[str(res[0]['run_num'])] = res[0]['lumi_section_num']
+                    rep[str(r['run_num'])] = r['lumi_section_num']
 
-        if extended['data']:
-            for ex in extended['data']:
-                # if we could have one post query here with a list of files
-                # that'd be great - https://github.com/dmwm/DBS/issues/428
-                r = self.api('filelumis', 'logical_file_name', ex['name'])
-                if abs(devi) < ex['events']:
+        # get extended list of lumis (only some will be added)
+        if len(extended['data']):
+            ext = extended['data']
+            res = self.api('filelumis', 'logical_file_name',
+                           [e['name'] for e in ext], post=True)
+            for i, e in enumerate(ext):
+                for r in res:
+                    if e['name'] == r['logical_file_name']:
+                        ext[i]['lumi_section_num'] = r['lumi_section_num']
+                        ext[i]['run_num'] = r['run_num']
+                        break
+            for e in ext:
+                if abs(devi) < e['events']:
                     # process only part of res
-                    avlum = float(ex['events']) / len(r[0]['lumi_section_num'])
-                    i = int(len(r[0]['lumi_section_num']) - abs(devi)/avlum)
-                    devi -= (len(r[0]['lumi_section_num']) - abs(i))*avlum
-                    r[0]['lumi_section_num'] = r[0]['lumi_section_num'][i:]
+                    avlum = float(e['events']) / len(e['lumi_section_num'])
+                    i = int(len(e['lumi_section_num']) - abs(devi)/avlum)
+                    devi -= (len(e['lumi_section_num']) - abs(i))*avlum
+                    e['lumi_section_num'] = e['lumi_section_num'][i:]
                 else:
                     # process full res
-                    devi -= ex['events']
+                    devi -= e['events']
                 try:
-                    rep[str(r[0]['run_num'])] += r[0]['lumi_section_num']
+                    rep[str(e['run_num'])] += e['lumi_section_num']
                 except KeyError:
-                    rep[str(r[0]['run_num'])] = r[0]['lumi_section_num']
+                    rep[str(e['run_num'])] = e['lumi_section_num']
 
         # if still too big, inform and proceed
         if abs(devi) > events * self.approximation:
