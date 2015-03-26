@@ -4,7 +4,7 @@ import json
 import subset
 import urllib
 import wma
-
+from collections import defaultdict
 
 class SubsetByLumi():
 
@@ -129,6 +129,7 @@ class SubsetByLumi():
             if not len(data):
                 self.abort("Reason 2")
 
+
         extended = {}
         extended['data'] = []
         # if deviation to big, create file backup or trash some lumis
@@ -154,26 +155,27 @@ class SubsetByLumi():
                         break
 
         # get a list of lumis (full list added)
-        rep = {}
+        rep = defaultdict(list)
         if len(data):
+            print "using data"
             res = self.api('filelumis', 'logical_file_name',
                            [d['name'] for d in data if d not
                             in extended['data']], post=True)
             for r in res:
-                try:
-                    rep[str(r['run_num'])] += r['lumi_section_num']
-                except KeyError:
-                    rep[str(r['run_num'])] = r['lumi_section_num']
+                rep[str(r['run_num'])].extend(r['lumi_section_num'])
+
 
         # get extended list of lumis (only some will be added)
         if len(extended['data']):
+            print "using extended"
             ext = extended['data']
             res = self.api('filelumis', 'logical_file_name',
                            [e['name'] for e in ext], post=True)
+
             for i, e in enumerate(ext):
                 for r in res:
                     if e['name'] == r['logical_file_name']:
-                        ext[i]['lumi_section_num'] = r['lumi_section_num']
+                        ext[i]['lumi_section_num'] = sorted(r['lumi_section_num'])
                         ext[i]['run_num'] = r['run_num']
                         break
             for e in ext:
@@ -186,10 +188,7 @@ class SubsetByLumi():
                 else:
                     # process full res
                     devi -= e['events']
-                try:
-                    rep[str(e['run_num'])] += e['lumi_section_num']
-                except KeyError:
-                    rep[str(e['run_num'])] = e['lumi_section_num']
+                rep[str(e['run_num'])].extend( e['lumi_section_num'] )
 
         # if still too big, inform and proceed
         if abs(devi) > events * self.approximation:
@@ -214,4 +213,4 @@ class SubsetByLumi():
             sections.append(t)
             rep[run] = sections
 
-        return 'lumis', rep
+        return 'lumis', dict(rep)
