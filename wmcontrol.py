@@ -496,12 +496,13 @@ def loop_and_submit(cfg):
               #just try a second time
               workflow = wma.makeRequest(wma.WMAGENT_URL,params,encodeDict=(service_params['request_type']=='TaskChain'))
 
-          try:
-              wma.approveRequest(wma.WMAGENT_URL,workflow)
-          except:
-              random_sleep()
-              #just try a second time
-              wma.approveRequest(wma.WMAGENT_URL,workflow)
+          if service_params['autoapprove']:
+              try:
+                  wma.approveRequest(wma.WMAGENT_URL,workflow)
+              except:
+                  random_sleep()
+                  #just try a second time
+                  wma.approveRequest(wma.WMAGENT_URL,workflow)
           random_sleep()
 
 #-------------------------------------------------------------------------------
@@ -687,6 +688,7 @@ def build_params_dict(section,cfg):
   force_lumis = cfg.get_param('force_lumis', False, section)
   brute_force = cfg.get_param('brute_force', False, section)
   margin = cfg.get_param('margin', 0.05, section)
+  autoapprove = cfg.get_param('autoapprove', False, section)
 
   # Upload to couch if needed or check in the cfg dict if there
   docIDs=[step1_docID,step2_docID,step3_docID]
@@ -750,7 +752,8 @@ def build_params_dict(section,cfg):
                   "process_string": process_string,
                   'force_lumis': force_lumis,
                   'brute_force': brute_force,
-                  'margin': margin
+                  'margin': margin,
+                  'autoapprove' : autoapprove
                   }
   
   # According to the rerquest type, cook a request!
@@ -1075,7 +1078,7 @@ def build_parser():
                     action='store_true', dest='brute_force')
   parser.add_option('--margin', help='Specify margin for splitting',
                     default=0.05, dest='margin')
-  
+  parser.add_option('--autoapprove', help='Make the workflow in assignment-approved automatically', default=False, action='store_true')
   return parser
   
 #-------------------------------------------------------------------------------
