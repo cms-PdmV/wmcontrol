@@ -94,6 +94,7 @@ class SubsetByLumi():
                 print ("Desired subset is almost equal or bigger than total " +
                        "number of events")
                 data, devi = (blocks, 0)
+                return ('dataset', self.dataset)
             else:
                 # get best fit list and deviation
                 job = subset.Generate(brute)
@@ -122,6 +123,7 @@ class SubsetByLumi():
             print ("Couldn't generate desired subset. Desired subset is " +
                    "almost equal or bigger than total number of events")
             data, devi = (files, 0)
+            return ('dataset', self.dataset)
         else:
             # get best fit list and deviation
             job = subset.Generate(brute)
