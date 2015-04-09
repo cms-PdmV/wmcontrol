@@ -489,6 +489,10 @@ def loop_and_submit(cfg):
                   params['LumiList'] = details
                   params['SplittingAlgo'] = 'LumiBased'
                   # params.pop('RunWhitelist')                  
+              elif split == 'dataset':
+                  print "no white listing"
+
+                  pass
               if test_mode:
                   print "Finished in", int((time.time()-t)*1000), "\bms"
 
