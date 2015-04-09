@@ -437,14 +437,21 @@ def loop_and_submit(cfg):
           else:
             runs.append(item)
       params['RunWhitelist']=runs
+
       if params.has_key("BlockWhitelist"):
-        if params['BlockWhitelist']==[]:
-          params['BlockWhitelist']=new_blocks
-        if params['BlockWhitelist']!=[] and new_blocks!=[]:
-          print "WARNING: a different set of blocks was made available in the input dataset and in the blocks option."
-          print "Keeping the blocks option (%s) instead of (%s)" % (str(sorted(new_blocks)), str(sorted(params['BlockWhitelist'])))
-          params['BlockWhitelist']=new_blocks
+          if params['BlockWhitelist']==[]:
+              params['BlockWhitelist']=new_blocks
+          if params['BlockWhitelist']!=[] and new_blocks!=[]:
+              print "WARNING: a different set of blocks was made available in the input dataset and in the blocks option."
+              print "Keeping the blocks option (%s) instead of (%s)" % (str(sorted(new_blocks)), str(sorted(params['BlockWhitelist'])))
+              params['BlockWhitelist']=new_blocks
+
+      elif service_params['lumi_list'] != '':
+          params['LumiList'] = service_params['lumi_list']
+          params['SplittingAlgo'] = 'LumiBased'
+
       params['RequestString']= make_request_string(params,service_params,section)
+
       if service_params['request_type'] in ['MonteCarlo','LHEStepZero']:
           params.pop('InputDataset')
           params.pop('RunWhitelist')
@@ -458,7 +465,7 @@ def loop_and_submit(cfg):
               params.pop('RunWhitelist') #because it was set as Task parameter
           if 'InputDataset' in params:
               params.pop('InputDataset')
-      elif ('RequestNumEvents' in params and
+      elif ('RequestNumEvents' in params and 'LumiList' not in params and
             ('RunWhitelist' not in params or params['RunWhitelist']==[])):
 
           if service_params['request_type'] in ['ReDigi','ReReco']:
@@ -687,6 +694,7 @@ def build_params_dict(section,cfg):
   force_lumis = cfg.get_param('force_lumis', False, section)
   brute_force = cfg.get_param('brute_force', False, section)
   margin = cfg.get_param('margin', 0.05, section)
+  lumi_list = cfg.get_param('lumi_list', '', section)
 
   # Upload to couch if needed or check in the cfg dict if there
   docIDs=[step1_docID,step2_docID,step3_docID]
@@ -750,6 +758,7 @@ def build_params_dict(section,cfg):
                   "process_string": process_string,
                   'force_lumis': force_lumis,
                   'brute_force': brute_force,
+                  'lumi_list': lumi_list,
                   'margin': margin
                   }
   
@@ -1075,6 +1084,8 @@ def build_parser():
                     action='store_true', dest='brute_force')
   parser.add_option('--margin', help='Specify margin for splitting',
                     default=0.05, dest='margin')
+  parser.add_option('--lumi-list', help='Specify lumisections',
+                    default='', dest='lumi_list')
   
   return parser
   
