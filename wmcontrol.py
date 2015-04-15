@@ -792,6 +792,7 @@ def build_params_dict(section,cfg):
           "ProcessingString": processing_string
           }
 
+
   if url_dict != "":
       #print "This is the url",url_dict,"to get the dict from"
       params = json.loads(os.popen('curl -s --insecure %s'%(url_dict)).read())
@@ -843,11 +844,12 @@ def build_params_dict(section,cfg):
                     )
 
       events_per_lumi = int(float( events_per_lumi ) / float(filter_eff))
-      params.update({
-          "EventsPerLumi" : events_per_lumi,
-          })
+      params.update({"EventsPerLumi" : events_per_lumi,})
+
       if wmtest:
           params.pop("EventsPerLumi")
+          params["ConfigCacheUrl"] = wma.COUCH_DB_ADDRESS
+          params["DbsUrl"] = "https://" + wma.WMAGENT_URL + wma.DBS3_URL
           
       if params["LheInputFiles"]=='True' or params["LheInputFiles"]==True:
           #max out to 500K for "lhe step zero"
