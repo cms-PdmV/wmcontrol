@@ -103,15 +103,19 @@ def isPCLReady(run):
 
 def isAtSite(ds, run):
   blocks=[]
-  dbsq1='dbs search --noheader --production --query "find block,block.status where dataset = %s and run = %s"'%(ds,run)
+  #dbsq1='dbs search --noheader --production --query "find block,block.status where dataset = %s and run = %s"'%(ds,run)
+  #os.system('curl https://cmsweb.cern.ch/das/cli --insecure > das_client.py')
+  #os.system('chmod a+x das_client.py')
+  dbsq1='./das_client.py --limit=0 --query="block dataset=%s run=%s"'%(ds,run)
   ph=phedex(ds)
   print dbsq1
   for line in os.popen(dbsq1):
+      if line.find("#")==-1: continue
       block=line.split()[0]
-      status=int(line.split()[1])
-      if status!=0:
-        print block,'not closed'
-        continue
+      #status=int(line.split()[1])
+      #if status!=0:
+      #  print block,'not closed'
+      #  continue
 
       for b in filter(lambda b :b.name==block,ph.block):
         for replica in filter(lambda r : r.custodial=='y',b.replica):
@@ -143,7 +147,8 @@ def getDriverDetails(Type):
             "datatier":"RAW,DQM ",
             "eventcontent":"FEVTDEBUGHLT,DQM",
             "inputcommands":'keep *,drop *_hlt*_*_HLT,drop *_TriggerResults_*_HLT',
-            "custcommands":'process.schedule.remove( process.HLTriggerFirstPath )',
+            #"custcommands":'process.schedule.remove( process.HLTriggerFirstPath )',
+            "custcommands":'',
             "inclparents":"True"}
   HLTRECObase={"steps":"RAW2DIGI,L1Reco,RECO",
                "procname":"RECO",
