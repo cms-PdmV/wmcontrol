@@ -22,6 +22,9 @@ def createOptionParser():
   """
 
   parser = OptionParser(usage)
+  parser.add_option("--newgt",
+                    dest="newgt",
+                    help="new global tag containing tag to be tested")
   parser.add_option("--gt",
                     dest="gt",
                     help="common global tag to both submissions")
@@ -54,8 +57,10 @@ def createOptionParser():
                      
   (options,args) = parser.parse_args()
 
-  if not options.gt or not options.run or not options.conds:
-      parser.error("options --run, --gt and --conds are mandatory")
+#  if not options.gt or not options.run or not options.conds:
+#      parser.error("options --run, --gt and --conds are mandatory")
+  if not options.newgt or not options.gt or not options.run:
+      parser.error("options --newgt, --run, and --gt  are mandatory")
 
   CMSSW_VERSION='CMSSW_VERSION'
   if not os.environ.has_key(CMSSW_VERSION):
@@ -75,17 +80,19 @@ def createOptionParser():
 
 def getConfCondDictionary(conditions_filename):
   # read the tags fromt eh list
-  newCtags=eval(open(options.conds).read())
-
-  ConfCondList=[ ('REFERENCE.py','') ]
+  #newCtags=eval(open(options.conds).read())
+  
+  ConfCondList=[ ('REFERENCE.py',options.gt) ]
   ConfCondDictionary={
-      'REFERENCE.py':''
+      'REFERENCE.py':options.gt
       }
     
-  for (i,condbunch) in enumerate(newCtags):
-      ConfCondDictionary['NEWCONDITIONS%s.py'%i]='%s'%('+'.join(map(lambda r : ','.join(r),condbunch)))
-      ConfCondList.append( ('NEWCONDITIONS%s.py'%i, '%s'%('+'.join(map(lambda r : ','.join(r),condbunch))) ) )
+  #for (i,condbunch) in enumerate(newCtags):
+  #    ConfCondDictionary['NEWCONDITIONS%s.py'%i]='%s'%('+'.join(map(lambda r : ','.join(r),condbunch)))
+  #    ConfCondList.append( ('NEWCONDITIONS%s.py'%i, '%s'%('+'.join(map(lambda r : ','.join(r),condbunch))) ) )
 
+  ConfCondDictionary['NEWCONDITIONS0.py']=options.newgt
+  ConfCondList.append( ('NEWCONDITIONS0.py', options.newgt ) ) 
   #return ConfCondDictionary
   return ConfCondList
 
@@ -196,7 +203,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
   #print confCondDictionary
   #for cfgname,custconditions in confCondDictionary.items():
   for c in confCondList:
-    (cfgname,custconditions) = c
+    (cfgname,custgt) = c
     print "\n\n\tCreating for",cfgname,"\n\n"
     driver_command="cmsDriver.py %s " %details['reqtype']+\
        "-s %s " %details['steps'] +\
@@ -204,15 +211,15 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
        "--data --scenario pp " +\
        "--datatier %s " % details['datatier'] +\
        "--eventcontent %s " %details['eventcontent']  +\
-       "--conditions %s " %options.gt +\
+       "--conditions %s " %custgt +\
        "--python_filename %s " %cfgname +\
        "--no_exec "       
     if details['custcommands']!="":
       driver_command += '--customise_commands="%s" ' %details['custcommands']       
     if details['inputcommands']!="":
       driver_command += '--inputCommands "%s" '%details['inputcommands']
-    if custconditions!="":
-      driver_command += '--custom_conditions="%s" ' %custconditions 
+    #if custconditions!="":
+    #  driver_command += '--custom_conditions="%s" ' %custconditions 
 
     execme(driver_command)
 
@@ -231,12 +238,31 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
       execme(driver_command)
       
 
-  matched=re.match("(.*)::All",options.gt)
-  gtshort=matched.group(1)
-  if base:
-    subgtshort=gtshort
-    matched=re.match("(.*)::All",options.basegt)
+  #matched=re.match("(.*)::All",options.gt)
+  #gtshort=matched.group(1)
+  matched=re.match("(.*),(.*),(.*)",options.newgt)
+  if matched: 
     gtshort=matched.group(1)
+  else:
+    gtshort=options.newgt
+    
+  matched=re.match("(.*),(.*),(.*)",options.gt)
+  if matched: 
+    refgtshort=matched.group(1)
+  else:
+    refgtshort=options.gt
+    
+  if base:
+    subgtshort = gtshort
+    refsubgtshort = refgtshort
+    #matched=re.match("(.*)::All",options.basegt)
+    #gtshort=matched.group(1)
+    matched=re.match("(.*),(.*),(.*)",options.basegt)
+    if matched:
+      gtshort=matched.group(1)
+    else:
+      gtshort=options.basegt
+
     
   
   # Creating the WMC cfgfile
@@ -251,7 +277,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
   
   wmcconf_text+='priority = 1000000 \n'+\
                 'release=%s\n' %options.release +\
-                'globaltag =%s::All \n' %gtshort
+                'globaltag =%s \n' %gtshort
   wmcconf_text+='dset_run_dict= {'
   for ds in options.ds:
     wmcconf_text+='"%s" : [%s],\n '%(ds, ','.join(options.run+ map(lambda s :'"%s"'%(s),allRunsAndBlocks[ds])))
@@ -275,7 +301,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
       if base:
         wmcconf_text+='step%d_output = RAWRECOoutput\n'%task +\
                        'step%d_cfg = %s\n'%(task,cfgname) +\
-                       'step%d_globaltag = %s::All\n'%(task,subgtshort) +\
+                       'step%d_globaltag = %s\n'%(task,refsubgtshort) +\
                        'step%d_input = Task1\n\n'%task
         task+=1
         continue
@@ -286,7 +312,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
       wmcconf_text+='\n\n' +\
                      'step%d_output = RAWRECOoutput\n'%task +\
                      'step%d_cfg = %s\n'%(task,cfgname) +\
-                     'step%d_globaltag = %s::All\n'%(task,subgtshort) +\
+                     'step%d_globaltag = %s\n'%(task,subgtshort) +\
                      'step%d_input = Task1\n\n'%task
       task+=1
     else:
@@ -305,8 +331,10 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
     wmcconf.write(wmcconf_text)
     wmcconf.close()
   
-  execme('wmcontrol.py --test --req_file %s'%wmconf_name)
-  print 'Now execute:\nwmcontrol.py --req_file %s'%wmconf_name  
+  #execme('wmcontrol.py --test --req_file %s'%wmconf_name)
+  #print 'Now execute:\nwmcontrol.py --req_file %s'%wmconf_name  
+  execme('./wmcontrol.py --test --req_file %s'%wmconf_name)
+  print 'Now execute:\n./wmcontrol.py --req_file %s'%wmconf_name  
 
 #-------------------------------------------------------------------------------
 
@@ -318,8 +346,9 @@ if __name__ == "__main__":
   # Check for PCL availability
   for run in options.run:
     if not isPCLReady(run):
-      print "The PCL is not ready for run:",run,"... aborting"
-      sys.exit(2)
+      print "The PCL is not ready for run:",run,"... ignoring for now"
+      #print "The PCL is not ready for run:",run,"... aborting"
+      #sys.exit(2)
 
   # Check if it is at FNAL
   allRunsAndBlocks={}
