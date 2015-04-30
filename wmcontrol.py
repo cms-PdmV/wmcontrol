@@ -23,6 +23,7 @@ import ConfigParser
 import traceback
 import re
 import time
+import copy 
 
 sys.path.append(os.path.join(sys.path[0], 'modules'))
 from modules import helper
@@ -642,8 +643,8 @@ def build_params_dict(section,cfg):
 
   number_events = int(cfg.get_param('number_events',0,section))
   #number_events = cfg.get_param('number_events',0,section)
-  version = cfg.get_param('version','',section)
-
+  version = cfg.get_param('version',1,section)
+  
   ##new values for renewed Request Agent
   time_event = float(cfg.get_param('time_event',20,section))
   size_memory = int(float(cfg.get_param('size_memory',2300,section)))
@@ -698,17 +699,17 @@ def build_params_dict(section,cfg):
   stepN_cfg=[]
   stepN_docID=[]  
   for i in range(max_step):
-      s=i+1
-      stepN_output = cfg.get_param('step%d_output'%s,'',section)
-      keep_stepN = cfg.get_param('keep_step%d'%s,default_parameters['keep_step%d'%s],section)
+      s=i+1 
+      stepN_output.append(cfg.get_param('step%d_output'%s,'',section))
+      keep_stepN.append(cfg.get_param('keep_step%d'%s,default_parameters['keep_step%d'%s],section))
       if i==0:
           cfg_path = cfg.get_param('cfg_path','',section)
-          stepN_cfg = cfg.get_param('step%d_cfg'%s,cfg_path,section) # defaults it to cfg_path if not specified
+          stepN_cfg.append(cfg.get_param('step%d_cfg'%s,cfg_path,section)) # defaults it to cfg_path if not specified
           doc_id = cfg.get_param('doc_id','',section)
-          stepN_docID = cfg.get_param('step%d_docID'%s,doc_id,section) # defaults itto doc_id if not specified
+          stepN_docID.append(cfg.get_param('step%d_docID'%s,doc_id,section)) # defaults itto doc_id if not specified
       else:
-          stepN_cfg = cfg.get_param('step%d_cfg'%s,'',section)
-          stepN_docID = cfg.get_param('step%d_docID'%s,'',section)
+          stepN_cfg.append(cfg.get_param('step%d_cfg'%s,'',section))
+          stepN_docID.append(cfg.get_param('step%d_docID'%s,'',section))
 
   transient_output = cfg.get_param('transient_output',[],section)
 
@@ -735,7 +736,7 @@ def build_params_dict(section,cfg):
         stepN_docID[step] = cfg_docid_dict[step_cfg_name]
       else:
         print "No DocId found for section %s. Uploading the cfg to the couch." %section
-        stepN_docID[step]= wma.upload_to_couch(step_cfg_name, section, user, group,test_mode)
+        stepN_docID[step] = wma.upload_to_couch(step_cfg_name, section, user, group,test_mode)
 
   if harvest_docID=='' and harvest_cfg!='':
       harvest_docID= wma.upload_to_couch(harvest_cfg , section, user, group,test_mode)
@@ -744,6 +745,8 @@ def build_params_dict(section,cfg):
   #there could be more checks here !!!
   if stepN_docID[0]=='' and url_dict=="":
     print "Invalid request, no docID configuration specified."
+    print stepN_docID
+    print stepN_cfg
     sys.stderr.write("[wmcontrol exception] Invalid request, no docID configuration specified.")
     sys.exit(-1)
 
@@ -971,40 +974,33 @@ def build_params_dict(section,cfg):
       params.pop('BlockWhitelist')
       params.pop('BlockBlacklist')
 
-      task1_dict={'SplittingAlgorithm': 'LumiBased',
-                  'SplittingArguments': {'lumis_per_job': 8},
-                  'TaskName':'Task1'
-                  }
+      params['TaskChain']=0
+      task_index=0
+      while stepN_docID[task_index]:
+          task_number = task_index+1
+          task_dict =  {'SplittingAlgorithm': 'LumiBased',
+                        'SplittingArguments': {'lumis_per_job': int(cfg.get_param('step%d_lumisperjob'%task_number,4,section))},
+                        'TaskName':'Task%d'%task_number,
+                        'GlobalTag' : cfg.get_param('step%d_globaltag'%task_number,globaltag,section),
+                        'CMSSWVersion' : cfg.get_param('step%d_release'%task_number,release,section),
+                        'ConfigCacheID' : stepN_docID[task_index],
+                        'ProcessingVersion' : version
+                        }
+          
+          if task_index:
+              task_dict['InputFromOutputModule'] = stepN_output[task_index]
+              task_dict['InputTask'] = cfg.get_param('step%d_input'%task_number,'Task%d'%task_index,section)
+                        
 
-      task1_dict['GlobalTag'] = cfg.get_param('step1_globaltag',globaltag,section)
-      task1_dict['ConfigCacheID'] = stepN_docID[0]
-      task1_dict['KeepOutput'] = keep_stepN[0]
-      params['Task1']=task1_dict
-      params['TaskChain']=1
-      if stepN_docID[1]:
-          task2_dict={'SplittingAlgorithm': 'LumiBased',
-                      'SplittingArguments': {'lumis_per_job': 8},
-                      'TaskName':'Task2'
-                      }
-          task2_dict['GlobalTag'] = cfg.get_param('step2_globaltag',globaltag,section)
-          task2_dict['ConfigCacheID'] = stepN_docID[1]
-          task2_dict['InputFromOutputModule'] = stepN_output[1]
-          task2_dict['InputTask'] = cfg.get_param('step2_input','Task1',section)
-          #task2_dict['KeepOutput'] = keep_step2
-          params['Task2']=task2_dict
-          params['TaskChain']=2
-          if stepN_docID[2]:
-              task3_dict={'SplittingAlgorithm': 'LumiBased',
-                          'SplittingArguments': {'lumis_per_job': 8},
-                          'TaskName':'Task3'
-                          }
-              task3_dict['GlobalTag'] = cfg.get_param('step3_globaltag',globaltag,section)
-              task3_dict['ConfigCacheID'] = stepN_docID[2]
-              task3_dict['InputFromOutputModule'] = stepN_output[2]
-              task3_dict['InputTask'] = cfg.get_param('step3_input','Task2',section)
-              #task3_dict['KeepOutput'] = keep_step3
-              params['Task3']=task3_dict
-              params['TaskChain']=3
+          task_dict.update({'ProcessingString' : cfg.get_param('step%s_processstring'%task_number,task_dict['GlobalTag'],section),
+                            'AcquisitionEra' : cfg.get_param('step%s_era'%task_number,task_dict['CMSSWVersion'],section),
+                           
+                           })
+          params['Task%d'%task_number] = copy.deepcopy( task_dict )
+          params['TaskChain']+=1
+          task_index+=1
+                        
+          
 
       #from pprint import pformat
       #print "\n current dictionnary \n",pformat(params),'\n\n'
