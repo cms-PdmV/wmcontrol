@@ -44,10 +44,14 @@ def createOptionParser():
                     action='store_true')
   parser.add_option("--Type",
                     help="Defines the type of the workflow",
-                    choices=['HLT','PR','RECO+HLT'],
+                    choices=['HLT','PR','RECO+HLT','HLT+RECO'],
                     default='HLT')
   parser.add_option("--DQM",
                     help="Specify what is the DQM sequence needed for PR",
+                    default=None)
+  parser.add_option("--HLT",
+                    help="Specify which HLT menu: SameAsRun uses the HLT menu corrresponding to the run",
+                    choices=['SameAsRun','GRun'],
                     default=None)
 
   parser.add_option("--noSiteCheck",
@@ -155,7 +159,10 @@ def getDriverDetails(Type):
             "eventcontent":"FEVTDEBUGHLT,DQM",
             "inputcommands":'keep *,drop *_hlt*_*_HLT,drop *_TriggerResults_*_HLT',
             #"custcommands":'process.schedule.remove( process.HLTriggerFirstPath )',
-            "custcommands":'',
+            "custcommands":"process.load('Configuration.StandardSequences.Reconstruction_cff'); " +\
+                           "process.hltTrackRefitterForSiStripMonitorTrack.src = 'generalTracks'; " +\
+                           "\ntry:\n\tif process.RatesMonitoring in process.schedule: process.schedule.remove( process.RatesMonitoring );\nexcept: pass",
+            "custconditions":"JetCorrectorParametersCollection_CSA14_V4_MC_AK4PF,JetCorrectionsRecord,frontier://FrontierProd/CMS_CONDITIONS,AK4PF",
             "inclparents":"True"}
   HLTRECObase={"steps":"RAW2DIGI,L1Reco,RECO",
                "procname":"RECO",
@@ -164,10 +171,31 @@ def getDriverDetails(Type):
                "inputcommands":'',
                "custcommands":'',               
                }
+
+  if options.HLT:
+    HLTBase.update({"steps":"HLT:%s,DQM:triggerOfflineDQMSource"%(options.HLT)})
   if Type=='HLT':
     return HLTBase
   elif Type=='RECO+HLT':
     HLTBase.update({'base':HLTRECObase})
+    return HLTBase
+  elif Type=='HLT+RECO':
+    if options.HLT:
+      HLTBase.update({"steps":"HLT:%s"%(options.HLT),
+                      "custcommands":"\ntry:\n\tif process.RatesMonitoring in process.schedule: process.schedule.remove( process.RatesMonitoring );\nexcept: pass",
+                      "custconditions":""})
+    else:
+      HLTBase.update({"steps":"HLT",
+                      "custcommands":"\ntry:\n\tif process.RatesMonitoring in process.schedule: process.schedule.remove( process.RatesMonitoring );\nexcept: pass",
+                      "custconditions":""})
+    HLTRECObase={"steps":"RAW2DIGI,L1Reco,RECO,DQM:triggerOfflineDQMSource",
+                "procname":"RECO",
+                "datatier":"DQM",
+                "eventcontent":"DQM",
+                "inputcommands":'',
+                "custcommands":'',               
+                }
+    HLTBase.update({'recodqm':HLTRECObase})    
     return HLTBase
   elif Type=='PR':
     theDetails={"reqtype":"PR",
@@ -193,6 +221,12 @@ def execme(command):
     print " * Executed!"
 
 #-------------------------------------------------------------------------------
+def createHLTConfig(options):
+  hlt_command="hltGetConfiguration --cff --offline " +\
+      "run:%s "%options.run[0] +\
+      "> $CMSSW_BASE/src/HLTrigger/Configuration/python/HLT_SameAsRun_cff.py"
+  execme(hlt_command)
+  execme("cd $CMSSW_BASE/src; scram b; cd -")
 
 def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
 
@@ -213,16 +247,18 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
        "--eventcontent %s " %details['eventcontent']  +\
        "--conditions %s " %custgt +\
        "--python_filename %s " %cfgname +\
-       "--no_exec "       
-    if details['custcommands']!="":
-      driver_command += '--customise_commands="%s" ' %details['custcommands']       
+       "--no_exec " +\
+       "-n 10 " +\
+       "--filein file:HLT_RAW2DIGI_L1Reco_RECO.root "
     if details['inputcommands']!="":
       driver_command += '--inputCommands "%s" '%details['inputcommands']
-    #if custconditions!="":
-    #  driver_command += '--custom_conditions="%s" ' %custconditions 
+    if details['custconditions']!="":
+      driver_command += '--custom_conditions="%s" ' %details['custconditions']
+    if details['custcommands']!="":
+      driver_command += '--customise_commands="%s" ' %details['custcommands']       
 
     execme(driver_command)
-
+    
     base=None
     if 'base' in details:
       base=details['base']
@@ -234,7 +270,23 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                       "--eventcontent %s " %base['eventcontent']  +\
                       "--conditions %s " %options.basegt +\
                       "--python_filename reco.py " +\
-                      "--no_exec "       
+                      "--no_exec " +\
+                      "-n 10 "
+      execme(driver_command)
+      
+    recodqm = None
+    if 'recodqm' in details:
+      recodqm=details['recodqm']
+      driver_command="cmsDriver.py %s " %details['reqtype']+\
+                      "-s %s " %recodqm['steps'] +\
+                      "--processName %s " % recodqm['procname'] +\
+                      "--data --scenario pp " +\
+                      "--datatier %s " % recodqm['datatier'] +\
+                      "--eventcontent %s " %recodqm['eventcontent']  +\
+                      "--conditions %s " %options.basegt +\
+                      "--python_filename recodqm.py " +\
+                      "--no_exec " +\
+                      "-n 10 "
       execme(driver_command)
       
 
@@ -262,6 +314,17 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
       gtshort=matched.group(1)
     else:
       gtshort=options.basegt
+      
+  if recodqm:
+    subgtshort = gtshort
+    refsubgtshort = refgtshort
+    #matched=re.match("(.*)::All",options.basegt)
+    #gtshort=matched.group(1)
+    matched=re.match("(.*),(.*),(.*)",options.basegt)
+    if matched:
+      gtshort=matched.group(1)
+    else:
+      gtshort=options.basegt
 
     
   
@@ -269,7 +332,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
   wmcconf_text= '[DEFAULT] \n'+\
                 'group=ppd \n'+\
                 'user=%s\n' %os.getenv('USER')
-  if base:
+  if base or recodqm:
     wmcconf_text+='request_type= TaskChain \n'
   else:
     wmcconf_text+='request_type= ReReco \n'+\
@@ -287,14 +350,15 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                    'cfg_path = reco.py\n' +\
                    'req_name = %s_RelVal_%s\n'%(details['reqtype'],options.run[0]) +\
                    '\n\n'
+  elif recodqm:
+    pass
   else:
     wmcconf_text+='[%s_default]\n' %details['reqtype'] +\
                    'cfg_path = REFERENCE.py\n' +\
                    'req_name = %s_reference_RelVal_%s\n'%(details['reqtype'],options.run[0]) ## take the first one of the list to label it
 
-
-
   task=2
+  print confCondList
   for (i,c) in enumerate(confCondList):
     cfgname=c[0]
     if "REFERENCE" in cfgname:
@@ -305,6 +369,16 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                        'step%d_input = Task1\n\n'%task
         task+=1
         continue
+      elif recodqm:
+        label=cfgname.lower().replace('.py','')
+        wmcconf_text+='\n\n[%s_%s]\n' %(details['reqtype'],label) +\
+                       'cfg_path = %s\n'%cfgname +\
+                       'req_name = %s_%s_RelVal_%s\n'%(details['reqtype'],label,options.run[0]) +\
+                       'globaltag = %s\n'%(refsubgtshort) +\
+                       'step%d_output = FEVTDEBUGHLToutput\n'%task +\
+                       'step%d_cfg = recodqm.py\n'%task +\
+                       'step%d_globaltag = %s \n'%(task,gtshort) +\
+                       'step%d_input = Task1\n\n'%task
       else:
         continue
 
@@ -315,10 +389,21 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                      'step%d_globaltag = %s\n'%(task,subgtshort) +\
                      'step%d_input = Task1\n\n'%task
       task+=1
+    elif recodqm:
+      if "REFERENCE" in cfgname: continue
+      label=cfgname.lower().replace('.py','')
+      wmcconf_text+='\n\n[%s_%s]\n' %(details['reqtype'],label) +\
+                     'cfg_path = %s\n'%cfgname +\
+                     'req_name = %s_%s_RelVal_%s\n'%(details['reqtype'],label,options.run[0]) +\
+                     'globaltag = %s\n'%(subgtshort) +\
+                     'step%d_output = FEVTDEBUGHLToutput\n'%task +\
+                     'step%d_cfg = recodqm.py\n'%task +\
+                     'step%d_globaltag = %s \n'%(task,gtshort) +\
+                     'step%d_input = Task1\n\n'%task
     else:
       label=cfgname.lower().replace('.py','')
-      wmcconf_text+='\n\n[%s_%s]\n' %(details['reqtype'],label)+\
-                     'cfg_path = %s\n'%cfgname+\
+      wmcconf_text+='\n\n[%s_%s]\n' %(details['reqtype'],label) +\
+                     'cfg_path = %s\n'%cfgname +\
                      'req_name = %s_%s_RelVal_%s\n'%(details['reqtype'],label,options.run[0])
 
 
@@ -369,6 +454,9 @@ if __name__ == "__main__":
     
   # Read the group of conditions from the list in the file
   confCondList= getConfCondDictionary(options)
+  
+  # Create the cff
+  if options.HLT=="SameAsRun": createHLTConfig(options)
   
   # Create the cfgs, both for cmsRun and WMControl  
   createCMSSWConfigs(options,confCondList,allRunsAndBlocks)
