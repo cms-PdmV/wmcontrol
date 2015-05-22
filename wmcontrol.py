@@ -984,7 +984,8 @@ def build_params_dict(section,cfg):
                         'GlobalTag' : cfg.get_param('step%d_globaltag'%task_number,globaltag,section),
                         'CMSSWVersion' : cfg.get_param('step%d_release'%task_number,release,section),
                         'ConfigCacheID' : stepN_docID[task_index],
-                        'ProcessingVersion' : version
+                        'ProcessingVersion' : version,
+                        'TimePerEvent': cfg.get_param('step%d_timeevent'%task_number,time_event,section)
                         }
           
           if task_index:
@@ -992,10 +993,15 @@ def build_params_dict(section,cfg):
               task_dict['InputTask'] = cfg.get_param('step%d_input'%task_number,'Task%d'%task_index,section)
                         
 
-          task_dict.update({'ProcessingString' : cfg.get_param('step%s_processstring'%task_number,task_dict['GlobalTag'],section),
-                            'AcquisitionEra' : cfg.get_param('step%s_era'%task_number,task_dict['CMSSWVersion'],section),
-                           
-                           })
+          if processing_string.find(task_dict['GlobalTag'])!=-1:              
+            task_dict.update({'ProcessingString' : cfg.get_param('step%s_processstring'%task_number,processing_string,section),
+                              'AcquisitionEra' : cfg.get_param('step%s_era'%task_number,task_dict['CMSSWVersion'],section),                           
+                             })
+          else:            
+            task_dict.update({'ProcessingString' : cfg.get_param('step%s_processstring'%task_number,task_dict['GlobalTag'],section),
+                              'AcquisitionEra' : cfg.get_param('step%s_era'%task_number,task_dict['CMSSWVersion'],section),                           
+                             })
+          
           params['Task%d'%task_number] = copy.deepcopy( task_dict )
           params['TaskChain']+=1
           task_index+=1
@@ -1025,7 +1031,8 @@ def build_params_dict(section,cfg):
   if harvest_docID and request_type!="DQMHarvest":
       ##setup automatic harvesting
       params.update({"EnableHarvesting" : 1,
-                     "DQMUploadUrl" : "https://cmsweb.cern.ch/dqm/offline",
+                     #"DQMUploadUrl" : "https://cmsweb.cern.ch/dqm/offline",
+                     "DQMUploadUrl" : "https://cmsweb.cern.ch/dqm/relval",
                      "DQMConfigCacheID" : harvest_docID})
 
 
