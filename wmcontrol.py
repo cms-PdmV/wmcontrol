@@ -647,7 +647,7 @@ def build_params_dict(section,cfg):
   
   ##new values for renewed Request Agent
   time_event = float(cfg.get_param('time_event',20,section))
-  size_memory = int(float(cfg.get_param('size_memory',2300,section)))
+  size_memory = int(float(cfg.get_param('size_memory',3000,section)))
   size_event = int(float(cfg.get_param('size_event',2000,section)))
   if size_event <0:
       size_event = 2000
@@ -916,7 +916,7 @@ def build_params_dict(section,cfg):
                      "FirstEvent": 1,
                      "FirstLumi": 1,
                      "LheInputFiles" : cfg.get_param('lhe_input',False,section),
-                     "Memory": 2300,
+                     "Memory": 3000,
                      "SizePerEvent": size_event,
                      "ConfigCacheID": stepN_docID[0],
                      "RequestNumEvents": number_events,
@@ -1101,7 +1101,7 @@ def build_parser():
   parser.add_option('--lhe', help='specify that there is .lhe file in input', dest='lhe_input', default=False, action='store_true')
 
   ##New parametters as of 2012-08-22
-  parser.add_option('--memory', help='RSS memory in MB (Default 1500)', dest='size_memory', default=2300)
+  parser.add_option('--memory', help='RSS memory in MB (Default 1500)', dest='size_memory', default=3000)
   parser.add_option('--size-event', help='Expected size per event in KB (Default 2000)', dest='size_event', default=2000)
   parser.add_option('--test', help='To test things', action='store_true' , dest='test')
   parser.add_option('--wmtest', help='To inject requests to the cmsweb test bed', action='store_true' , dest='wmtest')
