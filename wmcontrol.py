@@ -821,6 +821,7 @@ def build_params_dict(section,cfg):
     params.update({"ConfigCacheID": step1_docID,
                    "Scenario": "pp",
                    "IncludeParents" : includeparents,
+                   "PrepID": request_id,
                    "TransientOutputModules":transient_output})
 
 
@@ -998,7 +999,7 @@ def build_params_dict(section,cfg):
 
   if harvest_docID:
       ##setup automatic harvesting
-      params.update({"EnableDQMHarvest" : 1,
+      params.update({"EnableHarvesting" : 1,
                      "DQMUploadUrl" : "https://cmsweb.cern.ch/dqm/offline",
                      "DQMConfigCacheID" : harvest_docID})
 
