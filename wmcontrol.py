@@ -821,6 +821,7 @@ def build_params_dict(section,cfg):
     params.update({"ConfigCacheID": step1_docID,
                    "Scenario": "pp",
                    "IncludeParents" : includeparents,
+                   "PrepID": request_id,
                    "TransientOutputModules":transient_output})
 
 
