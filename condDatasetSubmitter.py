@@ -58,6 +58,9 @@ def createOptionParser():
                     action='store_true')
   parser.add_option("--HLTCustomMenu",
                     help="Specify a custom HLT menu",
+                    default=None)  
+  parser.add_option("--string",
+                    help="Processing string to add to dataset name (default is current date)",
                     default=None)
   parser.add_option("--recoCmsswDir",
                     help="CMSSW base directory for RECO step if different from HLT step (supported for HLT+RECO type)",
@@ -155,6 +158,8 @@ def isAtSite(ds, run):
         for replica in filter(lambda r : r.custodial=='y',b.replica):
           if replica.complete!='y':
             print block,'not complete at custodial site'
+            #print block,'not complete at custodial site but ignoring'
+            #blocks.append('#'+block.split('#')[-1])
           else:
             blocks.append('#'+block.split('#')[-1])
             
@@ -296,6 +301,12 @@ def createHLTConfig(options):
 def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
 
   details=getDriverDetails(options.Type,options.B0T)
+
+  # get processing string
+  if options.string is None:
+    processing_string = str(datetime.date.today())
+  else:
+    processing_string = options.string
   
   # Create the drivers
   #print confCondDictionary
@@ -378,10 +389,10 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
       else:
         execme(driver_command)
         
-      if options.Type.find("ALCA")!=-1:
-          filein = "%s_RAW2DIGI_L1Reco_RECO_DQM_inDQM.root"%details['reqtype'] 
-      else:        
+      if options.Type.find("ALCA")!=-1:          
           filein = "%s_RAW2DIGI_L1Reco_RECO_ALCA_DQM_inDQM.root"%details['reqtype']
+      else:        
+          filein = "%s_RAW2DIGI_L1Reco_RECO_DQM_inDQM.root"%details['reqtype'] 
           
       driver_command="cmsDriver.py step4 " +\
                       "-s HARVESTING:dqmHarvesting " +\
@@ -402,9 +413,9 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
     else:      
       label=cfgname.lower().replace('.py','')  
       if options.Type.find("ALCA")!=-1:
-          filein = "%s_RAW2DIGI_L1Reco_RECO_DQM_inDQM.root"%details['reqtype'] 
-      else:
           filein = "%s_RAW2DIGI_L1Reco_RECO_ALCA_DQM_inDQM.root"%details['reqtype']
+      else:
+          filein = "%s_RAW2DIGI_L1Reco_RECO_DQM_inDQM.root"%details['reqtype'] 
       driver_command="cmsDriver.py step4 " +\
                       "-s HARVESTING:dqmHarvesting " +\
                       "--data --scenario pp " +\
@@ -467,11 +478,11 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
     wmcconf_text+='request_type= TaskChain \n'#+\
 #                  'includeparents = %s \n' %details['inclparents']
   if recodqm:
-    wmcconf_text+='priority = 999999 \n'+\
+    wmcconf_text+='priority = 900000 \n'+\
                   'release=%s\n' %options.release +\
                   'globaltag =%s \n' %subgtshort
   else:
-    wmcconf_text+='priority = 999999 \n'+\
+    wmcconf_text+='priority = 900000 \n'+\
                   'release=%s\n' %options.release +\
                   'globaltag =%s \n' %gtshort
   wmcconf_text+='dset_run_dict= {'
@@ -491,7 +502,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                    'time_event = 10\n' +\
                    'size_memory = 3000\n' +\
                    'step1_lumisperjob = 2\n' +\
-                   'processing_string = %s_reference_%s \n'%(str(datetime.date.today()),refgtshort) +\
+                   'processing_string = %s_%sreference_%s \n'%(processing_string,details['reqtype'],refgtshort) +\
                    'cfg_path = REFERENCE.py\n' +\
                    'req_name = %s_reference_RelVal_%s\n'%(details['reqtype'],options.run[0]) +\
                    'globaltag = %s\n'%(refgtshort) +\
@@ -516,7 +527,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                        'time_event = 1\n' +\
                        'size_memory = 3000\n' +\
                        'step1_lumisperjob = 2\n' +\
-                       'processing_string = %s_%s_%s \n'%(str(datetime.date.today()),label,refsubgtshort) +\
+                       'processing_string = %s_%s_%s \n'%(processing_string,details['reqtype']+label,refsubgtshort) +\
                        'cfg_path = %s\n'%cfgname +\
                        'req_name = %s_%s_RelVal_%s\n'%(details['reqtype'],label,options.run[0]) +\
                        'globaltag = %s\n'%(refsubgtshort) +\
@@ -524,7 +535,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                        'step%d_cfg = recodqm.py\n'%task +\
                        'step%d_lumisperjob = 2\n'%task +\
                        'step%d_globaltag = %s \n'%(task,gtshort) +\
-                       'step%d_processstring = %s_%s_%s \n'%(task,str(datetime.date.today()),label,refsubgtshort) +\
+                       'step%d_processstring = %s_%s_%s \n'%(task,processing_string,details['reqtype']+label,refsubgtshort) +\
                        'step%d_input = Task1\n'%task +\
                        'step%d_timeevent = 10\n'%task
         if options.recoRelease:
@@ -548,7 +559,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                      'time_event = 1\n' +\
                      'size_memory = 3000\n' +\
                      'step1_lumisperjob = 2\n' +\
-                     'processing_string = %s_%s_%s \n'%(str(datetime.date.today()),label,subgtshort) +\
+                     'processing_string = %s_%s_%s \n'%(processing_string,details['reqtype']+label,subgtshort) +\
                      'cfg_path = %s\n'%cfgname +\
                      'req_name = %s_%s_RelVal_%s\n'%(details['reqtype'],label,options.run[0]) +\
                      'globaltag = %s\n'%(subgtshort) +\
@@ -556,7 +567,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                      'step%d_cfg = recodqm.py\n'%task +\
                      'step%d_lumisperjob = 2\n'%task +\
                      'step%d_globaltag = %s \n'%(task,gtshort) +\
-                     'step%d_processstring = %s_%s_%s \n'%(task,str(datetime.date.today()),label,subgtshort) +\
+                     'step%d_processstring = %s_%s_%s \n'%(task,processing_string,details['reqtype']+label,subgtshort) +\
                      'step%d_input = Task1\n'%task +\
                      'step%d_timeevent = 10\n'%task
       if options.recoRelease:
@@ -569,7 +580,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                      'time_event = 10\n' +\
                      'size_memory = 3000\n' +\
                      'step1_lumisperjob = 2\n' +\
-                     'processing_string = %s_%s_%s \n'%(str(datetime.date.today()),label,gtshort) +\
+                     'processing_string = %s_%s_%s \n'%(str(datetime.date.today()),details['reqtype']+label,gtshort) +\
                      'cfg_path = %s\n'%cfgname +\
                      'req_name = %s_%s_RelVal_%s\n'%(details['reqtype'],label,options.run[0]) +\
                      'globaltag = %s\n'%(gtshort) +\
