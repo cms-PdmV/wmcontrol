@@ -423,6 +423,7 @@ def loop_and_submit(cfg):
     if not dataset_runs_dict:
         sys.stderr.write("[wmcontrol exception] No dataset_runs_dict provided")
         sys.exit(-1)
+
     # Submit request!
     for dataset in sorted(dataset_runs_dict.keys()):      
       params['InputDataset']=dataset
@@ -792,6 +793,11 @@ def build_params_dict(section,cfg):
           "ProcessingString": processing_string
           }
 
+
+  if wmtest:
+      params["ConfigCacheUrl"] = wma.COUCH_DB_ADDRESS
+      params["DbsUrl"] = "https://" + wma.WMAGENT_URL + wma.DBS3_URL
+
   if url_dict != "":
       #print "This is the url",url_dict,"to get the dict from"
       params = json.loads(os.popen('curl -s --insecure %s'%(url_dict)).read())
@@ -815,6 +821,7 @@ def build_params_dict(section,cfg):
     params.update({"ConfigCacheID": step1_docID,
                    "Scenario": "pp",
                    "IncludeParents" : includeparents,
+                   "PrepID": request_id,
                    "TransientOutputModules":transient_output})
 
 
@@ -843,9 +850,8 @@ def build_params_dict(section,cfg):
                     )
 
       events_per_lumi = int(float( events_per_lumi ) / float(filter_eff))
-      params.update({
-          "EventsPerLumi" : events_per_lumi,
-          })
+      params.update({"EventsPerLumi" : events_per_lumi,})
+
       if wmtest:
           params.pop("EventsPerLumi")
           
@@ -993,7 +999,7 @@ def build_params_dict(section,cfg):
 
   if harvest_docID:
       ##setup automatic harvesting
-      params.update({"EnableDQMHarvest" : 1,
+      params.update({"EnableHarvesting" : 1,
                      "DQMUploadUrl" : "https://cmsweb.cern.ch/dqm/offline",
                      "DQMConfigCacheID" : harvest_docID})
 
