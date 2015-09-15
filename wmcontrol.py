@@ -448,7 +448,7 @@ def loop_and_submit(cfg):
 
       elif service_params['lumi_list'] != '':
           params['LumiList'] = service_params['lumi_list']
-          params['SplittingAlgo'] = 'LumiBased'
+          #params['SplittingAlgo'] = 'LumiBased'
 
       params['RequestString']= make_request_string(params,service_params,section)
 
