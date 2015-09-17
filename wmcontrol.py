@@ -449,7 +449,6 @@ def loop_and_submit(cfg):
 
       elif service_params['lumi_list'] != '':
           params['LumiList'] = service_params['lumi_list']
-          #params['SplittingAlgo'] = 'LumiBased'
 
       params['RequestString']= make_request_string(params,service_params,section)
 
@@ -488,8 +487,6 @@ def loop_and_submit(cfg):
                   params['BlockWhitelist'] = details
               elif split == 'lumis':
                   params['LumiList'] = details
-                  params['SplittingAlgo'] = 'LumiBased'
-                  # params.pop('RunWhitelist')                  
               elif split == 'dataset':
                   print "no white listing"
 
