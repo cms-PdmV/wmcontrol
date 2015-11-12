@@ -880,6 +880,9 @@ def build_params_dict(section,cfg):
               "EventsPerJob" : int(events_per_job)
               })
 
+      if pileup_dataset:
+          params.update({"MCPileup": pileup_dataset})
+
       params.pop('BlockBlacklist')
       params.pop('BlockWhitelist')
       params.pop('InputDataset')
@@ -891,9 +894,12 @@ def build_params_dict(section,cfg):
                 "ConfigCacheID": step1_docID,
                 "PrepID": request_id,
                 "TotalTime": 28800 })
+
     if primary_dataset:
         params.update({"PrimaryDataset": primary_dataset})
 
+    if pileup_dataset:
+      params.update({"MCPileup": pileup_dataset})
 
     if int(number_events):
         params.update({"RequestNumEvents": number_events})
