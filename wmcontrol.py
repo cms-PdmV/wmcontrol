@@ -451,33 +451,34 @@ def loop_and_submit(cfg):
           params.pop('InputDataset')
           params.pop('RunWhitelist')
       elif service_params['request_type'] == 'TaskChain':
+          ##if we have a global defined input_DS we set it as Task1 input
           if params['InputDataset']:
               params['Task1']['InputDataset'] = params['InputDataset']
-          if params['RunWhitelist']:
-              params['Task1']['RunWhitelist'] = params['RunWhitelist']
 
           ##if we have a taskChain and its First task has inputDS, we do splitting algo
           ##TO-DO: move to separate method so we would not need to duplicate code
-          if params['Task1']['InputDataset'] != '' and params['Task1']['RequestNumEvents']:
-              if test_mode:
-                  t = time.time()
+          if 'InputDataset' in params['Task1']:
+              if params['Task1']['InputDataset'] != '' and params['Task1']['RequestNumEvents']:
+                  if test_mode:
+                      t = time.time()
+                  espl = helper.SubsetByLumi(params['Task1']['InputDataset'],
+                                             float(service_params['margin']))
 
-              espl = helper.SubsetByLumi(params['Task1']['InputDataset'],
-                                         float(service_params['margin']))
+                  split, details = espl.run(int(params['Task1']['RequestNumEvents']),
+                                            service_params['brute_force'],
+                                            service_params['force_lumis'])
 
-              split, details = espl.run(int(params['Task1']['RequestNumEvents']),
-                                        service_params['brute_force'],
-                                        service_params['force_lumis'])
+                  if split == 'blocks':
+                      params['Task1']['BlockWhitelist'] = details
+                  elif split == 'lumis':
+                      params['Task1']['LumiList'] = details
+                  elif split == 'dataset':
+                      print "no white listing"
+                  if test_mode:
+                      print "Finished in", int((time.time()-t)*1000), "\bms"
 
-              if split == 'blocks':
-                  params['Task1']['BlockWhitelist'] = details
-              elif split == 'lumis':
-                  params['Task1']['LumiList'] = details
-              elif split == 'dataset':
-                  print "no white listing"
-
-              if test_mode:
-                  print "Finished in", int((time.time()-t)*1000), "\bms"
+          if params['RunWhitelist']:
+              params['Task1']['RunWhitelist'] = params['RunWhitelist']
 
           if 'RunWhitelist' in params: #if params has key we remove it
               params.pop('RunWhitelist') #because it was set as Task parameter
