@@ -136,6 +136,7 @@ I will ask you some questions to fill the metadata file. For some of the questio
 
                 b0T  = getInput('n', '\nIs this for B=0T?\nAnswer [n]: ')
                 
+                hion  = getInput('n', '\nIs this for Heavy Ions? Note B=0T is not compatible with Heavy Ions at the moment\nAnswer [n]: ')                
 
                 metadata = {
                     'PR_release': pr_release,
@@ -150,6 +151,8 @@ I will ask you some questions to fill the metadata file. For some of the questio
                     
                 if b0T.lower() == 'y':
                     metadata['options'].update({'B0T':''})
+                if hion.lower() == 'y':
+                    metadata['options'].update({'HIon':''})
                 if 'HLT+RECO' in type:
                     metadata['HLT_release'] = hlt_release
                     metadata['options'].update({
