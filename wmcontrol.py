@@ -464,7 +464,10 @@ def loop_and_submit(cfg):
                   espl = helper.SubsetByLumi(params['Task1']['InputDataset'],
                                              float(service_params['margin']))
 
-                  split, details = espl.run(int(params['Task1']['RequestNumEvents']),
+                  __events = float(params['Task1']['RequestNumEvents']) / float(
+                      params['Task1']['FilterEfficiency'])
+
+                  split, details = espl.run(int(__events),
                                             service_params['brute_force'],
                                             service_params['force_lumis'])
 
@@ -487,10 +490,8 @@ def loop_and_submit(cfg):
       elif ('RequestNumEvents' in params and 'LumiList' not in params and
             ('RunWhitelist' not in params or params['RunWhitelist']==[])):
 
-          if service_params['request_type'] in ['ReDigi','ReReco']:
-              events = float(params['RequestNumEvents'])
-          elif service_params['request_type'] in ['MonteCarloFromGEN']:
-              events = float(params['RequestNumEvents'] / float(params['FilterEfficiency']))
+
+          events = float(params['RequestNumEvents'] / float(params['FilterEfficiency']))
 
           if events:
               if test_mode:
