@@ -739,7 +739,7 @@ def build_params_dict(section,cfg):
       harvest_docID= wma.upload_to_couch(harvest_cfg , section, user, group,test_mode)
 
   # check if the request is valid
-  if step1_docID=='' and url_dict=="":
+  if step1_docID=='' and url_dict=="" and request_type!="DQMHarvest":
     print "Invalid request, no docID configuration specified."
     sys.stderr.write("[wmcontrol exception] Invalid request, no docID configuration specified.")
     sys.exit(-1)
@@ -1011,11 +1011,23 @@ def build_params_dict(section,cfg):
       #print "\n current dictionnary \n",pformat(params),'\n\n'
 
       ###raise Exception('Unknown request type, aborting')
+
+  elif request_type == "DQMHarvest":
+     params.update({
+                     "ConfigCacheUrl": "https://cmsweb.cern.ch/couchdb",
+                     "DQMHarvestUnit": "byRun",
+                     "Scenario": "pp",
+                     "PrepID": request_id,
+                     "TransientOutputModules":transient_output,
+                     "DQMUploadUrl" : "https://cmsweb.cern.ch/dqm/offline",
+                     "DQMConfigCacheID" : harvest_docID})
+     del (params["OpenRunningTimeout"])
+
   else:
       print "Request type chose: "+str(request_type)
       raise Exception('Unknown request type, aborting')
 
-  if harvest_docID:
+  if harvest_docID and request_type!="DQMHarvest":
       ##setup automatic harvesting
       params.update({"EnableHarvesting" : 1,
                      "DQMUploadUrl" : "https://cmsweb.cern.ch/dqm/offline",
