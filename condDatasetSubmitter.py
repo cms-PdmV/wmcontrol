@@ -56,6 +56,10 @@ def createOptionParser():
                     default=False,
                     help="Specify 0T reconstruction",
                     action='store_true')
+  parser.add_option("--HIon",
+                    default=False,
+                    help="Specify HIon reconstruction",
+                    action='store_true')
   parser.add_option("--HLTCustomMenu",
                     help="Specify a custom HLT menu",
                     default=None)  
@@ -161,6 +165,7 @@ def isAtSite(ds, run):
             #print block,'not complete at custodial site but ignoring'
             #blocks.append('#'+block.split('#')[-1])
           else:
+            print block,'complete at custodial site'
             blocks.append('#'+block.split('#')[-1])
             
   if len(blocks)==0:
@@ -179,7 +184,7 @@ def isAtSite(ds, run):
 
 #-------------------------------------------------------------------------------
 
-def getDriverDetails(Type,B0T):
+def getDriverDetails(Type,B0T,HIon):
   HLTBase= {"reqtype":"HLT",
             "steps":"HLT,DQM", #replaced DQM:triggerOfflineDQMSource with DQM
             "procname":"HLT2",
@@ -230,7 +235,7 @@ def getDriverDetails(Type,B0T):
                       "custconditions":"",
                       "datatier":"RAW",
                       "eventcontent":"RAW",
-                      "magfield":"0T",})
+                      "magfield":""})
     HLTRECObase={"steps":"RAW2DIGI,L1Reco,RECO,DQM",
                 "procname":"RECO",
                 "datatier":"RECO,DQMIO",
@@ -244,7 +249,10 @@ def getDriverDetails(Type,B0T):
                 "dumppython":False}
     if B0T:
         HLTRECObase.update({"magfield":"0T",
-                            "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2,RecoTracker/Configuration/customiseForRunI.customiseForRunI"})      
+                            "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2,RecoTracker/Configuration/customiseForRunI.customiseForRunI"})
+    if HIon:        
+        HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customiseRun2CommonHI"})
+        
     if Type=='HLT+RECO+ALCA':
         HLTRECObase.update({"steps":"RAW2DIGI,L1Reco,RECO,ALCA:SiStripCalMinBias,DQM"})
     HLTBase.update({'recodqm':HLTRECObase})    
@@ -266,7 +274,9 @@ def getDriverDetails(Type,B0T):
                 "inclparents":"False"}      
     if B0T:
         theDetails.update({"magfield":"0T",
-                            "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2,RecoTracker/Configuration/customiseForRunI.customiseForRunI"}) 
+                            "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2,RecoTracker/Configuration/customiseForRunI.customiseForRunI"})
+    if HIon:        
+        theDetails.update({"customise":"Configuration/DataProcessing/RecoTLR.customiseRun2CommonHI"})
     if Type=='PR+ALCA':
         theDetails.update({"steps":"RAW2DIGI,L1Reco,RECO,ALCA:SiStripCalMinBias,DQM"})
     return theDetails
@@ -300,14 +310,19 @@ def createHLTConfig(options):
 
 def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
 
-  details=getDriverDetails(options.Type,options.B0T)
+  details=getDriverDetails(options.Type,options.B0T,options.HIon)
 
   # get processing string
   if options.string is None:
     processing_string = str(datetime.date.today())
   else:
     processing_string = options.string
-  
+
+    
+  scenario = '--scenario pp'
+  if options.HIon:
+    scenario = '--scenario HeavyIons --repacked'
+    
   # Create the drivers
   #print confCondDictionary
   #for cfgname,custconditions in confCondDictionary.items():
@@ -317,7 +332,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
     driver_command="cmsDriver.py %s " %details['reqtype']+\
        "-s %s " %details['steps'] +\
        "--processName %s " % details['procname'] +\
-       "--data --scenario pp " +\
+       "--data %s "%scenario +\
        "--datatier %s " % details['datatier'] +\
        "--conditions %s " %custgt +\
        "--python_filename %s " %cfgname +\
@@ -351,7 +366,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
       driver_command="cmsDriver.py %s " %details['reqtype']+\
                       "-s %s " %base['steps'] +\
                       "--processName %s " % base['procname'] +\
-                      "--data --scenario pp " +\
+                      "--data %s "%scenario +\
                       "--datatier %s " % base['datatier'] +\
                       "--eventcontent %s " %base['eventcontent']  +\
                       "--conditions %s " %options.basegt +\
@@ -366,7 +381,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
       driver_command="cmsDriver.py %s " %details['reqtype']+\
                       "-s %s " %recodqm['steps'] +\
                       "--processName %s " % recodqm['procname'] +\
-                      "--data --scenario pp " +\
+                      "--data %s "%scenario +\
                       "--datatier %s " % recodqm['datatier'] +\
                       "--eventcontent %s " %recodqm['eventcontent']  +\
                       "--conditions %s " %options.basegt +\
@@ -396,7 +411,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
           
       driver_command="cmsDriver.py step4 " +\
                       "-s HARVESTING:dqmHarvesting " +\
-                      "--data --scenario pp " +\
+                      "--data %s "%scenario +\
                       "--filetype DQM " +\
                       "--conditions %s "%options.basegt +\
                       "--filein=file:%s "%filein +\
@@ -418,7 +433,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
           filein = "%s_RAW2DIGI_L1Reco_RECO_DQM_inDQM.root"%details['reqtype'] 
       driver_command="cmsDriver.py step4 " +\
                       "-s HARVESTING:dqmHarvesting " +\
-                      "--data --scenario pp " +\
+                      "--data %s "%scenario +\
                       "--filetype DQM " +\
                       "--conditions %s "%custgt +\
                       "--filein=file:%s "%filein +\
