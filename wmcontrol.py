@@ -42,7 +42,8 @@ default_parameters = {
 'priority':181983,
 'request_type':'ReReco',
 'scramarch':'slc5_amd64_gcc462',
-'includeparents': 'False'
+'includeparents': 'False',
+'multicore': 1
   }
 
 if os.getenv('SCRAM_ARCH'):
@@ -652,6 +653,8 @@ def build_params_dict(section,cfg):
   if size_event <0:
       size_event = 2000
 
+  multicore = int(float(cfg.get_param('multicore',1,section)))
+
   # parameters with fallback
   scramarch = cfg.get_param('scramarch',default_parameters['scramarch'],section)
   #group = cfg.get_param('group',default_parameters['group'],section)
@@ -842,7 +845,8 @@ def build_params_dict(section,cfg):
                    "Scenario": "pp",
                    "IncludeParents" : includeparents,
                    "PrepID": request_id,
-                   "TransientOutputModules":transient_output})
+                   "TransientOutputModules":transient_output,
+                   "Multicore":multicore})
 
 
     if skim_docid != '':
