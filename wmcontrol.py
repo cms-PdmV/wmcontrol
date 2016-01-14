@@ -467,7 +467,7 @@ def loop_and_submit(cfg):
           ##if we have a taskChain and its First task has inputDS, we do splitting algo
           ##TO-DO: move to separate method so we would not need to duplicate code
           if 'InputDataset' in params['Task1']:
-              if params['Task1']['InputDataset'] != '' and params['Task1']['RequestNumEvents']:
+              if params['Task1']['InputDataset'] != '' and 'RequestNumEvents' in params['Task1'] and params['Task1']['RequestNumEvents']:
                   if test_mode:
                       t = time.time()
                   espl = helper.SubsetByLumi(params['Task1']['InputDataset'],
