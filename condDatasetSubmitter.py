@@ -128,7 +128,7 @@ def getConfCondDictionary(conditions_filename):
 #-------------------------------------------------------------------------------
 
 def isPCLReady(run):
-  mydict = json.loads(os.popen('curl -L --cookie ~/private/ssocookie.txt --cookie-jar ~/private/ssocookie.txt https://cms-conddb-prod.cern.ch/pclMon/get_latest_runs?run_class=Cosmics% -k').read())
+  #mydict = json.loads(os.popen('curl -L --cookie ~/private/ssocookie.txt --cookie-jar ~/private/ssocookie.txt https://cms-conddb-prod.cern.ch/pclMon/get_latest_runs?run_class=Cosmics% -k').read())
 
   #print mydict
   
@@ -147,7 +147,7 @@ def isAtSite(ds, run):
   #dbsq1='dbs search --noheader --production --query "find block,block.status where dataset = %s and run = %s"'%(ds,run)
   #os.system('curl https://cmsweb.cern.ch/das/cli --insecure > das_client.py')
   #os.system('chmod a+x das_client.py')
-  dbsq1='./das_client.py --limit=0 --query="block dataset=%s run=%s"'%(ds,run)
+  dbsq1='python modules/das_client.py --limit=0 --query="block dataset=%s run=%s"'%(ds,run)
   ph=phedex(ds)
   print dbsq1
   for line in os.popen(dbsq1):
