@@ -5,6 +5,8 @@ import os
 import sys
 import re
 from optparse import OptionParser
+import datetime
+import json
 
 sys.path.append('/afs/cern.ch/cms/PPD/PdmV/tools/prod/devel/')
 from phedex import phedex
@@ -27,11 +29,11 @@ def createOptionParser():
                     help="new global tag containing tag to be tested")
   parser.add_option("--gt",
                     dest="gt",
-                    help="common global tag to both submissions")
+                    help="common/reference global tag to both submissions")
   parser.add_option("--basegt",
                     dest="basegt",
                     default="",
-                    help="common global tag to base RECO+HLT submissions")
+                    help="common global tag to base RECO+HLT/HLT+RECO submissions")
   parser.add_option("--run",
                     help="the run number to be processed, can be a comma separated list")
   parser.add_option("--ds",
@@ -50,10 +52,15 @@ def createOptionParser():
                     help="Specify what is the DQM sequence needed for PR",
                     default=None)
   parser.add_option("--HLT",
-                    help="Specify which HLT menu: SameAsRun uses the HLT menu corrresponding to the run",
-                    choices=['SameAsRun','GRun'],
+                    help="Specify which default HLT menu: SameAsRun uses the HLT menu corrresponding to the run, Custom lets you choose it explicitly",
+                    choices=['SameAsRun','GRun','Custom'],
                     default=None)
-
+  parser.add_option("--HLTCustomMenu",
+                    help="Specify a custom HLT menu",
+                    default=None)
+  parser.add_option("--recoCmsswDir",
+                    help="CMSSW base directory for RECO step if different from HLT step (supported for HLT+RECO type)",
+                    default=None)
   parser.add_option("--noSiteCheck",
                     help="Prevents the site check to be operated",
                     default=False,
@@ -70,8 +77,18 @@ def createOptionParser():
   if not os.environ.has_key(CMSSW_VERSION):
     print "CMSSW not properly set. Exiting"
     sys.exit(1)
-  options.release = os.getenv(CMSSW_VERSION)  
+  options.release = os.getenv(CMSSW_VERSION)
+  
+  CMSSW_BASE='CMSSW_BASE'
+  options.hltCmsswDir = os.getenv(CMSSW_BASE)
 
+  options.recoRelease = None
+  if options.recoCmsswDir:
+    path_list = options.recoCmsswDir.split('/')
+    for path in path_list:
+      if path.find("CMSSW")!=-1:
+        options.recoRelease = path  
+    
   if options.dry:
     DRYRUN=True
 
@@ -103,13 +120,18 @@ def getConfCondDictionary(conditions_filename):
 #-------------------------------------------------------------------------------
 
 def isPCLReady(run):
-  for line in os.popen('curl -s http://cms-alcadb.web.cern.ch/cms-alcadb/Monitoring/PCLTier0Workflow/log.txt').read().split('\n'):
-    if not line: continue
-    spl=line.split()
-    if spl[0]==str(run):
-      ready=eval(spl[7])
-      print "\n\n\tPCL ready for ",run,"\n\n"
-      return ready
+  mydict = json.loads(os.popen('curl -L --cookie ~/private/ssocookie.txt --cookie-jar ~/private/ssocookie.txt https://cms-conddb-prod.cern.ch/pclMon/get_latest_runs?run_class=Cosmics% -k').read())
+
+  #print mydict
+  
+  #for line in os.popen('curl -s http://cms-alcadb.web.cern.ch/cms-alcadb/Monitoring/PCLTier0Workflow/log.txt').read().split('\n'):
+  #  if not line: continue
+  #  spl=line.split()
+  #  if spl[0]==str(run):
+  #    ready=eval(spl[7])
+  #    print "\n\n\tPCL ready for ",run,"\n\n"
+  #    return ready
+  
   return False
 
 def isAtSite(ds, run):
@@ -153,7 +175,7 @@ def isAtSite(ds, run):
 
 def getDriverDetails(Type):
   HLTBase= {"reqtype":"HLT",
-            "steps":"HLT,DQM:triggerOfflineDQMSource",
+            "steps":"HLT,DQM", #replaced DQM:triggerOfflineDQMSource with DQM
             "procname":"HLT2",
             "datatier":"RAW,DQM ",
             "eventcontent":"FEVTDEBUGHLT,DQM",
@@ -173,7 +195,7 @@ def getDriverDetails(Type):
                }
 
   if options.HLT:
-    HLTBase.update({"steps":"HLT:%s,DQM:triggerOfflineDQMSource"%(options.HLT)})
+    HLTBase.update({"steps":"HLT:%s,DQM"%(options.HLT)}) #replaced DQM:triggerOfflineDQMSource with DQM
   if Type=='HLT':
     return HLTBase
   elif Type=='RECO+HLT':
@@ -183,18 +205,23 @@ def getDriverDetails(Type):
     if options.HLT:
       HLTBase.update({"steps":"HLT:%s"%(options.HLT),
                       "custcommands":"\ntry:\n\tif process.RatesMonitoring in process.schedule: process.schedule.remove( process.RatesMonitoring );\nexcept: pass",
-                      "custconditions":""})
+                      "custconditions":"",
+                      "datatier":"RAW",
+                      "eventcontent":"FEVTDEBUGHLT"})
     else:
       HLTBase.update({"steps":"HLT",
                       "custcommands":"\ntry:\n\tif process.RatesMonitoring in process.schedule: process.schedule.remove( process.RatesMonitoring );\nexcept: pass",
-                      "custconditions":""})
-    HLTRECObase={"steps":"RAW2DIGI,L1Reco,RECO,DQM:triggerOfflineDQMSource",
+                      "custconditions":"",
+                      "datatier":"RAW",
+                      "eventcontent":"FEVTDEBUGHLT"})
+    HLTRECObase={"steps":"RAW2DIGI,L1Reco,RECO,DQM", #replaced DQM:triggerOfflineDQMSource with DQM
                 "procname":"RECO",
-                "datatier":"DQM",
-                "eventcontent":"DQM",
-                "inputcommands":'',
-                "custcommands":'',               
-                }
+                "datatier":"RECO,DQMIO",
+                "eventcontent":"RECO,DQM",
+                "inputcommands":'keep *',
+                #"custcommands":'\nfrom Configuration.Applications.ConfigBuilder import ConfigBuilder\nprocess.triggerOfflineDQMSource.visit(ConfigBuilder.MassSearchReplaceProcessNameVisitor("HLT", "HLT2", whitelist = ("subSystemFolder",)))'}
+                #"custcommands":'\nfrom Configuration.Applications.ConfigBuilder import ConfigBuilder\nprocess.DQMOffline.visit(ConfigBuilder.MassSearchReplaceProcessNameVisitor("HLT", "HLT2", whitelist = ("subSystemFolder",)))'
+                "custcommands":''}
     HLTBase.update({'recodqm':HLTRECObase})    
     return HLTBase
   elif Type=='PR':
@@ -222,11 +249,22 @@ def execme(command):
 
 #-------------------------------------------------------------------------------
 def createHLTConfig(options):
-  hlt_command="hltGetConfiguration --cff --offline " +\
-      "run:%s "%options.run[0] +\
-      "> $CMSSW_BASE/src/HLTrigger/Configuration/python/HLT_SameAsRun_cff.py"
+
+  if options.HLT=="SameAsRun":    
+    hlt_command="hltGetConfiguration --cff --offline " +\
+                "run:%s "%options.run[0] +\
+                "> %s/src/HLTrigger/Configuration/python/HLT_%s_cff.py"%(options.hltCmsswDir,options.HLT)
+                
+  elif options.HLT=="Custom":
+    hlt_command="hltGetConfiguration --cff --offline " +\
+                "%s "%options.HLTCustomMenu +\
+                "> %s/src/HLTrigger/Configuration/python/HLT_%s_cff.py"%(options.hltCmsswDir,options.HLT)
+      
+  cmssw_command = "cd %s; eval `scramv1 runtime -sh`; cd -"%options.hltCmsswDir
+  build_command = "cd %s/src; eval `scramv1 runtime -sh`; scram b; cd -"%options.hltCmsswDir
+  execme(cmssw_command)
   execme(hlt_command)
-  execme("cd $CMSSW_BASE/src; scram b; cd -")
+  execme(build_command)
 
 def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
 
@@ -247,9 +285,9 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
        "--eventcontent %s " %details['eventcontent']  +\
        "--conditions %s " %custgt +\
        "--python_filename %s " %cfgname +\
-       "--no_exec " +\
-       "-n 10 " +\
-       "--filein file:HLT_RAW2DIGI_L1Reco_RECO.root "
+       "--no_exec --customise SLHCUpgradeSimulations/Configuration/muonCustoms.customise_csc_PostLS1 " +\
+       "--dump_python " +\
+       "-n 100 "
     if details['inputcommands']!="":
       driver_command += '--inputCommands "%s" '%details['inputcommands']
     if details['custconditions']!="":
@@ -257,6 +295,8 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
     if details['custcommands']!="":
       driver_command += '--customise_commands="%s" ' %details['custcommands']       
 
+    cmssw_command = "cd %s; eval `scramv1 runtime -sh`; cd -"%options.hltCmsswDir
+    execme(cmssw_command)
     execme(driver_command)
     
     base=None
@@ -271,7 +311,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                       "--conditions %s " %options.basegt +\
                       "--python_filename reco.py " +\
                       "--no_exec " +\
-                      "-n 10 "
+                      "-n 100 "
       execme(driver_command)
       
     recodqm = None
@@ -284,9 +324,26 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                       "--datatier %s " % recodqm['datatier'] +\
                       "--eventcontent %s " %recodqm['eventcontent']  +\
                       "--conditions %s " %options.basegt +\
+                      "--hltProcess HLT2 " +\
+                      "--filein=file:HLT_HLT.root " +\
                       "--python_filename recodqm.py " +\
+                      "--no_exec --customise Configuration/DataProcessing/RecoTLR.customisePromptRun2 " +\
+                      "-n 100 " +\
+                      "--customise_commands='%s' " %recodqm['custcommands']
+      if options.recoCmsswDir:
+        cmssw_command = "cd %s; eval `scramv1 runtime -sh`; cd -"%options.recoCmsswDir
+        execme(cmssw_command)
+      execme(driver_command)
+      
+      driver_command="cmsDriver.py step4 " +\
+                      "-s HARVESTING:dqmHarvesting " +\
+                      "--data --scenario pp " +\
+                      "--filetype DQM " +\
+                      "--conditions %s "%options.basegt +\
+                      "--filein=file:HLT_RAW2DIGI_L1Reco_RECO_DQM_inDQM.root " +\
+                      "--python_filename=step4_HARVESTING.py " +\
                       "--no_exec " +\
-                      "-n 10 "
+                      "-n 100 "
       execme(driver_command)
       
 
@@ -337,10 +394,14 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
   else:
     wmcconf_text+='request_type= ReReco \n'+\
                   'includeparents = %s \n' %details['inclparents']
-  
-  wmcconf_text+='priority = 1000000 \n'+\
-                'release=%s\n' %options.release +\
-                'globaltag =%s \n' %gtshort
+  if recodqm:
+    wmcconf_text+='priority = 999999 \n'+\
+                  'release=%s\n' %options.release +\
+                  'globaltag =%s \n' %subgtshort
+  else:
+    wmcconf_text+='priority = 999999 \n'+\
+                  'release=%s\n' %options.release +\
+                  'globaltag =%s \n' %gtshort
   wmcconf_text+='dset_run_dict= {'
   for ds in options.ds:
     wmcconf_text+='"%s" : [%s],\n '%(ds, ','.join(options.run+ map(lambda s :'"%s"'%(s),allRunsAndBlocks[ds])))
@@ -372,13 +433,21 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
       elif recodqm:
         label=cfgname.lower().replace('.py','')
         wmcconf_text+='\n\n[%s_%s]\n' %(details['reqtype'],label) +\
+                       'KeepOutput = True\n' +\
+                       'time_event = 1\n' +\
+                       'processing_string = %s_%s_%s \n'%(str(datetime.date.today()),label,refsubgtshort) +\
                        'cfg_path = %s\n'%cfgname +\
                        'req_name = %s_%s_RelVal_%s\n'%(details['reqtype'],label,options.run[0]) +\
                        'globaltag = %s\n'%(refsubgtshort) +\
                        'step%d_output = FEVTDEBUGHLToutput\n'%task +\
                        'step%d_cfg = recodqm.py\n'%task +\
                        'step%d_globaltag = %s \n'%(task,gtshort) +\
-                       'step%d_input = Task1\n\n'%task
+                       'step%d_processstring = %s_%s_%s \n'%(task,str(datetime.date.today()),label,refsubgtshort) +\
+                       'step%d_input = Task1\n'%task +\
+                       'step%d_timeevent = 20\n'%task
+        if options.recoRelease:
+          wmcconf_text+='step%d_release = %s \n'%(task,options.recoRelease)
+        wmcconf_text+='harvest_cfg=step4_HARVESTING.py\n\n'
       else:
         continue
 
@@ -393,13 +462,21 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
       if "REFERENCE" in cfgname: continue
       label=cfgname.lower().replace('.py','')
       wmcconf_text+='\n\n[%s_%s]\n' %(details['reqtype'],label) +\
+                     'KeepOutput = True\n' +\
+                     'time_event = 1\n' +\
+                     'processing_string = %s_%s_%s \n'%(str(datetime.date.today()),label,subgtshort) +\
                      'cfg_path = %s\n'%cfgname +\
                      'req_name = %s_%s_RelVal_%s\n'%(details['reqtype'],label,options.run[0]) +\
                      'globaltag = %s\n'%(subgtshort) +\
                      'step%d_output = FEVTDEBUGHLToutput\n'%task +\
                      'step%d_cfg = recodqm.py\n'%task +\
                      'step%d_globaltag = %s \n'%(task,gtshort) +\
-                     'step%d_input = Task1\n\n'%task
+                     'step%d_processstring = %s_%s_%s \n'%(task,str(datetime.date.today()),label,subgtshort) +\
+                     'step%d_input = Task1\n'%task +\
+                     'step%d_timeevent = 20\n'%task
+      if options.recoRelease:
+        wmcconf_text+='step%d_release = %s \n'%(task,options.recoRelease)
+      wmcconf_text+='harvest_cfg=step4_HARVESTING.py\n\n'
     else:
       label=cfgname.lower().replace('.py','')
       wmcconf_text+='\n\n[%s_%s]\n' %(details['reqtype'],label) +\
@@ -456,8 +533,7 @@ if __name__ == "__main__":
   confCondList= getConfCondDictionary(options)
   
   # Create the cff
-  if options.HLT=="SameAsRun": createHLTConfig(options)
+  if options.HLT in ["SameAsRun","Custom"]: createHLTConfig(options)
   
   # Create the cfgs, both for cmsRun and WMControl  
   createCMSSWConfigs(options,confCondList,allRunsAndBlocks)
-

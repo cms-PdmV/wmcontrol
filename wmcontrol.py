@@ -981,7 +981,8 @@ def build_params_dict(section,cfg):
       params.pop('RunBlacklist')
       params.pop('BlockWhitelist')
       params.pop('BlockBlacklist')
-
+# GF Mon Feb  1 07:17:35 CET 2016
+# <<<<<<< HEAD
       task1_dict={'SplittingAlgorithm': 'LumiBased',
                   'SplittingArguments': {'lumis_per_job': 8},
                   'TaskName':'Task1'
@@ -1016,7 +1017,42 @@ def build_params_dict(section,cfg):
               #task3_dict['KeepOutput'] = keep_step3
               params['Task3']=task3_dict
               params['TaskChain']=3
-
+#=======
+#      params['TaskChain']=0
+#      task_index=0
+#      while stepN_docID[task_index]:
+#          task_number = task_index+1
+#          task_dict =  {'SplittingAlgorithm': 'LumiBased',
+#                        'SplittingArguments': {'lumis_per_job': int(cfg.get_param('step%d_lumisperjob'%task_number,4,section))},
+#                        'TaskName':'Task%d'%task_number,
+#                        'GlobalTag' : cfg.get_param('step%d_globaltag'%task_number,globaltag,section),
+#                        'CMSSWVersion' : cfg.get_param('step%d_release'%task_number,release,section),
+#                        'ConfigCacheID' : stepN_docID[task_index],
+#                        'ProcessingVersion' : version,
+#                        'TimePerEvent': cfg.get_param('step%d_timeevent'%task_number,time_event,section)
+#                        }
+#          
+#          if task_index:
+#              task_dict['InputFromOutputModule'] = stepN_output[task_index]
+#              task_dict['InputTask'] = cfg.get_param('step%d_input'%task_number,'Task%d'%task_index,section)
+#                        
+#
+#          if processing_string.find(task_dict['GlobalTag'])!=-1:              
+#            task_dict.update({'ProcessingString' : cfg.get_param('step%s_processstring'%task_number,processing_string,section),
+#                              'AcquisitionEra' : cfg.get_param('step%s_era'%task_number,task_dict['CMSSWVersion'],section),                           
+#                             })
+#          else:            
+#            task_dict.update({'ProcessingString' : cfg.get_param('step%s_processstring'%task_number,task_dict['GlobalTag'],section),
+#                              'AcquisitionEra' : cfg.get_param('step%s_era'%task_number,task_dict['CMSSWVersion'],section),                           
+#                             })
+#          
+#          params['Task%d'%task_number] = copy.deepcopy( task_dict )
+#          params['TaskChain']+=1
+#          task_index+=1
+#                        
+#          
+#>>>>>>> aba39f1... expanded HLT configs (in case of custom menu); additional customization to rename directories for recodqm.py; recommended changes following test injection into computing; adding custom menu functionality and fixing job splitting parameters; adding postLS1 customizations
+#
       #from pprint import pformat
       #print "\n current dictionnary \n",pformat(params),'\n\n'
 
@@ -1040,7 +1076,8 @@ def build_params_dict(section,cfg):
   if harvest_docID and request_type!="DQMHarvest":
       ##setup automatic harvesting
       params.update({"EnableHarvesting" : 1,
-                     "DQMUploadUrl" : "https://cmsweb.cern.ch/dqm/offline",
+                     #"DQMUploadUrl" : "https://cmsweb.cern.ch/dqm/offline",
+                     "DQMUploadUrl" : "https://cmsweb.cern.ch/dqm/relval",
                      "DQMConfigCacheID" : harvest_docID})
 
 
