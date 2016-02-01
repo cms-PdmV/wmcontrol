@@ -83,7 +83,21 @@ def main():
         logging.error('Need to suply a metadata text file name')
         return -3
         
-    
+    # check that user has properly set up the WMA libraries in PYTHONPATH
+    try:
+        pypath = os.environ['PYTHONPATH']
+    except:
+        print "no PYTHONPATH defined in your environment; exiting"
+        sys.exit()
+    else:
+        if len ( filter( lambda r : "WMCore" in r, pypath.split(":") ) ) > 0 :
+            print "hapy"
+            pass
+        else :
+            print "no WMCore present in your PYTHONPATH; exiting"
+            sys.exit()
+
+
     if True:
         try:
             with open(metadataFilename, 'rb') as metadataFile:
@@ -173,6 +187,7 @@ I will ask you some questions to fill the metadata file. For some of the questio
             logging.info('Saving generated metadata in %s...', metadataFilename)
             with open(metadataFilename, 'wb') as metadataFile:
                 metadataFile.write(metadata)
+                logging.info('... metadata.txt file created.')
 
             
 
