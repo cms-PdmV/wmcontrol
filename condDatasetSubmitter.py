@@ -294,7 +294,9 @@ def execme(command):
 #-------------------------------------------------------------------------------
 def createHLTConfig(options):
 
-  if options.HLT=="SameAsRun":    
+  assert  os.path.exists("%s/src/HLTrigger/Configuration/"%(options.hltCmsswDir) ), "error: HLTrigger/Configuration/ is missing in the CMSSW release for HLT (set to: echo $CMSSW_VERSION ) - can't create the HLT configuration "
+
+  if options.HLT=="SameAsRun":
     hlt_command="hltGetConfiguration --unprescale --cff --offline " +\
                 "run:%s "%options.run[0] +\
                 "> %s/src/HLTrigger/Configuration/python/HLT_%s_cff.py"%(options.hltCmsswDir,options.HLT)
