@@ -1,32 +1,29 @@
-# 
+#
 # eval `scramv1 runtime -csh`
-# # set CRAB environment
-# source  /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh
-# voms-proxy-init
+# if we don't source subSetupAuto we need grid proxy and crab env:
+#   source  /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh
+#   voms-proxy-init
 
 import os
-import  sys,time,json
-from    dbs.apis.dbsClient import DbsApi
-from    time import gmtime
-url="https://cmsweb.cern.ch/dbs/prod/global/DBSReader"
-api=DbsApi(url=url)
+import  sys, time, json
 
+from modules.wma import ConnectionWrapper
 from Configuration.Skimming.autoSkim import autoSkim
-
-print autoSkim
-
-#from Configuration.AlCa.autoAlca import autoAlca
+from Configuration.AlCa.autoAlca import autoAlca
 # USING LOCAL autoAlca.py
-from autoAlca import autoAlca
-
+##TO-DO add option to use local instance
+# for now comented out
+#from autoAlca import autoAlca
+print autoSkim
 print autoAlca
+
+DBS3_CONNECT = ConnectionWrapper()
 
 customera = {}
 customera["Run2015B"] = 'customiseDataRun2Common'
 customera["Run2015C_50ns"] = 'customiseDataRun2Common_50nsRunsAfter253000'
 customera["Run2015C_25ns"] = 'customiseDataRun2Common_25ns'
 customera["Run2015D"] = 'customiseDataRun2Common_25ns'
-
 
 GT = "76X_dataRun2_v15"
 campaign = "Run2015D"
@@ -35,7 +32,7 @@ num_core = "4"
 
 jsonFile = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/DCSOnly/json_DCSONLY.txt'
 
-with open(jsonFile) as data_file:    
+with open(jsonFile) as data_file:
     data = json.load(data_file)
 #print data.keys()
 AlltheRuns = map(int,data.keys())
@@ -45,10 +42,9 @@ AlltheRuns = map(int,data.keys())
 # select runs in Run2015D
 theRuns = filter(lambda x: x >= 256630, AlltheRuns)
 
-
 # The RAW datasets to process must have AOD in Prompt
-theDatasets = api.listDatasets( dataset='/*/Run2015D*/RAW' )
-theDatasetsAOD = api.listDatasets( dataset='/*/*Run2015D*PromptReco*/AOD' )
+theDatasets = DBS3_CONNECT.api('datasets', 'dataset', '/*/Run2015D*/RAW')
+theDatasetsAOD = DBS3_CONNECT.api('datasets', 'dataset', '/*/*Run2015D*PromptReco*/AOD')
 
 #print theDatasets
 #print theDatasetsAOD
@@ -85,8 +81,7 @@ master.write("harvest_cfg=harvesting.py \n")
 for oneDS in theDatasets:
     theDataset= oneDS['dataset']
     if (theDataset.split('/'))[1] in theDatasetsToProcessAOD:
-
-        runs = api.listRuns(dataset=theDataset)[0]['run_num']
+        runs = DBS3_CONNECT.api('runs', 'dataset', theDataset)[0]['run_num']
 #    print sorted(runs)
 #    print "# of runs in the dataset: ", len(runs)
 
@@ -118,26 +113,26 @@ for oneDS in theDatasets:
             master.write("cfg_path=reco_"+campaign+"_"+datasetstr+".py")
             master.write("\n")
 
-# Prepare for Alca sequence, Skim sequence, and RECO customizations 
+# Prepare for Alca sequence, Skim sequence, and RECO customizations
             alcaseq = ''
             skimseq = ''
             recotier = ''
             keepreco = False
-            
+
 # Datasets for which we want to keep RECO output
             if ( (datasetstr == "NoBPTX") or (datasetstr == "DoubleMuon") or (datasetstr=="EmptyBX") or
             ("ZeroBias" in datasetstr) or (datasetstr == "MinimumBias") or ("SingleMu" in datasetstr) ) :
                 keepreco = True
-                recotier = 'RECO,'                
+                recotier = 'RECO,'
 
 # Datasets for which we want to make skims
             if datasetstr in autoSkim.keys():
-                recotier = 'RECO,'                
+                recotier = 'RECO,'
 
 # Datasets for which we want to make Alca datasets
             if datasetstr in autoAlca.keys():
                 alcaseq='ALCA:%s,'%(autoAlca[datasetstr])
-                
+
 # Datasets for which we need temporary RECO output just for skimming
             if ( (datasetstr in autoSkim.keys()) and (not(keepreco)) ) :
                 master.write("transient_output = [\"RECOoutput\"]")
@@ -159,13 +154,10 @@ for oneDS in theDatasets:
                 skim_command='cmsDriver.py skim -s SKIM:%s --data --no_output --conditions %s --runUnscheduled --nThreads %s --python_filename skim_%s_%s.py --no_exec'%(autoSkim[datasetstr],GT,num_core,campaign,datasetstr)
                 print skim_command
                 os.system(skim_command)
-                                                                                                
+
 # write the requestID for the workflow in the conf file
             master.write("request_id=ReReco-"+campaign+"-"+proc_string+"-"+(format(nd, '04d'))+ "\n")
-
 
 print
 print
 print "\n".join(theDatasetsToProcess)
-
-
