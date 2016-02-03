@@ -29,6 +29,56 @@ WMAGENT_URL = 'cmsweb.cern.ch'
 DBS3_URL = "/dbs/prod/global/DBSReader/"
 
 
+class ConnectionWrapper():
+    """
+    Wrapper class to re-use existing connection to DBS3Reader
+    """
+    def __init__(self):
+      ##TO-DO:
+      # add a parameter to pass DBS3 url, in case we want to use different address
+        self.connection = None
+        self.connection_attempts = 3
+        self.wmagenturl = 'cmsweb.cern.ch'
+        self.dbs3url = '/dbs/prod/global/DBSReader/'
+
+    def refresh_connection(self, url):
+        self.connection = init_connection(url)
+
+    def abort(self, reason=""):
+        raise Exception("Something went wrong. Aborting. " + reason)
+
+    def api(self, method, field, value, detail=False, post=False):
+        """Constructs query and returns DBS3 response
+        """
+        if not self.connection:
+            self.refresh_connection(self.wmagenturl)
+
+        # this way saves time for creating connection per every request
+        for i in range(self.connection_attempts):
+            try:
+                if post:
+                    params = {}
+                    params[field] = value
+                    res = httppost(self.connection, self.dbs3url +
+                                       method, params).replace("'", '"')
+                else:
+                    if detail:
+                        res = httpget(self.connection, self.dbs3url
+                                          + "%s?%s=%s&detail=%s"
+                                          % (method, field, value, detail))
+                    else:
+                        res = httpget(self.connection, self.dbs3url +
+                                          "%s?%s=%s" % (method, field, value))
+                break
+            except Exception:
+                # most likely connection terminated
+                self.refresh_connection(self.wmagenturl)
+        try:
+            return json.loads(res)
+        except:
+            self.abort("Could not load the answer from DBS3: " + self.dbs3url
+                       + "%s?%s=%s&detail=%s" % (method, field, value, detail))
+
 def testbed(to_url):
     global COUCH_DB_ADDRESS
     global WMAGENT_URL
@@ -116,7 +166,7 @@ def approveRequest(url,workflow,encodeDict=False):
     conn.close()
     print 'Approved workflow:',workflow
     return
-    
+
 #-------------------------------------------------------------------------------
 
 def __loadConfig(configPath):
@@ -134,18 +184,16 @@ def __loadConfig(configPath):
 
     print "done."
     return loadedConfig
-    
-#-------------------------------------------------------------------------------    
+
+#-------------------------------------------------------------------------------
 # DP leave this untouched even if less than optimal!
 def makeRequest(url,params,encodeDict=False):
-
     __check_request_params(params)
     for (k,v) in params.items():
       if type(v) ==dict:
         encodeDict=True
         print "Re-encoding for nested dicts"
         break
-      
     if encodeDict:
         import json
         jsonEncodedParams = {}
@@ -184,14 +232,14 @@ def makeRequest(url,params,encodeDict=False):
 def upload_to_couch(cfg_name, section_name,user_name,group_name,test_mode=False,url=None):
   if test_mode:
     return "00000000000000000"
-      
+
   if not os.path.exists(cfg_name):
     raise RuntimeError( "Error: Can't locate config file %s." %cfg_name)
 
   # create a file with the ID inside to avoid multiple injections
   oldID=cfg_name+'.couchID'
   #print oldID
-  #print 
+  #print
   if os.path.exists(oldID):
       f=open(oldID)
       the_id=f.readline().replace('\n','')
@@ -205,7 +253,7 @@ def upload_to_couch(cfg_name, section_name,user_name,group_name,test_mode=False,
     #just try again !!
     time.sleep(2)
     loadedConfig = __loadConfig(cfg_name)
-    
+
   where=COUCH_DB_ADDRESS
   if url:      where=url
   configCache = ConfigCache(where, DATABASE_NAME)
@@ -215,18 +263,17 @@ def upload_to_couch(cfg_name, section_name,user_name,group_name,test_mode=False,
   configCache.setLabel(section_name)
   configCache.setDescription(section_name)
   configCache.save()
-  
+
   print "Added file to the config cache:"
   print "  DocID:    %s" % configCache.document["_id"]
   print "  Revision: %s" % configCache.document["_rev"]
-  
+
   f=open(oldID,"w")
   f.write(configCache.document["_id"])
   f.close()
   return configCache.document["_id"]
-  
-#-------------------------------------------------------------------------------  
-  
+
+#-------------------------------------------------------------------------------
 
 def time_per_events(campaign):
   ### ad-hoc method until something better comes up to define the time per event in injection time

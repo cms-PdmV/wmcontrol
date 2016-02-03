@@ -17,45 +17,10 @@ class SubsetByLumi():
         """
         self.dataset = dset_name
         self.approximation = approx
-        self.connection = None
-        self.connection_attempts = 3
-        self.wmagenturl = 'cmsweb.cern.ch'
-        self.dbs3url = '/dbs/prod/global/DBSReader/'
+        self.DBS3 = wma.ConnectionWrapper()
 
     def abort(self, reason=""):
         raise Exception("Something went wrong. Aborting. " + reason)
-
-    def api(self, method, field, value, detail=False, post=False):
-        """Constructs query and returns DBS3 response
-        """
-        if not self.connection:
-            self.refresh_connection(self.wmagenturl)
-
-        # this way saves time for creating connection per every request
-        for i in range(self.connection_attempts):
-            try:
-                if post:
-                    params = {}
-                    params[field] = value
-                    res = wma.httppost(self.connection, self.dbs3url +
-                                       method, params).replace("'", '"')
-                else:
-                    if detail:
-                        res = wma.httpget(self.connection, self.dbs3url
-                                          + "%s?%s=%s&detail=%s"
-                                          % (method, field, value, detail))
-                    else:
-                        res = wma.httpget(self.connection, self.dbs3url +
-                                          "%s?%s=%s" % (method, field, value))
-                break
-            except Exception:
-                # most likely connection terminated
-                self.refresh_connection(self.wmagenturl)
-        try:
-            return json.loads(res)
-        except:
-            self.abort("Could not load the answer from DBS3: " + wma.DBS3_URL
-                       + "%s?%s=%s&detail=%s" % (method, field, value, detail))
 
     def parse(self, inlist, name, events):
         """Parse DBS3 JSON
@@ -70,9 +35,6 @@ class SubsetByLumi():
             total += i[events]
         return ret, total
 
-    def refresh_connection(self, url):
-        self.connection = wma.init_connection(url)
-
     def run(self, events, brute=False, only_lumis=False):
         """Runs subset generation
 
@@ -82,12 +44,9 @@ class SubsetByLumi():
         only_lumis -- skip trying to split by block
         """
 
-        if not self.connection:
-            self.refresh_connection(self.wmagenturl)
-
         if not only_lumis:
             # try with blocks first
-            res = self.api('blocksummaries', 'dataset', self.dataset, True)
+            res = self.DBS3.api('blocksummaries', 'dataset', self.dataset, True)
             blocks, total = self.parse(res, 'block_name', 'num_event')
             if total - events * self.approximation < events:
                 # if there is no need of splitting read whole dataset
@@ -111,7 +70,7 @@ class SubsetByLumi():
             print "Block based splitting not enough. Trying with lumis."
 
         # get files per dataset
-        files = self.api('files', 'dataset', self.dataset, True)
+        files = self.DBS3.api('files', 'dataset', self.dataset, True)
         files, total = self.parse(files, 'logical_file_name', 'event_count')
 
         # if total number of events is not valid number, abort
@@ -160,7 +119,7 @@ class SubsetByLumi():
         rep = defaultdict(list)
         if len(data):
             print "using data"
-            res = self.api('filelumis', 'logical_file_name',
+            res = self.DBS3.api('filelumis', 'logical_file_name',
                            [d['name'] for d in data if d not
                             in extended['data']], post=True)
             for r in res:
@@ -171,7 +130,7 @@ class SubsetByLumi():
         if len(extended['data']):
             print "using extended"
             ext = extended['data']
-            res = self.api('filelumis', 'logical_file_name',
+            res = self.DBS3.api('filelumis', 'logical_file_name',
                            [e['name'] for e in ext], post=True)
 
             for i, e in enumerate(ext):
