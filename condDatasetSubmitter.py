@@ -147,29 +147,36 @@ def isAtSite(ds, run):
   blocks=[]
   ph=phedex(ds)
   # get list of blocks for input dataset directly from DBS3
+  # documentation: https://cmsweb.cern.ch/dbs/prod/global/DBSReader/
   connection = wma.init_connection('cmsweb.cern.ch')
   blockDicts = ast.literal_eval(
-    wma.httpget(connection, wma.DBS3_URL+"blocks?dataset=%s"%ds) ) # connection return a string which represents a list
+    wma.httpget(connection, wma.DBS3_URL+"blocks?dataset=%s&run_num=%s"%(ds,run)) ) # connection return a string which represents a list
+
 
   for blockDict in blockDicts:
       block = blockDict['block_name']
       # print "block is: %s"%block
 
-      for b in filter(lambda b :b.name==block,ph.block):
-        for replica in filter(lambda r : r.custodial=='y',b.replica):
-          if replica.complete!='y':
-            print block,'not complete at custodial site'
-            #print block,'not complete at custodial site but ignoring'
-            #blocks.append('#'+block.split('#')[-1])
-          else:
-            print block,'complete at custodial site'
-            blocks.append('#'+block.split('#')[-1])
-            
+      # it's unclear what probing custodiality means; remove this check  
+      #
+      #for b in filter(lambda b :b.name==block,ph.block):
+      #  for replica in filter(lambda r : r.custodial=='y',b.replica):
+      #    if replica.complete!='y':
+      #      print block,'not complete at custodial site'
+      #      #print block,'not complete at custodial site but ignoring'
+      #      #blocks.append('#'+block.split('#')[-1])
+      #    else:
+      #      print block,'complete at custodial site'
+      #      blocks.append('#'+block.split('#')[-1])
+
+      blocks.append('#'+block.split('#')[-1])
+
   if len(blocks)==0:
     print "No possible block for %s in %s"%(run,ds)
     return False
   else:
     print "\n\n\t Block testing succeeded for %s in %s \n\n"%(run,ds)
+    print blocks
     return list(set(blocks))
 
 #-------------------------------------------------------------------------------
