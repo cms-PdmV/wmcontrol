@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-
+import ast
 import os
 import sys
 import re
@@ -11,6 +11,7 @@ import json
 sys.path.append('/afs/cern.ch/cms/PPD/PdmV/tools/prod/devel/')
 from phedex import phedex
 
+from modules import wma
   
 DRYRUN=False
 
@@ -144,19 +145,15 @@ def isPCLReady(run):
 
 def isAtSite(ds, run):
   blocks=[]
-  #dbsq1='dbs search --noheader --production --query "find block,block.status where dataset = %s and run = %s"'%(ds,run)
-  #os.system('curl https://cmsweb.cern.ch/das/cli --insecure > das_client.py')
-  #os.system('chmod a+x das_client.py')
-  dbsq1='python modules/das_client.py --limit=0 --query="block dataset=%s run=%s"'%(ds,run)
   ph=phedex(ds)
-  print dbsq1
-  for line in os.popen(dbsq1):
-      if line.find("#")==-1: continue
-      block=line.split()[0]
-      #status=int(line.split()[1])
-      #if status!=0:
-      #  print block,'not closed'
-      #  continue
+  # get list of blocks for input dataset directly from DBS3
+  connection = wma.init_connection('cmsweb.cern.ch')
+  blockDicts = ast.literal_eval(
+    wma.httpget(connection, wma.DBS3_URL+"blocks?dataset=%s"%ds) ) # connection return a string which represents a list
+
+  for blockDict in blockDicts:
+      block = blockDict['block_name']
+      # print "block is: %s"%block
 
       for b in filter(lambda b :b.name==block,ph.block):
         for replica in filter(lambda r : r.custodial=='y',b.replica):
@@ -172,7 +169,7 @@ def isAtSite(ds, run):
     print "No possible block for %s in %s"%(run,ds)
     return False
   else:
-    print "\n\n\t Block testing at succeeded for %s in %s \n\n"%(run,ds)
+    print "\n\n\t Block testing succeeded for %s in %s \n\n"%(run,ds)
     return list(set(blocks))
 
 #-------------------------------------------------------------------------------
@@ -677,7 +674,7 @@ if __name__ == "__main__":
       for run in options.run:
         newblocks=isAtSite( ds, run)
         if newblocks==False:
-          print "Cannot proceed with %s in %s"%(ds,run)
+          print "Cannot proceed with %s in %s (no suitable blocks found)"%(ds,run)
           sys.exit(1)
         else:
           allRunsAndBlocks[ds].extend(newblocks)

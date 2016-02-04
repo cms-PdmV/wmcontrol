@@ -104,6 +104,7 @@ def httpget(conn, query):
         raise RuntimeError('Something is really wrong')
     if response.status != 200:
         print "Problems quering DBS3 RESTAPI with %s: %s" % (
+            # where does base_url come from ? FIX
             base_url + query.replace('#', '%23'), response.read())
         return None
     return response.read()
