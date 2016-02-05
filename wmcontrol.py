@@ -981,7 +981,6 @@ def build_params_dict(section,cfg):
       params.pop('RunBlacklist')
       params.pop('BlockWhitelist')
       params.pop('BlockBlacklist')
-
       task1_dict={'SplittingAlgorithm': 'LumiBased',
                   'SplittingArguments': {'lumis_per_job': 8},
                   'TaskName':'Task1'
@@ -1016,7 +1015,6 @@ def build_params_dict(section,cfg):
               #task3_dict['KeepOutput'] = keep_step3
               params['Task3']=task3_dict
               params['TaskChain']=3
-
       #from pprint import pformat
       #print "\n current dictionnary \n",pformat(params),'\n\n'
 
@@ -1041,6 +1039,7 @@ def build_params_dict(section,cfg):
       ##setup automatic harvesting
       params.update({"EnableHarvesting" : 1,
                      "DQMUploadUrl" : "https://cmsweb.cern.ch/dqm/offline",
+                     #"DQMUploadUrl" : "https://cmsweb.cern.ch/dqm/offline",
                      "DQMConfigCacheID" : harvest_docID})
 
 
@@ -1110,7 +1109,7 @@ def build_parser():
   parser.add_option('--lhe', help='specify that there is .lhe file in input', dest='lhe_input', default=False, action='store_true')
 
   ##New parametters as of 2012-08-22
-  parser.add_option('--memory', help='RSS memory in MB (Default 1500)', dest='size_memory', default=2300)
+  parser.add_option('--memory', help='RSS memory in MB (Default 2300)', dest='size_memory', default=2300)
   parser.add_option('--size-event', help='Expected size per event in KB (Default 2000)', dest='size_event', default=2000)
   parser.add_option('--test', help='To test things', action='store_true' , dest='test')
   parser.add_option('--wmtest', help='To inject requests to the cmsweb test bed', action='store_true' , dest='wmtest')
