@@ -459,7 +459,7 @@ def loop_and_submit(cfg):
           ##if we have a taskChain and its First task has inputDS, we do splitting algo
           ##TO-DO: move to separate method so we would not need to duplicate code
           if 'InputDataset' in params['Task1']:
-              if params['Task1']['InputDataset'] != '' and 'RequestNumEvents' in params['Task1'] and params['Task1']['RequestNumEvents']:
+              if params['Task1']['InputDataset'] != '' and params['Task1']['RequestNumEvents']:
                   if test_mode:
                       t = time.time()
                   espl = helper.SubsetByLumi(params['Task1']['InputDataset'],
@@ -648,7 +648,7 @@ def build_params_dict(section,cfg):
 
   ##new values for renewed Request Agent
   time_event = float(cfg.get_param('time_event',20,section))
-  size_memory = int(float(cfg.get_param('size_memory',3000,section)))
+  size_memory = int(float(cfg.get_param('size_memory',2300,section)))
   size_event = int(float(cfg.get_param('size_event',2000,section)))
   if size_event <0:
       size_event = 2000
@@ -921,7 +921,7 @@ def build_params_dict(section,cfg):
                      "FirstEvent": 1,
                      "FirstLumi": 1,
                      "LheInputFiles" : cfg.get_param('lhe_input',False,section),
-                     "Memory": 3000,
+                     "Memory": 2300,
                      "SizePerEvent": size_event,
                      "ConfigCacheID": step1_docID,
                      "RequestNumEvents": number_events,
@@ -981,8 +981,6 @@ def build_params_dict(section,cfg):
       params.pop('RunBlacklist')
       params.pop('BlockWhitelist')
       params.pop('BlockBlacklist')
-# GF Mon Feb  1 07:17:35 CET 2016
-# <<<<<<< HEAD
       task1_dict={'SplittingAlgorithm': 'LumiBased',
                   'SplittingArguments': {'lumis_per_job': 8},
                   'TaskName':'Task1'
@@ -1017,42 +1015,6 @@ def build_params_dict(section,cfg):
               #task3_dict['KeepOutput'] = keep_step3
               params['Task3']=task3_dict
               params['TaskChain']=3
-#=======
-#      params['TaskChain']=0
-#      task_index=0
-#      while stepN_docID[task_index]:
-#          task_number = task_index+1
-#          task_dict =  {'SplittingAlgorithm': 'LumiBased',
-#                        'SplittingArguments': {'lumis_per_job': int(cfg.get_param('step%d_lumisperjob'%task_number,4,section))},
-#                        'TaskName':'Task%d'%task_number,
-#                        'GlobalTag' : cfg.get_param('step%d_globaltag'%task_number,globaltag,section),
-#                        'CMSSWVersion' : cfg.get_param('step%d_release'%task_number,release,section),
-#                        'ConfigCacheID' : stepN_docID[task_index],
-#                        'ProcessingVersion' : version,
-#                        'TimePerEvent': cfg.get_param('step%d_timeevent'%task_number,time_event,section)
-#                        }
-#          
-#          if task_index:
-#              task_dict['InputFromOutputModule'] = stepN_output[task_index]
-#              task_dict['InputTask'] = cfg.get_param('step%d_input'%task_number,'Task%d'%task_index,section)
-#                        
-#
-#          if processing_string.find(task_dict['GlobalTag'])!=-1:              
-#            task_dict.update({'ProcessingString' : cfg.get_param('step%s_processstring'%task_number,processing_string,section),
-#                              'AcquisitionEra' : cfg.get_param('step%s_era'%task_number,task_dict['CMSSWVersion'],section),                           
-#                             })
-#          else:            
-#            task_dict.update({'ProcessingString' : cfg.get_param('step%s_processstring'%task_number,task_dict['GlobalTag'],section),
-#                              'AcquisitionEra' : cfg.get_param('step%s_era'%task_number,task_dict['CMSSWVersion'],section),                           
-#                             })
-#          
-#          params['Task%d'%task_number] = copy.deepcopy( task_dict )
-#          params['TaskChain']+=1
-#          task_index+=1
-#                        
-#          
-#>>>>>>> aba39f1... expanded HLT configs (in case of custom menu); additional customization to rename directories for recodqm.py; recommended changes following test injection into computing; adding custom menu functionality and fixing job splitting parameters; adding postLS1 customizations
-#
       #from pprint import pformat
       #print "\n current dictionnary \n",pformat(params),'\n\n'
 
@@ -1147,7 +1109,7 @@ def build_parser():
   parser.add_option('--lhe', help='specify that there is .lhe file in input', dest='lhe_input', default=False, action='store_true')
 
   ##New parametters as of 2012-08-22
-  parser.add_option('--memory', help='RSS memory in MB (Default 1500)', dest='size_memory', default=3000)
+  parser.add_option('--memory', help='RSS memory in MB (Default 2300)', dest='size_memory', default=2300)
   parser.add_option('--size-event', help='Expected size per event in KB (Default 2000)', dest='size_event', default=2000)
   parser.add_option('--test', help='To test things', action='store_true' , dest='test')
   parser.add_option('--wmtest', help='To inject requests to the cmsweb test bed', action='store_true' , dest='wmtest')
