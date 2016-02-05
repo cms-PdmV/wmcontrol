@@ -104,8 +104,7 @@ def httpget(conn, query):
         raise RuntimeError('Something is really wrong')
     if response.status != 200:
         print "Problems quering DBS3 RESTAPI with %s: %s" % (
-            # where does base_url come from ? FIX
-            base_url + query.replace('#', '%23'), response.read())
+            conn.host + query.replace('#', '%23'), response.read())
         return None
     return response.read()
 
@@ -231,66 +230,65 @@ def makeRequest(url,params,encodeDict=False):
 #-------------------------------------------------------------------------------
 
 def upload_to_couch(cfg_name, section_name,user_name,group_name,test_mode=False,url=None):
-  if test_mode:
-    return "00000000000000000"
+    if test_mode:
+        return "00000000000000000"
 
-  if not os.path.exists(cfg_name):
-    raise RuntimeError( "Error: Can't locate config file %s." %cfg_name)
+    if not os.path.exists(cfg_name):
+        raise RuntimeError( "Error: Can't locate config file %s." %cfg_name)
 
-  # create a file with the ID inside to avoid multiple injections
-  oldID=cfg_name+'.couchID'
-  #print oldID
-  #print
-  if os.path.exists(oldID):
-      f=open(oldID)
-      the_id=f.readline().replace('\n','')
-      f.close()
-      print cfg_name,'already uploaded with ID',the_id,'from',oldID
-      return the_id
+    # create a file with the ID inside to avoid multiple injections
+    oldID=cfg_name+'.couchID'
+    #print oldID
+    #print
+    if os.path.exists(oldID):
+        f=open(oldID)
+        the_id=f.readline().replace('\n','')
+        f.close()
+        print cfg_name,'already uploaded with ID',the_id,'from',oldID
+        return the_id
 
-  try:
-    loadedConfig = __loadConfig(cfg_name)
-  except:
-    #just try again !!
-    time.sleep(2)
-    loadedConfig = __loadConfig(cfg_name)
+    try:
+        loadedConfig = __loadConfig(cfg_name)
+    except:
+        #just try again !!
+        time.sleep(2)
+        loadedConfig = __loadConfig(cfg_name)
 
-  where=COUCH_DB_ADDRESS
-  if url:      where=url
-  configCache = ConfigCache(where, DATABASE_NAME)
-  configCache.createUserGroup(group_name, user_name)
-  configCache.addConfig(cfg_name)
-  configCache.setPSetTweaks(makeTweak(loadedConfig.process).jsondictionary())
-  configCache.setLabel(section_name)
-  configCache.setDescription(section_name)
-  configCache.save()
+    where=COUCH_DB_ADDRESS
+    if url:      where=url
+    configCache = ConfigCache(where, DATABASE_NAME)
+    configCache.createUserGroup(group_name, user_name)
+    configCache.addConfig(cfg_name)
+    configCache.setPSetTweaks(makeTweak(loadedConfig.process).jsondictionary())
+    configCache.setLabel(section_name)
+    configCache.setDescription(section_name)
+    configCache.save()
 
-  print "Added file to the config cache:"
-  print "  DocID:    %s" % configCache.document["_id"]
-  print "  Revision: %s" % configCache.document["_rev"]
+    print "Added file to the config cache:"
+    print "  DocID:    %s" % configCache.document["_id"]
+    print "  Revision: %s" % configCache.document["_rev"]
 
-  f=open(oldID,"w")
-  f.write(configCache.document["_id"])
-  f.close()
-  return configCache.document["_id"]
+    f = open(oldID,"w")
+    f.write(configCache.document["_id"])
+    f.close()
+    return configCache.document["_id"]
 
 #-------------------------------------------------------------------------------
 
 def time_per_events(campaign):
-  ### ad-hoc method until something better comes up to define the time per event in injection time
-  addHoc={
-    'Summer12_DR53X' : 17.5,
-    'Summer12_DR52X' :  20.00,
-    'Fall11_R1' :   5.00,
-    'Fall11_R2' :  10.00,
-    'Fall11_R4' :   7.00,
-    'UpgradeL1TDR_DR6X' : 40.00,
-    'UpgradePhase2BE_2013_DR61SLHCx' : 90,
-    'UpgradePhase2LB4PS_2013_DR61SLHCx' : 90,
-    'UpgradePhase2LB6PS_2013_DR61SLHCx' : 90,
-    }
+    ### ad-hoc method until something better comes up to define the time per event in injection time
+    addHoc={
+        'Summer12_DR53X' : 17.5,
+        'Summer12_DR52X' :  20.00,
+        'Fall11_R1' :   5.00,
+        'Fall11_R2' :  10.00,
+        'Fall11_R4' :   7.00,
+        'UpgradeL1TDR_DR6X' : 40.00,
+        'UpgradePhase2BE_2013_DR61SLHCx' : 90,
+        'UpgradePhase2LB4PS_2013_DR61SLHCx' : 90,
+        'UpgradePhase2LB6PS_2013_DR61SLHCx' : 90}
 
-  if campaign in addHoc:
-    return addHoc[campaign]
-  else:
-    return None
+    if campaign in addHoc:
+        return addHoc[campaign]
+    else:
+        return None
