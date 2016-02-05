@@ -34,8 +34,8 @@ class ConnectionWrapper():
     Wrapper class to re-use existing connection to DBS3Reader
     """
     def __init__(self):
-      ##TO-DO:
-      # add a parameter to pass DBS3 url, in case we want to use different address
+        ##TO-DO:
+        # add a parameter to pass DBS3 url, in case we want to use different address
         self.connection = None
         self.connection_attempts = 3
         self.wmagenturl = 'cmsweb.cern.ch'
@@ -60,15 +60,17 @@ class ConnectionWrapper():
                     params = {}
                     params[field] = value
                     res = httppost(self.connection, self.dbs3url +
-                                       method, params).replace("'", '"')
+                            method, params).replace("'", '"')
+
                 else:
                     if detail:
-                        res = httpget(self.connection, self.dbs3url
-                                          + "%s?%s=%s&detail=%s"
-                                          % (method, field, value, detail))
+                        res = httpget(self.connection,
+                                self.dbs3url + "%s?%s=%s&detail=%s"
+                                % (method, field, value, detail))
+
                     else:
                         res = httpget(self.connection, self.dbs3url +
-                                          "%s?%s=%s" % (method, field, value))
+                                "%s?%s=%s" % (method, field, value))
                 break
             except Exception:
                 # most likely connection terminated
@@ -92,9 +94,8 @@ def testbed(to_url):
 
 def init_connection(url):
     return httplib.HTTPSConnection(url, port=443,
-                                   cert_file=os.getenv('X509_USER_PROXY'),
-                                   key_file=os.getenv('X509_USER_PROXY'))
-
+            cert_file=os.getenv('X509_USER_PROXY'),
+            key_file=os.getenv('X509_USER_PROXY'))
 
 def httpget(conn, query):
     conn.request("GET", query.replace('#', '%23'))
@@ -105,6 +106,7 @@ def httpget(conn, query):
     if response.status != 200:
         print "Problems quering DBS3 RESTAPI with %s: %s" % (
             conn.host + query.replace('#', '%23'), response.read())
+
         return None
     return response.read()
 
@@ -119,13 +121,16 @@ def httppost(conn, where, params):
     if response.status != 200:
         print "Problems quering DBS3 RESTAPI with %s: %s" % (
             params, response.read())
+
         return None
     return response.read()
 
 
 def __check_GT(gt):
     if not gt.endswith("::All"):
-        print "It seemslike the name of the GT '%s' has a typo in it, missing the final ::All which will crash your job. If insted you're using CondDBv2, you're fine." %gt
+        print ("It seemslike the name of the GT '%s' has a typo in it, "
+                "missing the final ::All which will crash your job. "
+                "If insted you're using CondDBv2, you're fine.") % gt
 
 def __check_input_dataset(dataset):
     if dataset and dataset.count('/')!=3:
@@ -142,14 +147,17 @@ def __check_request_params(params):
 #-------------------------------------------------------------------------------
 
 
-def approveRequest(url,workflow,encodeDict=False):
+def approveRequest(url, workflow, encodeDict=False):
     params = {"requestName": workflow,
-              "status": "assignment-approved"}
+            "status": "assignment-approved"}
+
     encodedParams = urllib.urlencode(params)
     headers  =  {"Content-type": "application/x-www-form-urlencoded",
-                 "Accept": "text/plain"}
+            "Accept": "text/plain"}
 
-    conn  =  httplib.HTTPSConnection(url, cert_file = os.getenv('X509_USER_PROXY'), key_file = os.getenv('X509_USER_PROXY'))
+    conn  =  httplib.HTTPSConnection(url, cert_file=os.getenv('X509_USER_PROXY'),
+            key_file=os.getenv('X509_USER_PROXY'))
+
     conn.request("PUT",  "/reqmgr/reqMgr/request", encodedParams, headers)
     response = conn.getresponse()
     if response.status != 200:
@@ -157,14 +165,14 @@ def approveRequest(url,workflow,encodeDict=False):
         for item in params.keys():
             print item + ": " + str(params[item])
         print 'Response from http call:'
-        print 'Status:',response.status,'Reason:',response.reason
+        print 'Status:', response.status, 'Reason:', response.reason
         print 'Explanation:'
         data = response.read()
         print data
         print "Exiting!"
         sys.exit(1)
     conn.close()
-    print 'Approved workflow:',workflow
+    print 'Approved workflow:', workflow
     return
 
 #-------------------------------------------------------------------------------
@@ -187,11 +195,11 @@ def __loadConfig(configPath):
 
 #-------------------------------------------------------------------------------
 # DP leave this untouched even if less than optimal!
-def makeRequest(url,params,encodeDict=False):
+def makeRequest(url, params, encodeDict=False):
     __check_request_params(params)
     for (k,v) in params.items():
-      if type(v) ==dict:
-        encodeDict=True
+      if type(v) == dict:
+        encodeDict = True
         print "Re-encoding for nested dicts"
         break
     if encodeDict:
@@ -203,48 +211,51 @@ def makeRequest(url,params,encodeDict=False):
     else:
         encodedParams = urllib.urlencode(params)
 
-    headers  =  {"Content-type": "application/x-www-form-urlencoded",
-                 "Accept": "text/plain"}
+    headers = {"Content-type": "application/x-www-form-urlencoded",
+            "Accept": "text/plain"}
 
-    conn  =  httplib.HTTPSConnection(url, cert_file = os.getenv('X509_USER_PROXY'), key_file = os.getenv('X509_USER_PROXY'))
-    conn.request("POST",  "/reqmgr/create/makeSchema", encodedParams, headers)
+    conn = httplib.HTTPSConnection(url, cert_file=os.getenv('X509_USER_PROXY'),
+            key_file=os.getenv('X509_USER_PROXY'))
+
+    conn.request("POST", "/reqmgr/create/makeSchema", encodedParams, headers)
     response = conn.getresponse()
     data = response.read()
     if response.status != 303:
         print 'could not post request with following parameters:'
-        pprint.pprint( params )
+        pprint.pprint(params)
         print
         for item in params.keys():
             print item + ": " + str(params[item])
         print 'Response from http call:'
-        print 'Status:',response.status,'Reason:',response.reason
+        print 'Status:', response.status, 'Reason:', response.reason
         print 'Explanation:'
         print data
         print "Exiting!"
         sys.exit(1)
-    workflow=data.split("'")[1].split('/')[-1]
-    print 'Injected workflow:',workflow
+
+    workflow = data.split("'")[1].split('/')[-1]
+    print 'Injected workflow:', workflow
     conn.close()
     return workflow
 
 #-------------------------------------------------------------------------------
 
-def upload_to_couch(cfg_name, section_name,user_name,group_name,test_mode=False,url=None):
+def upload_to_couch(cfg_name, section_name, user_name, group_name, test_mode=False, url=None):
     if test_mode:
         return "00000000000000000"
 
     if not os.path.exists(cfg_name):
-        raise RuntimeError( "Error: Can't locate config file %s." %cfg_name)
+        raise RuntimeError("Error: Can't locate config file %s." % cfg_name)
 
     # create a file with the ID inside to avoid multiple injections
-    oldID=cfg_name+'.couchID'
+    oldID = cfg_name + '.couchID'
     #print oldID
     #print
     if os.path.exists(oldID):
-        f=open(oldID)
-        the_id=f.readline().replace('\n','')
+        f = open(oldID)
+        the_id = f.readline().replace('\n','')
         f.close()
-        print cfg_name,'already uploaded with ID',the_id,'from',oldID
+        print cfg_name, 'already uploaded with ID', the_id, 'from', oldID
         return the_id
 
     try:
@@ -254,8 +265,8 @@ def upload_to_couch(cfg_name, section_name,user_name,group_name,test_mode=False,
         time.sleep(2)
         loadedConfig = __loadConfig(cfg_name)
 
-    where=COUCH_DB_ADDRESS
-    if url:      where=url
+    where = COUCH_DB_ADDRESS
+    if url:      where = url
     configCache = ConfigCache(where, DATABASE_NAME)
     configCache.createUserGroup(group_name, user_name)
     configCache.addConfig(cfg_name)
@@ -277,7 +288,7 @@ def upload_to_couch(cfg_name, section_name,user_name,group_name,test_mode=False,
 
 def time_per_events(campaign):
     ### ad-hoc method until something better comes up to define the time per event in injection time
-    addHoc={
+    addHoc = {
         'Summer12_DR53X' : 17.5,
         'Summer12_DR52X' :  20.00,
         'Fall11_R1' :   5.00,
