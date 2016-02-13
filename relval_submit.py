@@ -219,7 +219,7 @@ I will ask you some questions to fill the metadata file. For some of the questio
         for key, val in metadata['options'].iteritems():
             cond_submit_command += '--%s %s ' % ( key, val )
         
-        commands.append('git clone https://github.com/jmduarte/wmcontrol')
+        commands.append('git clone git@github.com:cms-PdmV/wmcontrol.git')
         commands.append('cd wmcontrol')
         commands.append(cond_submit_command)
         try:
