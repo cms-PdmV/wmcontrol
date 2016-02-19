@@ -147,18 +147,18 @@ def __check_request_params(params):
 #-------------------------------------------------------------------------------
 
 
-def approveRequest(url, workflow, encodeDict=False):
-    params = {"requestName": workflow,
-            "status": "assignment-approved"}
 
+def approveRequest(url,workflow,encodeDict=False):
+    params = {"RequestStatus": "assignment-approved"}
     encodedParams = urllib.urlencode(params)
-    headers  =  {"Content-type": "application/x-www-form-urlencoded",
+    headers = {"Content-type": "application/x-www-form-urlencoded",
             "Accept": "text/plain"}
 
-    conn  =  httplib.HTTPSConnection(url, cert_file=os.getenv('X509_USER_PROXY'),
+
+    conn = httplib.HTTPSConnection(url, cert_file=os.getenv('X509_USER_PROXY'),
             key_file=os.getenv('X509_USER_PROXY'))
 
-    conn.request("PUT",  "/reqmgr/reqMgr/request", encodedParams, headers)
+    conn.request("PUT", "/reqmgr2/data/request/%s" % workflow, encodedParams, headers)
     response = conn.getresponse()
     if response.status != 200:
         print 'could not approve request with following parameters:'
@@ -214,10 +214,10 @@ def makeRequest(url, params, encodeDict=False):
     headers = {"Content-type": "application/x-www-form-urlencoded",
             "Accept": "text/plain"}
 
-    conn = httplib.HTTPSConnection(url, cert_file=os.getenv('X509_USER_PROXY'),
+    conn  =  httplib.HTTPSConnection(url, cert_file=os.getenv('X509_USER_PROXY'),
             key_file=os.getenv('X509_USER_PROXY'))
 
-    conn.request("POST", "/reqmgr/create/makeSchema", encodedParams, headers)
+    conn.request("POST", "/reqmgr2/data/request", encodedParams, headers)
     response = conn.getresponse()
     data = response.read()
     if response.status != 303:

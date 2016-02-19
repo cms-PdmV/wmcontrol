@@ -7,11 +7,11 @@ import optparse
 import time
 
 def changePriorityWorkflow(url, workflow, priority, cert, key, retry):
-    params = {workflow + ":status": "", workflow + ":priority": str(priority)}
+    params = {"RequestPriority": str(priority)}
     headers = {"Content-type": "application/x-www-form-urlencoded",
                "Accept": "text/plain"}
     for i in range(retry):
-    	stats, data = send_message(url, cert, key, params, headers)
+    	stats, data = send_message(url, cert, key, workflow, params, headers)
     	if stats==200:
 	    break
         else:
@@ -22,7 +22,7 @@ def changePriorityWorkflow(url, workflow, priority, cert, key, retry):
 def send_message(url, cert, key, params, headers):
     conn = httplib.HTTPSConnection(url, cert_file=cert, key_file=key)
     encodedParams = urllib.urlencode(params)
-    conn.request("PUT", "/reqmgr/view/doAdmin", encodedParams, headers)
+    conn.request("PUT", "/reqmgr2/data/request/%s" % workflow, encodedParams, headers)
     response = conn.getresponse()
     status, data = response.status, response.read()
     conn.close()

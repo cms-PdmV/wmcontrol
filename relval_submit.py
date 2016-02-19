@@ -77,19 +77,19 @@ def main():
         logging.error('Need to suply a metadata text file name')
         return -3
 
-    # check that user has properly set up the WMA libraries in PYTHONPATH
-    try:
-        pypath = os.environ['PYTHONPATH']
-    except:
-        print "no PYTHONPATH defined in your environment; exiting"
-        sys.exit()
-    else:
-        if len (filter(lambda r: "WMCore" in r, pypath.split(":"))) > 0:
-            print "happy"
-            pass
-        else :
-            print "no WMCore present in your PYTHONPATH; exiting"
-            sys.exit()
+    ## check that user has properly set up the WMA libraries in PYTHONPATH
+    #try:
+    #    pypath = os.environ['PYTHONPATH']
+    #except:
+    #    print "no PYTHONPATH defined in your environment; exiting"
+    #    sys.exit()
+    #else:
+    #    if len ( filter( lambda r : "WMCore" in r, pypath.split(":") ) ) > 0 :
+    #        print "hapy"
+    #        pass
+    #    else :
+    #        print "no WMCore present in your PYTHONPATH; exiting"
+    #        sys.exit()
 
     if True:
         try:
@@ -222,7 +222,7 @@ I will ask you some questions to fill the metadata file. For some of the questio
         for key, val in metadata['options'].iteritems():
             cond_submit_command += '--%s %s ' % (key, val)
 
-        commands.append('git clone https://github.com/jmduarte/wmcontrol')
+        commands.append('git clone git@github.com:cms-PdmV/wmcontrol.git')
         commands.append('cd wmcontrol')
         commands.append(cond_submit_command)
         try:
