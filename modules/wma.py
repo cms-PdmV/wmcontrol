@@ -9,7 +9,6 @@ import urllib
 import httplib
 import imp
 import sys
-import pprint
 import time
 import json
 
@@ -19,7 +18,6 @@ try:
 except:
     print "Probably no WMClient was set up. Trying to proceed anyway..."
 
-# DBS_URL = "http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet"
 URL = 'https://cmsweb.cern.ch'
 DBS_URL = URL + '/dbs/prod/global/DBSReader'
 PHEDEX_ADDR = URL + '/phedex/datasvc/json/prod/blockreplicas?dataset=%s*'
@@ -38,8 +36,11 @@ class ConnectionWrapper():
         # add a parameter to pass DBS3 url, in case we want to use different address
         self.connection = None
         self.connection_attempts = 3
-        self.wmagenturl = 'cmsweb.cern.ch'
-        self.dbs3url = '/dbs/prod/global/DBSReader/'
+        ##TO-DO move back to prod after reqmgr2 migration
+        #self.wmagenturl = 'cmsweb.cern.ch'
+        #self.dbs3url = '/dbs/prod/global/DBSReader/'
+        self.wmagenturl = 'cmsweb-testbed.cern.ch'
+        self.dbs3url = '/dbs/int/global/DBSReader/'
 
     def refresh_connection(self, url):
         self.connection = init_connection(url)
@@ -86,8 +87,6 @@ def testbed(to_url):
     global WMAGENT_URL
     global DBS3_URL
     WMAGENT_URL = to_url
-    # WMAGENT_URL = 'cmsweb-testbed.cern.ch'
-    # WMAGENT_URL = 'sryu-dev01.cern.ch'
     COUCH_DB_ADDRESS = 'https://%s/couchdb' % (WMAGENT_URL)
     DBS3_URL = '/dbs/int/global/DBSReader/'
 
@@ -110,7 +109,6 @@ def httpget(conn, query):
         return None
     return response.read()
 
-
 def httppost(conn, where, params):
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
     conn.request("POST", where, json.dumps(params), headers)
@@ -124,7 +122,6 @@ def httppost(conn, where, params):
 
         return None
     return response.read()
-
 
 def __check_GT(gt):
     if not gt.endswith("::All"):
@@ -143,22 +140,18 @@ def __check_request_params(params):
         if params.has_key(inputdataset):
             __check_input_dataset(params[inputdataset])
 
-
 #-------------------------------------------------------------------------------
 
-
-
-def approveRequest(url,workflow,encodeDict=False):
+def approveRequest(url, workflow, encodeDict=False):
+    import json
     params = {"RequestStatus": "assignment-approved"}
-    encodedParams = urllib.urlencode(params)
-    headers = {"Content-type": "application/x-www-form-urlencoded",
-            "Accept": "text/plain"}
-
+    headers = {"Content-type": "application/json",
+            "Accept": "application/json"}
 
     conn = httplib.HTTPSConnection(url, cert_file=os.getenv('X509_USER_PROXY'),
             key_file=os.getenv('X509_USER_PROXY'))
 
-    conn.request("PUT", "/reqmgr2/data/request/%s" % workflow, encodedParams, headers)
+    conn.request("PUT", "/reqmgr2/data/request/%s" % workflow, json.dumps(params), headers)
     response = conn.getresponse()
     if response.status != 200:
         print 'could not approve request with following parameters:'
@@ -196,36 +189,27 @@ def __loadConfig(configPath):
 #-------------------------------------------------------------------------------
 # DP leave this untouched even if less than optimal!
 def makeRequest(url, params, encodeDict=False):
+    ##TO-DO import json somewhere else globally. for now this fix is wmcontrol submission
+    import json
     __check_request_params(params)
-    for (k,v) in params.items():
-      if type(v) == dict:
-        encodeDict = True
-        print "Re-encoding for nested dicts"
-        break
-    if encodeDict:
-        import json
-        jsonEncodedParams = {}
-        for paramKey in params.keys():
-            jsonEncodedParams[paramKey] = json.dumps(params[paramKey])
-        encodedParams = urllib.urlencode(jsonEncodedParams, False)
-    else:
-        encodedParams = urllib.urlencode(params)
 
-    headers = {"Content-type": "application/x-www-form-urlencoded",
-            "Accept": "text/plain"}
+    headers = {"Content-type": "application/json",
+            "Accept": "application/json"}
 
     conn  =  httplib.HTTPSConnection(url, cert_file=os.getenv('X509_USER_PROXY'),
             key_file=os.getenv('X509_USER_PROXY'))
 
-    conn.request("POST", "/reqmgr2/data/request", encodedParams, headers)
+    ##TO-DO do we move it to top of file?
+    __service_url  = "/reqmgr2/data/request"
+    print "Will do POST request to:%s%s" % (url, __service_url)
+    conn.request("POST", __service_url, json.dumps(params), headers)
     response = conn.getresponse()
     data = response.read()
-    if response.status != 303:
+
+    if response.status != 200:
         print 'could not post request with following parameters:'
-        pprint.pprint(params)
+        json.dumps(params, indent=4)
         print
-        for item in params.keys():
-            print item + ": " + str(params[item])
         print 'Response from http call:'
         print 'Status:', response.status, 'Reason:', response.reason
         print 'Explanation:'
@@ -233,7 +217,7 @@ def makeRequest(url, params, encodeDict=False):
         print "Exiting!"
         sys.exit(1)
 
-    workflow = data.split("'")[1].split('/')[-1]
+    workflow = json.loads(data)['result'][0]['request']
     print 'Injected workflow:', workflow
     conn.close()
     return workflow
@@ -249,8 +233,7 @@ def upload_to_couch(cfg_name, section_name, user_name, group_name, test_mode=Fal
 
     # create a file with the ID inside to avoid multiple injections
     oldID = cfg_name + '.couchID'
-    #print oldID
-    #print
+
     if os.path.exists(oldID):
         f = open(oldID)
         the_id = f.readline().replace('\n','')
@@ -266,7 +249,9 @@ def upload_to_couch(cfg_name, section_name, user_name, group_name, test_mode=Fal
         loadedConfig = __loadConfig(cfg_name)
 
     where = COUCH_DB_ADDRESS
-    if url:      where = url
+    if url:
+        where = url
+
     configCache = ConfigCache(where, DATABASE_NAME)
     configCache.createUserGroup(group_name, user_name)
     configCache.addConfig(cfg_name)
