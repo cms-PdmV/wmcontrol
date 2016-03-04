@@ -12,7 +12,7 @@ sys.path.append('/afs/cern.ch/cms/PPD/PdmV/tools/prod/devel/')
 from phedex import phedex
 
 from modules import wma
-  
+
 DRYRUN=False
 
 #-------------------------------------------------------------------------------
@@ -519,7 +519,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
     pass
   else:
     wmcconf_text+='[%s_reference]\n' %details['reqtype'] +\
-                   'KeepOutput = True\n' +\
+                   'keep_step1 = True\n' +\
                    'time_event = 10\n' +\
                    'size_memory = 3000\n' +\
                    'step1_lumisperjob = 2\n' +\
@@ -544,7 +544,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
       elif recodqm:
         label=cfgname.lower().replace('.py','')
         wmcconf_text+='\n\n[%s_%s]\n' %(details['reqtype'],label) +\
-                       'KeepOutput = True\n' +\
+                       'keep_step%d = True\n'%task +\
                        'time_event = 1\n' +\
                        'size_memory = 3000\n' +\
                        'step1_lumisperjob = 2\n' +\
@@ -576,7 +576,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
       if "REFERENCE" in cfgname: continue
       label=cfgname.lower().replace('.py','')
       wmcconf_text+='\n\n[%s_%s]\n' %(details['reqtype'],label) +\
-                     'KeepOutput = True\n' +\
+                     'keep_step%d = True\n'%task +\
                      'time_event = 1\n' +\
                      'size_memory = 3000\n' +\
                      'step1_lumisperjob = 2\n' +\
@@ -597,7 +597,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
     else:
       label=cfgname.lower().replace('.py','')
       wmcconf_text+='\n\n[%s_%s]\n' %(details['reqtype'],label) +\
-                     'KeepOutput = True\n' +\
+                     'keep_step1 = True\n' +\
                      'time_event = 10\n' +\
                      'size_memory = 3000\n' +\
                      'step1_lumisperjob = 2\n' +\
