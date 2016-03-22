@@ -208,7 +208,7 @@ def makeRequest(url, params, encodeDict=False):
 
     if response.status != 200:
         print 'could not post request with following parameters:'
-        json.dumps(params, indent=4)
+        print json.dumps(params, indent=4)
         print
         print 'Response from http call:'
         print 'Status:', response.status, 'Reason:', response.reason
