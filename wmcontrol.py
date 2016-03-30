@@ -813,9 +813,9 @@ def build_params_dict(section,cfg):
           "OpenRunningTimeout" : open_running_timeout,
           #"ConfigCacheUrl": wma.COUCH_DB_ADDRESS,
           #"EnableHarvesting" : False
-          "ProcessingString": processing_string
+          "ProcessingString": processing_string,
+          "Multicore": multicore
           }
-
 
   if wmtest:
       params["ConfigCacheUrl"] = wma.COUCH_DB_ADDRESS
@@ -1135,6 +1135,8 @@ def build_parser():
                     default=0.05, dest='margin')
   parser.add_option('--lumi-list', help='Specify lumisections',
                     default='', dest='lumi_list')
+  parser.add_option('--num-cores', help='Number of cores we want to run our workflow',
+                    default=1, dest='multicore')
   return parser
 
 #-------------------------------------------------------------------------------
