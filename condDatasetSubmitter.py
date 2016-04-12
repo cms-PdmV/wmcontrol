@@ -248,15 +248,24 @@ def getDriverDetails(Type,B0T,HIon):
                 "inputcommands":'',
                 "custcommands":'',
                 "custconditions":'',
-                "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2",
-                "magfield":"",                
+                "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2Deprecated",
+                "magfield":"",
                 "dumppython":False}
+    # keep backward compatibility with releases earlier than 8_0_x
+    if int( recoRelease.split("_")[1] ) < 8 :
+      HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2"})
+
     if B0T:
         HLTRECObase.update({"magfield":"0T",
-                            "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2,RecoTracker/Configuration/customiseForRunI.customiseForRunI"})
+                            "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2DeprecatedB0T,RecoTracker/Configuration/customiseForRunI.customiseForRunI"})
+        if int( recoRelease.split("_")[1] ) < 8 : # keep backward compatibility with releases earlier than 8_0_x
+          HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2B0T"})
+
     if HIon:        
-        HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customiseRun2CommonHI"})
-        
+        HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customiseRun2DeprecatedPromptHI"})
+        if int( recoRelease.split("_")[1] ) < 8 : # keep backward compatibility with releases earlier than 8_0_x
+          HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customiseRun2PromptHI"})
+
     if Type=='HLT+RECO+ALCA':
         HLTRECObase.update({"steps":"RAW2DIGI,L1Reco,RECO,ALCA:SiStripCalMinBias,DQM"})
     HLTBase.update({'recodqm':HLTRECObase})    
@@ -272,15 +281,25 @@ def getDriverDetails(Type,B0T,HIon):
                 "inputcommands":'',
                 "custcommands":'',
                 "custconditions":'',        
-                "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2",
+                "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2Deprecated",
                 "magfield":"",
                 "dumppython":False,
                 "inclparents":"False"}      
+    # keep backward compatibility with releases earlier than 8_0_x
+    if int( recoRelease.split("_")[1] ) < 8 :
+      HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2"})
+
     if B0T:
         theDetails.update({"magfield":"0T",
-                            "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2,RecoTracker/Configuration/customiseForRunI.customiseForRunI"})
+                            "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2DeprecatedB0T,RecoTracker/Configuration/customiseForRunI.customiseForRunI"})
+        if int( recoRelease.split("_")[1] ) < 8 : # keep backward compatibility with releases earlier than 8_0_x
+          HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2B0T"})
+
     if HIon:        
-        theDetails.update({"customise":"Configuration/DataProcessing/RecoTLR.customiseRun2CommonHI"})
+        theDetails.update({"customise":"Configuration/DataProcessing/RecoTLR.customiseRun2DeprecatedPromptHI"})
+        if int( recoRelease.split("_")[1] ) < 8 : # keep backward compatibility with releases earlier than 8_0_x
+          HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customiseRun2PromptHI"})
+
     if Type=='PR+ALCA':
         theDetails.update({"steps":"RAW2DIGI,L1Reco,RECO,ALCA:SiStripCalMinBias,DQM"})
     return theDetails
