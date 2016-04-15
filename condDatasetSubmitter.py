@@ -87,7 +87,7 @@ def createOptionParser():
     print "CMSSW not properly set. Exiting"
     sys.exit(1)
   options.release = os.getenv(CMSSW_VERSION)
-  
+
   CMSSW_BASE='CMSSW_BASE'
   options.hltCmsswDir = os.getenv(CMSSW_BASE)
 
@@ -97,13 +97,12 @@ def createOptionParser():
     for path in path_list:
       if path.find("CMSSW")!=-1:
         options.recoRelease = path  
-    
+
   if options.dry:
     DRYRUN=True
 
   options.ds=options.ds.split(',')
   options.run = options.run.split(',')
-
   return options
 
 #-------------------------------------------------------------------------------
@@ -188,7 +187,8 @@ def isAtSite(ds, run):
 
 #-------------------------------------------------------------------------------
 
-def getDriverDetails(Type,B0T,HIon):
+#def getDriverDetails(Type,B0T,HIon):
+def getDriverDetails(Type,B0T,HIon,recoRelease):
   HLTBase= {"reqtype":"HLT",
             "steps":"HLT,DQM", #replaced DQM:triggerOfflineDQMSource with DQM
             "procname":"HLT2",
@@ -252,6 +252,7 @@ def getDriverDetails(Type,B0T,HIon):
                 "magfield":"",
                 "dumppython":False}
     # keep backward compatibility with releases earlier than 8_0_x
+
     if int( recoRelease.split("_")[1] ) < 8 :
       HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2"})
 
@@ -334,8 +335,8 @@ def createHLTConfig(options):
   execme(cmssw_command + '; ' + hlt_command + '; ' + build_command )
 
 def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
-
-  details=getDriverDetails(options.Type,options.B0T,options.HIon)
+  #details=getDriverDetails(options.Type,options.B0T,options.HIon)
+  details=getDriverDetails(options.Type,options.B0T,options.HIon,options.recoRelease)
 
   # get processing string
   if options.string is None:
@@ -351,6 +352,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
   # Create the drivers
   #print confCondDictionary
   #for cfgname,custconditions in confCondDictionary.items():
+
   for c in confCondList:
     (cfgname,custgt) = c
     print "\n\n\tCreating for",cfgname,"\n\n"
@@ -685,7 +687,6 @@ if __name__ == "__main__":
   
   # Get the options
   options = createOptionParser()
-
   # Check for PCL availability
   for run in options.run:
     #if not isPCLReady(run):
