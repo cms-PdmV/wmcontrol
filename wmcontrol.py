@@ -997,6 +997,19 @@ def build_params_dict(section,cfg):
                       'TaskName':'Task2'
                       }
           task2_dict['GlobalTag'] = cfg.get_param('step2_globaltag',globaltag,section)
+          task2_dict['CMSSWVersion'] = cfg.get_param('step2_release',params['CMSSWVersion'],section)
+
+          print "***** setting task2_dict[\'CMSSWVersion\'] to: %s (default from step1 whould be: %s)"%(task2_dict['CMSSWVersion'],params['CMSSWVersion'])
+          print cfg.get_param('step2_release',params['CMSSWVersion'],section),
+          print cfg.get_param('step2_release','',section)
+          print
+          print cfg.get_param('release','',section)
+          print
+          print task2_dict['GlobalTag']
+          print
+          print task2_dict['CMSSWVersion']
+          print
+
           task2_dict['ConfigCacheID'] = step2_docID
           task2_dict['InputFromOutputModule'] = step2_output
           task2_dict['InputTask'] = cfg.get_param('step2_input','Task1',section)
@@ -1009,6 +1022,8 @@ def build_params_dict(section,cfg):
                           'TaskName':'Task3'
                           }
               task3_dict['GlobalTag'] = cfg.get_param('step3_globaltag',globaltag,section)
+              task3_dict['CMSSWVersion'] = cfg.get_param('step3_release',params['CMSSWVersion'],section)
+              print "***** setting task3_dict[\'CMSSWVersion\'] to: %s (default from step1 whould be: %s"%(task3_dict['CMSSWVersion'],params['CMSSWVersion'])
               task3_dict['ConfigCacheID'] = step3_docID
               task3_dict['InputFromOutputModule'] = step3_output
               task3_dict['InputTask'] = cfg.get_param('step3_input','Task2',section)
