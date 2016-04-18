@@ -93,29 +93,10 @@ def createOptionParser():
 
   options.recoRelease = None
   if options.recoCmsswDir:
-    #path_list = options.recoCmsswDir.split('/')
-    #for path in path_list:
-    #  if path.find("CMSSW")!=-1:
-    #    options.recoRelease = path
     options.recoRelease = getCMSSWReleaseFromPath( options.recoCmsswDir )
-    print "**** in case of options.recoCmsswDir"
-    print options.recoRelease
-    print " options.recoCmsswDir split and cooked up: "
-    print getCMSSWReleaseFromPath( options.recoCmsswDir )
-    print
   elif options.recoRelease == None and "RECO" in options.Type:
     options.recoRelease = getCMSSWReleaseFromPath( options.hltCmsswDir )
-    print "**** in case of None"
-    print options.recoRelease
-    print getCMSSWReleaseFromPath( options.recoRelease )
-    print "****"
-    print options.hltCmsswDir
-    print "****"
   else:
-    print "**** in case of ELSE"
-    print options.recoRelease
-    print getCMSSWReleaseFromPath( options.recoRelease )
-    print "options.recoRelease not given meaningful value"
     print "WARNING: options.recoRelease is left set to None; for instance because no RECO is foreseeen in the options.Type"
 
   if options.dry:
