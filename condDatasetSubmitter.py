@@ -94,10 +94,9 @@ def createOptionParser():
   options.recoRelease = None
   if options.recoCmsswDir:
     options.recoRelease = getCMSSWReleaseFromPath( options.recoCmsswDir )
-  elif options.recoRelease == None and "RECO" in options.Type:
-    options.recoRelease = getCMSSWReleaseFromPath( options.hltCmsswDir )
   else:
-    print "WARNING: options.recoRelease is left set to None; for instance because no RECO is foreseeen in the options.Type"
+    options.recoRelease = getCMSSWReleaseFromPath( options.hltCmsswDir )
+    # if a release is not provided for the reco step (RECO or PR), use the only release known hltCmsswDir
 
   if options.dry:
     DRYRUN=True
@@ -199,7 +198,7 @@ def getCMSSWReleaseFromPath( thePath ):
   for path in path_list:
     if path.find("CMSSW")!=-1:
       return path
-
+  raise ValueError('%s does not contain a slash-separated path to a CMSSW release. ERRROR.' % (thePath))
 
 def getDriverDetails(Type,B0T,HIon,recoRelease):
   HLTBase= {"reqtype":"HLT",
