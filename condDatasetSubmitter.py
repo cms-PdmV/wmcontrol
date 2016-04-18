@@ -93,10 +93,30 @@ def createOptionParser():
 
   options.recoRelease = None
   if options.recoCmsswDir:
-    path_list = options.recoCmsswDir.split('/')
-    for path in path_list:
-      if path.find("CMSSW")!=-1:
-        options.recoRelease = path  
+    #path_list = options.recoCmsswDir.split('/')
+    #for path in path_list:
+    #  if path.find("CMSSW")!=-1:
+    #    options.recoRelease = path
+    options.recoRelease = getCMSSWReleaseFromPath( options.recoCmsswDir )
+    print "**** in case of options.recoCmsswDir"
+    print options.recoRelease
+    print " options.recoCmsswDir split and cooked up: "
+    print getCMSSWReleaseFromPath( options.recoCmsswDir )
+    print
+  elif options.recoRelease == None and "RECO" in options.Type:
+    options.recoRelease = getCMSSWReleaseFromPath( options.hltCmsswDir )
+    print "**** in case of None"
+    print options.recoRelease
+    print getCMSSWReleaseFromPath( options.recoRelease )
+    print "****"
+    print options.hltCmsswDir
+    print "****"
+  else:
+    print "**** in case of ELSE"
+    print options.recoRelease
+    print getCMSSWReleaseFromPath( options.recoRelease )
+    print "options.recoRelease not given meaningful value"
+    print "WARNING: options.recoRelease is left set to None; for instance because no RECO is foreseeen in the options.Type"
 
   if options.dry:
     DRYRUN=True
@@ -187,7 +207,19 @@ def isAtSite(ds, run):
 
 #-------------------------------------------------------------------------------
 
-#def getDriverDetails(Type,B0T,HIon):
+# we need this check to handle the discontinued customise functions
+def isCMSSWBeforeEight( theRelease ):
+  if theRelease == None :
+    raise ValueError('theRelease is set to %s and yet, it seems to be required. ERRROR.' % (theRelease))
+  return int( theRelease.split("_")[1] ) < 8
+
+def getCMSSWReleaseFromPath( thePath ):
+  path_list = thePath.split('/')
+  for path in path_list:
+    if path.find("CMSSW")!=-1:
+      return path
+
+
 def getDriverDetails(Type,B0T,HIon,recoRelease):
   HLTBase= {"reqtype":"HLT",
             "steps":"HLT,DQM", #replaced DQM:triggerOfflineDQMSource with DQM
@@ -253,18 +285,18 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
                 "dumppython":False}
     # keep backward compatibility with releases earlier than 8_0_x
 
-    if int( recoRelease.split("_")[1] ) < 8 :
+    if isCMSSWBeforeEight( recoRelease ) :
       HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2"})
 
     if B0T:
         HLTRECObase.update({"magfield":"0T",
                             "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2DeprecatedB0T,RecoTracker/Configuration/customiseForRunI.customiseForRunI"})
-        if int( recoRelease.split("_")[1] ) < 8 : # keep backward compatibility with releases earlier than 8_0_x
+        if isCMSSWBeforeEight( recoRelease ) : # keep backward compatibility with releases earlier than 8_0_x
           HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2B0T"})
 
     if HIon:        
         HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customiseRun2DeprecatedPromptHI"})
-        if int( recoRelease.split("_")[1] ) < 8 : # keep backward compatibility with releases earlier than 8_0_x
+        if isCMSSWBeforeEight( recoRelease ) : # keep backward compatibility with releases earlier than 8_0_x
           HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customiseRun2PromptHI"})
 
     if Type=='HLT+RECO+ALCA':
@@ -287,18 +319,18 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
                 "dumppython":False,
                 "inclparents":"False"}      
     # keep backward compatibility with releases earlier than 8_0_x
-    if int( recoRelease.split("_")[1] ) < 8 :
+    if isCMSSWBeforeEight( recoRelease ) :
       HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2"})
 
     if B0T:
         theDetails.update({"magfield":"0T",
                             "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2DeprecatedB0T,RecoTracker/Configuration/customiseForRunI.customiseForRunI"})
-        if int( recoRelease.split("_")[1] ) < 8 : # keep backward compatibility with releases earlier than 8_0_x
+        if isCMSSWBeforeEight( recoRelease ) : # keep backward compatibility with releases earlier than 8_0_x
           HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2B0T"})
 
     if HIon:        
         theDetails.update({"customise":"Configuration/DataProcessing/RecoTLR.customiseRun2DeprecatedPromptHI"})
-        if int( recoRelease.split("_")[1] ) < 8 : # keep backward compatibility with releases earlier than 8_0_x
+        if isCMSSWBeforeEight( recoRelease ) : # keep backward compatibility with releases earlier than 8_0_x
           HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customiseRun2PromptHI"})
 
     if Type=='PR+ALCA':
@@ -335,7 +367,6 @@ def createHLTConfig(options):
   execme(cmssw_command + '; ' + hlt_command + '; ' + build_command )
 
 def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
-  #details=getDriverDetails(options.Type,options.B0T,options.HIon)
   details=getDriverDetails(options.Type,options.B0T,options.HIon,options.recoRelease)
 
   # get processing string
