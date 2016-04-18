@@ -352,9 +352,9 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
 
   # get processing string
   if options.string is None:
-    processing_string = str(datetime.date.today())
+    processing_string = str(datetime.date.today()) # GF: check differentiation between steps VS step{2}_processstring
   else:
-    processing_string = options.string
+    processing_string = options.string # GF: check differentiation between steps VS step{2}_processstring
 
     
   scenario = '--scenario pp'
