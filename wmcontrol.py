@@ -998,18 +998,6 @@ def build_params_dict(section,cfg):
                       }
           task2_dict['GlobalTag'] = cfg.get_param('step2_globaltag',globaltag,section)
           task2_dict['CMSSWVersion'] = cfg.get_param('step2_release',params['CMSSWVersion'],section)
-
-          print "***** setting task2_dict[\'CMSSWVersion\'] to: %s (default from step1 whould be: %s)"%(task2_dict['CMSSWVersion'],params['CMSSWVersion'])
-          print cfg.get_param('step2_release',params['CMSSWVersion'],section),
-          print cfg.get_param('step2_release','',section)
-          print
-          print cfg.get_param('release','',section)
-          print
-          print task2_dict['GlobalTag']
-          print
-          print task2_dict['CMSSWVersion']
-          print
-
           task2_dict['ConfigCacheID'] = step2_docID
           task2_dict['InputFromOutputModule'] = step2_output
           task2_dict['InputTask'] = cfg.get_param('step2_input','Task1',section)
@@ -1023,7 +1011,6 @@ def build_params_dict(section,cfg):
                           }
               task3_dict['GlobalTag'] = cfg.get_param('step3_globaltag',globaltag,section)
               task3_dict['CMSSWVersion'] = cfg.get_param('step3_release',params['CMSSWVersion'],section)
-              print "***** setting task3_dict[\'CMSSWVersion\'] to: %s (default from step1 whould be: %s"%(task3_dict['CMSSWVersion'],params['CMSSWVersion'])
               task3_dict['ConfigCacheID'] = step3_docID
               task3_dict['InputFromOutputModule'] = step3_output
               task3_dict['InputTask'] = cfg.get_param('step3_input','Task2',section)
@@ -1092,7 +1079,7 @@ def build_parser():
   parser = optparse.OptionParser(usage,option_class=ExtendedOption)
 
   parser.add_option('--arch', help='SCRAM_ARCH', dest='scramarch')
-  parser.add_option('--release', help='Production release', dest='release')
+  parser.add_option('--release', help='Production CMSSW release', dest='release')
   parser.add_option('--request-type', help='Request type: "MonteCarlo","MonteCarloFromGEN","ReDigi"' , dest='request_type')
   parser.add_option('--conditions', help='Conditions Global Tag' , dest='globaltag')
   parser.add_option('--request-id', help='Request identifier' , dest='request_id')
@@ -1105,10 +1092,12 @@ def build_parser():
   parser.add_option('--step1-docID', help='step 1 configuration' , dest='step1_docID')
   parser.add_option('--cfg_path', help='Alias for step 1 configuration' , dest='cfg_path')
   parser.add_option('--step2-cfg',help='step 2 configuration' ,dest='step2_cfg')
+  parser.add_option('--step2-release',help='step 2 CMSSW release in a TaskChain' ,dest='step2_release')
   parser.add_option('--step2-output',help='step 2 output' ,dest='step2_output')
   parser.add_option('--keep-step2',help='step2 output keeping flag',  action='store_true',dest='keep_step2')
   parser.add_option('--step2-docID',help='step 2 configuration' ,dest='step2_docID')
   parser.add_option('--step3-cfg',help='step 3 configuration' ,dest='step3_cfg')
+  parser.add_option('--step3-release',help='step 3 CMSSW release in a TaskChain' ,dest='step3_release')
   parser.add_option('--step3-docID',help='step 3 configuration' ,dest='step3_docID')
   parser.add_option('--priority',help='priority flag' ,dest='priority')
   parser.add_option('--primary-dataset',help='primary dataset name' ,dest='primary_dataset')
