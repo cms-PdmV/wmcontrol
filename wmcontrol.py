@@ -989,7 +989,7 @@ def build_params_dict(section,cfg):
       task1_dict['ConfigCacheID'] = step1_docID
       task1_dict['KeepOutput'] = keep_step1
       task1_dict['AcquisitionEra'] = cfg.get_param('step1_era',params['CMSSWVersion'],section)
-      task1_dict['LumisPerJob'] = cfg.get_param('step1_lumisperjob',5,section)
+      task1_dict['LumisPerJob'] = int( cfg.get_param('step1_lumisperjob',5,section) )
       params['Task1']=task1_dict
       params['TaskChain']=1
       if step2_cfg or step2_docID:
@@ -1008,7 +1008,7 @@ def build_params_dict(section,cfg):
           task2_dict['ProcessingString'] = cfg.get_param('step2_processstring',processing_string,section)
           # if not specified in .conf, AcquisitionEra is set to the CMSSW release of the current task => MUST BE DISCUSSED w/ PdmV for behaviour on MC
           task2_dict['AcquisitionEra']   = cfg.get_param('step2_era',task2_dict['CMSSWVersion'],section)
-          task2_dict['LumisPerJob']      = cfg.get_param('step2_lumisperjob',1,section)
+          task2_dict['LumisPerJob']      = int( cfg.get_param('step2_lumisperjob',1,section) )
           params['Task2']=task2_dict
           params['TaskChain']=2
 
@@ -1025,7 +1025,7 @@ def build_params_dict(section,cfg):
               task3_dict['ProcessingString'] = cfg.get_param('step3_processstring',processing_string,section)
               # if not specified in .conf, AcquisitionEra is set to the CMSSW release of the current task => MUST BE DISCUSSED w/ PdmV for behaviour on MC
               task3_dict['AcquisitionEra']   = cfg.get_param('step3_era',task3_dict['CMSSWVersion'],section)
-              task3_dict['LumisPerJob']      = cfg.get_param('step3_lumisperjob',5,section)
+              task3_dict['LumisPerJob']      = int( cfg.get_param('step3_lumisperjob',5,section) )
               #task3_dict['KeepOutput'] = keep_step3   # ASSESS THIS ONE !!!
               params['Task3']=task3_dict
               params['TaskChain']=3
