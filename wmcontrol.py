@@ -981,7 +981,7 @@ def build_params_dict(section,cfg):
       params.pop('RunBlacklist')
       params.pop('BlockWhitelist')
       params.pop('BlockBlacklist')
-      task1_dict={'SplittingAlgorithm': 'LumiBased',
+      task1_dict={'SplittingAlgo': 'LumiBased',
                   'TaskName':'Task1'
                   }
 
@@ -993,7 +993,7 @@ def build_params_dict(section,cfg):
       params['Task1']=task1_dict
       params['TaskChain']=1
       if step2_cfg or step2_docID:
-          task2_dict={'SplittingAlgorithm': 'LumiBased',
+          task2_dict={'SplittingAlgo': 'LumiBased',
                       'TaskName':'Task2'
                       }
           task2_dict['GlobalTag'] = cfg.get_param('step2_globaltag',globaltag,section)
@@ -1013,7 +1013,7 @@ def build_params_dict(section,cfg):
           params['TaskChain']=2
 
           if step3_cfg or step3_docID:
-              task3_dict={'SplittingAlgorithm': 'LumiBased',
+              task3_dict={'SplittingAlgo': 'LumiBased',
                           'TaskName':'Task3'
                           }
               task3_dict['GlobalTag'] = cfg.get_param('step3_globaltag',globaltag,section)
