@@ -816,6 +816,10 @@ def build_params_dict(section,cfg):
           "ProcessingString": processing_string
           }
 
+  for theVar in ['processing_string', 'step1_processstring','step2_processstring', 'step3_processstring']:
+      thePrStr =  cfg.get_param( theVar,'',section)
+      if len( thePrStr ) > 99:
+          raise ValueError('the variable %s ( value: %s) has a size (%d) which exceeds the limit set to 100. ERRROR.' % ( theVar, thePrStr, len( thePrStr ) ) )
 
   if wmtest:
       params["ConfigCacheUrl"] = wma.COUCH_DB_ADDRESS
