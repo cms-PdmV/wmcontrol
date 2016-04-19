@@ -270,7 +270,7 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
 
     if B0T:
         HLTRECObase.update({"magfield":"0T",
-                            "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2DeprecatedB0T,RecoTracker/Configuration/customiseForRunI.customiseForRunI"})
+                            "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2DeprecatedB0T"})
         if isCMSSWBeforeEight( recoRelease ) : # keep backward compatibility with releases earlier than 8_0_x
           HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2B0T"})
 
@@ -304,7 +304,7 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
 
     if B0T:
         theDetails.update({"magfield":"0T",
-                            "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2DeprecatedB0T,RecoTracker/Configuration/customiseForRunI.customiseForRunI"})
+                            "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2DeprecatedB0T"})
         if isCMSSWBeforeEight( recoRelease ) : # keep backward compatibility with releases earlier than 8_0_x
           HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2B0T"})
 
