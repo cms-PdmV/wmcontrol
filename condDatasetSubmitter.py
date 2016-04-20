@@ -254,30 +254,36 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
                       "magfield":""})
     HLTRECObase={"steps":"RAW2DIGI,L1Reco,RECO,DQM",
                 "procname":"RECO",
-                "datatier":"RECO,DQMIO",
-                "eventcontent":"RECO,DQM",
-                #"inputcommands":'keep *',
-                "inputcommands":'',
-                "custcommands":'',
-                "custconditions":'',
-                "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2Deprecated",
-                "magfield":"",
-                "dumppython":False}
+                 "datatier":"RECO,DQMIO",
+                 "eventcontent":"RECO,DQM",
+                 #"inputcommands":'keep *',
+                 "inputcommands":'',
+                 "custcommands":'',
+                 "custconditions":'',
+#                "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2Deprecated",
+                 "era":"Run2_2016_trackingLowPU",
+                 "magfield":"",
+                 "dumppython":False}
     # keep backward compatibility with releases earlier than 8_0_x
 
     if isCMSSWBeforeEight( recoRelease ) :
-      HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2"})
+      pass
+      # HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2"})
 
     if B0T:
-        HLTRECObase.update({"magfield":"0T",
-                            "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2DeprecatedB0T"})
+        #HLTRECObase.update({"magfield":"0T",
+        #                    "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2DeprecatedB0T"})
+        HLTRECObase.update({"magfield":"0T"})
         if isCMSSWBeforeEight( recoRelease ) : # keep backward compatibility with releases earlier than 8_0_x
-          HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2B0T"})
+          pass
+          # HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2B0T"})
 
-    if HIon:        
-        HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customiseRun2DeprecatedPromptHI"})
-        if isCMSSWBeforeEight( recoRelease ) : # keep backward compatibility with releases earlier than 8_0_x
-          HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customiseRun2PromptHI"})
+    if HIon:
+        # HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customiseRun2DeprecatedPromptHI"})
+        # WHICH ERA HERE ??
+        pass
+        #if isCMSSWBeforeEight( recoRelease ) : # keep backward compatibility with releases earlier than 8_0_x
+        #  HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customiseRun2PromptHI"})
 
     if Type=='HLT+RECO+ALCA':
         HLTRECObase.update({"steps":"RAW2DIGI,L1Reco,RECO,ALCA:SiStripCalMinBias,DQM"})
@@ -294,25 +300,29 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
                 "inputcommands":'',
                 "custcommands":'',
                 "custconditions":'',        
-                "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2Deprecated",
+#                "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2Deprecated",
+                "era":"Run2_2016_trackingLowPU",
                 "magfield":"",
                 "dumppython":False,
                 "inclparents":"False"}      
     # keep backward compatibility with releases earlier than 8_0_x
     if isCMSSWBeforeEight( recoRelease ) :
-      HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2"})
+      pass
+      # HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2"})
 
     if B0T:
-        theDetails.update({"magfield":"0T",
-                            "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2DeprecatedB0T"})
-        if isCMSSWBeforeEight( recoRelease ) : # keep backward compatibility with releases earlier than 8_0_x
-          HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2B0T"})
+        #theDetails.update({"magfield":"0T",
+        #                    "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2DeprecatedB0T"})
+        theDetails.update({"magfield":"0T"})
+        # if isCMSSWBeforeEight( recoRelease ) : # keep backward compatibility with releases earlier than 8_0_x
+        #  HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2B0T"})
 
     if HIon:        
-        theDetails.update({"customise":"Configuration/DataProcessing/RecoTLR.customiseRun2DeprecatedPromptHI"})
-        if isCMSSWBeforeEight( recoRelease ) : # keep backward compatibility with releases earlier than 8_0_x
-          HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customiseRun2PromptHI"})
-
+        #theDetails.update({"customise":"Configuration/DataProcessing/RecoTLR.customiseRun2DeprecatedPromptHI"})
+        #if isCMSSWBeforeEight( recoRelease ) : # keep backward compatibility with releases earlier than 8_0_x
+        #  HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customiseRun2PromptHI"})
+        # WHICH ERA HERE ???
+        pass
     if Type=='PR+ALCA':
         theDetails.update({"steps":"RAW2DIGI,L1Reco,RECO,ALCA:SiStripCalMinBias,DQM"})
     return theDetails
@@ -427,8 +437,10 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                       "--filein=file:HLT_HLT.root " +\
                       "--python_filename recodqm.py " +\
                       "--no_exec " +\
-                      "--customise %s " % recodqm['customise'] +\
                       "-n 100 "                 
+
+      if 'customise' in recodqm.keys() :
+        driver_command += "--customise %s " % recodqm['customise']
       if recodqm['dumppython']:
         driver_command += "--dump_python "
       if recodqm['magfield']!="":
