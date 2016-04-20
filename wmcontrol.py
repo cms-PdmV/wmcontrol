@@ -992,6 +992,7 @@ def build_params_dict(section,cfg):
       task1_dict['GlobalTag'] = cfg.get_param('step1_globaltag',globaltag,section)
       task1_dict['ConfigCacheID'] = step1_docID
       task1_dict['KeepOutput'] = keep_step1
+      task1_dict['ProcessingString'] = cfg.get_param('processing_string',processing_string,section)
       task1_dict['AcquisitionEra'] = cfg.get_param('step1_era',params['CMSSWVersion'],section)
       task1_dict['LumisPerJob'] = int( cfg.get_param('step1_lumisperjob',5,section) )
       params['Task1']=task1_dict
