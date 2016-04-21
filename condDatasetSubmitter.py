@@ -84,7 +84,7 @@ def createOptionParser():
 
   CMSSW_VERSION='CMSSW_VERSION'
   if not os.environ.has_key(CMSSW_VERSION):
-    print "CMSSW not properly set. Exiting"
+    print "\n CMSSW not properly set. Exiting"
     sys.exit(1)
   options.release = os.getenv(CMSSW_VERSION)
 
@@ -207,18 +207,19 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
             "datatier":"RAW,DQM ",
             "eventcontent":"FEVTDEBUGHLT,DQM",
             "inputcommands":'keep *,drop *_hlt*_*_HLT,drop *_TriggerResults_*_HLT',
+            "era":'Run2_2016',
             #"custcommands":'process.schedule.remove( process.HLTriggerFirstPath )',
             "custcommands":"process.load('Configuration.StandardSequences.Reconstruction_cff'); " +\
                            "process.hltTrackRefitterForSiStripMonitorTrack.src = 'generalTracks'; " +\
                            "\ntry:\n\tif process.RatesMonitoring in process.schedule: process.schedule.remove( process.RatesMonitoring );\nexcept: pass",
             "custconditions":"JetCorrectorParametersCollection_CSA14_V4_MC_AK4PF,JetCorrectionsRecord,frontier://FrontierProd/CMS_CONDITIONS,AK4PF",
-            "customise": "SLHCUpgradeSimulations/Configuration/muonCustoms.customise_csc_PostLS1",
+            "customise": "SLHCUpgradeSimulations/Configuration/muonCustoms.customise_csc_PostLS1", # DO WE STILL NEED THIS ? FIX FIX GF
             #"customise": "SLHCUpgradeSimulations/Configuration/postLS1Customs.customisePostLS1", # this doesn't work because the default L1 menu is the 25 ns one
             "magfield":"",
             "dumppython":False,
             "inclparents":"True"}
   if B0T:
-    HLTBase.update({"magfield":"0T"})      
+    HLTBase.update({"magfield":"0T"})    # this should not be needed - it's GT-driven FIX GF
   HLTRECObase={"steps":"RAW2DIGI,L1Reco,RECO",
                "procname":"RECO",
                "datatier":"RAW-RECO",
@@ -260,6 +261,7 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
                  "inputcommands":'',
                  "custcommands":'',
                  "custconditions":'',
+                 "customise":'',
 #                "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2Deprecated",
                  "era":"Run2_2016_trackingLowPU",
                  "magfield":"",
@@ -300,6 +302,7 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
                 "inputcommands":'',
                 "custcommands":'',
                 "custconditions":'',        
+                "customise":'',
 #                "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2Deprecated",
                 "era":"Run2_2016_trackingLowPU",
                 "magfield":"",
@@ -394,6 +397,8 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
        driver_command += "--dump_python "
     if details['customise']!="":
       driver_command += '--customise %s '%details['customise']
+    if details['era']!="" :
+      driver_command += "--era %s " % details['era']
     if details['magfield']!="":
       driver_command += '--magField %s '%details['magfield']
     if details['inputcommands']!="":
@@ -439,8 +444,10 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                       "--no_exec " +\
                       "-n 100 "                 
 
-      if 'customise' in recodqm.keys() :
+      if recodqm['customise']!="" :
         driver_command += "--customise %s " % recodqm['customise']
+      if recodqm['era']!="" :
+        driver_command += "--era %s " % recodqm['era']
       if recodqm['dumppython']:
         driver_command += "--dump_python "
       if recodqm['magfield']!="":
