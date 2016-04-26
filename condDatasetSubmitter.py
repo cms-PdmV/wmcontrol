@@ -560,7 +560,9 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
   wmcconf_text+='dset_run_dict= {'
   for ds in options.ds:
     wmcconf_text+='"%s" : [%s],\n '%(ds, ','.join(options.run+ map(lambda s :'"%s"'%(s),allRunsAndBlocks[ds])))
-  wmcconf_text+='}\n\n'
+  wmcconf_text+='}\n'
+  wmcconf_text+='dqmuploadurl = https://cmsweb.cern.ch/dqm/relval\n\n'
+
   if base:
     wmcconf_text+='[HLT_validation]\n'+\
                    'cfg_path = reco.py\n' +\
