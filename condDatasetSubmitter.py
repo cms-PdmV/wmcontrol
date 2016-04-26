@@ -263,7 +263,7 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
                  "custconditions":'',
                  "customise":'',
 #                "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2Deprecated",
-                 "era":"Run2_2016_trackingLowPU",
+                 "era":"Run2_2016",
                  "magfield":"",
                  "dumppython":False}
     # keep backward compatibility with releases earlier than 8_0_x
@@ -304,7 +304,7 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
                 "custconditions":'',        
                 "customise":'',
 #                "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2Deprecated",
-                "era":"Run2_2016_trackingLowPU",
+                "era":"Run2_2016",
                 "magfield":"",
                 "dumppython":False,
                 "inclparents":"False"}      
