@@ -269,23 +269,14 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
     # keep backward compatibility with releases earlier than 8_0_x
 
     if isCMSSWBeforeEight( recoRelease ) :
-      pass
-      # HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2"})
+      raise ValueError('theRelease is set to %s, which is not supported by condDatasetSubmitter' % (recoRelease))
 
     if B0T:
-        #HLTRECObase.update({"magfield":"0T",
-        #                    "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2DeprecatedB0T"})
-        HLTRECObase.update({"magfield":"0T"})
-        if isCMSSWBeforeEight( recoRelease ) : # keep backward compatibility with releases earlier than 8_0_x
-          pass
-          # HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2B0T"})
+      pass
+      # HLTRECObase.update({"magfield":"0T"})
 
     if HIon:
-        # HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customiseRun2DeprecatedPromptHI"})
-        # WHICH ERA HERE ??
-        pass
-        #if isCMSSWBeforeEight( recoRelease ) : # keep backward compatibility with releases earlier than 8_0_x
-        #  HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customiseRun2PromptHI"})
+      raise ValueError('condDatasetSubmitter is not yet set up to run HI validations - e-tutto-lavoraccio')
 
     if Type=='HLT+RECO+ALCA':
         HLTRECObase.update({"steps":"RAW2DIGI,L1Reco,RECO,ALCA:SiStripCalMinBias,DQM"})
@@ -308,24 +299,21 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
                 "magfield":"",
                 "dumppython":False,
                 "inclparents":"False"}      
-    # keep backward compatibility with releases earlier than 8_0_x
+
     if isCMSSWBeforeEight( recoRelease ) :
-      pass
-      # HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2"})
+      raise ValueError('theRelease is set to %s, which is not supported by condDatasetSubmitter' % (recoRelease))
+
 
     if B0T:
+      pass
         #theDetails.update({"magfield":"0T",
         #                    "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2DeprecatedB0T"})
-        theDetails.update({"magfield":"0T"})
-        # if isCMSSWBeforeEight( recoRelease ) : # keep backward compatibility with releases earlier than 8_0_x
-        #  HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2B0T"})
 
     if HIon:        
-        #theDetails.update({"customise":"Configuration/DataProcessing/RecoTLR.customiseRun2DeprecatedPromptHI"})
-        #if isCMSSWBeforeEight( recoRelease ) : # keep backward compatibility with releases earlier than 8_0_x
-        #  HLTRECObase.update({"customise":"Configuration/DataProcessing/RecoTLR.customiseRun2PromptHI"})
-        # WHICH ERA HERE ???
-        pass
+      raise ValueError('condDatasetSubmitter is not yet set up to run HI validations - e-tutto-lavoraccio')
+    # WHICH ERA HERE ???
+
+
     if Type=='PR+ALCA':
         theDetails.update({"steps":"RAW2DIGI,L1Reco,RECO,ALCA:SiStripCalMinBias,DQM"})
     return theDetails
