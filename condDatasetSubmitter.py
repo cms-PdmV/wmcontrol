@@ -711,6 +711,7 @@ def printInfo(options):
 
 if __name__ == "__main__":
   #Raise an error if couchID files exist
+  import subprocess
   p = subprocess.Popen("ls", stdout=subprocess.PIPE, shell=True)
   out = p.stdout.read().strip()
   newlist = out.split('\n')
