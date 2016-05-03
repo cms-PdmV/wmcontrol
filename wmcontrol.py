@@ -886,11 +886,6 @@ def build_params_dict(section,cfg):
           if wmtest:
               events_per_job=15000
 
-      if events_per_job and int(events_per_job):
-          params.update({
-              "EventsPerJob" : int(events_per_job)
-              })
-
       if pileup_dataset:
           params.update({"MCPileup": pileup_dataset})
 
