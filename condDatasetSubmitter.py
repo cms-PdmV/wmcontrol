@@ -358,7 +358,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
 
   # get processing string
   if options.string is None:
-    processing_string = str(datetime.date.today()) # GF: check differentiation between steps VS step{2}_processstring
+    processing_string = str(datetime.date.today()).replace("-","_") # GF: check differentiation between steps VS step{2}_processstring
   else:
     processing_string = options.string # GF: check differentiation between steps VS step{2}_processstring
 
@@ -648,7 +648,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                      'time_event = 10\n' +\
                      'size_memory = 3000\n' +\
                      'step1_lumisperjob = 1\n' +\
-                     'processing_string = %s_%s_%s \n'%(str(datetime.date.today()),details['reqtype']+label,gtshort) +\
+                     'processing_string = %s_%s_%s \n'%(str(datetime.date.today()).replace("-","_"),details['reqtype']+label,gtshort) +\
                      'cfg_path = %s\n'%cfgname +\
                      'req_name = %s_%s_RelVal_%s\n'%(details['reqtype'],label,options.run[0]) +\
                      'globaltag = %s\n'%(gtshort) +\
