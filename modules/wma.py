@@ -211,7 +211,7 @@ def makeRequest(url,params,encodeDict=False):
     conn.request("POST",  "/reqmgr/create/makeSchema", encodedParams, headers)
     response = conn.getresponse()
     data = response.read()
-    if response.status != 303:
+    if response.status != 400:
         print 'could not post request with following parameters:'
         pprint.pprint( params )
         print
@@ -223,7 +223,7 @@ def makeRequest(url,params,encodeDict=False):
         print data
         print "Exiting!"
         sys.exit(1)
-    workflow=data.split("'")[1].split('/')[-1]
+    workflow=data.split('"')[1].split('/')[-1]
     print 'Injected workflow:',workflow
     conn.close()
     return workflow
