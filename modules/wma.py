@@ -223,7 +223,7 @@ def makeRequest(url,params,encodeDict=False):
         print data
         print "Exiting!"
         sys.exit(1)
-    workflow=data.split("'")[1].split('/')[-1]
+    workflow=data.split('"')[1].split('/')[-1]
     print 'Injected workflow:',workflow
     conn.close()
     return workflow
