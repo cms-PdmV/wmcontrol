@@ -211,7 +211,7 @@ def makeRequest(url,params,encodeDict=False):
     conn.request("POST",  "/reqmgr/create/makeSchema", encodedParams, headers)
     response = conn.getresponse()
     data = response.read()
-    if response.status != 400:
+    if response.status >= 400:
         print 'could not post request with following parameters:'
         pprint.pprint( params )
         print
