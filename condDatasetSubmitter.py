@@ -221,7 +221,7 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
             "procname":"HLT2",
             "datatier":"RAW,DQM ",
             "eventcontent":"FEVTDEBUGHLT,DQM",
-            "inputcommands":'keep *,drop *_hlt*_*_HLT,drop *_TriggerResults_*_HLT',drop *_*_*_RECO',
+            "inputcommands":'keep *,drop *_hlt*_*_HLT,drop *_TriggerResults_*_HLT,drop *_*_*_RECO',
             "era":'Run2_2016',
             #"custcommands":'process.schedule.remove( process.HLTriggerFirstPath )',
             "custcommands":"process.load('Configuration.StandardSequences.Reconstruction_cff'); " +\
