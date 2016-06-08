@@ -198,7 +198,16 @@ def isCMSSWBeforeEight( theRelease ):
   else :
     return False
 
-
+def is_hltGetConfigurationOK ( theRelease ):
+  if theRelease == None :
+    raise ValueError('theRelease is set to %s and yet, it seems to be required. ERRROR.' % (theRelease))
+  if int(theRelease.split("_")[1]) > 8 :
+    return True
+  if int(theRelease.split("_")[1]) == 8 :
+    return int( theRelease.split("_")[2] ) < 1  and int( theRelease.split("_")[3] ) >= 9
+  else :
+    return False
+  
 def getCMSSWReleaseFromPath( thePath ):
   path_list = thePath.split('/')
   for path in path_list:
@@ -351,7 +360,15 @@ def createHLTConfig(options):
       
   cmssw_command = "cd %s; eval `scramv1 runtime -sh`; cd -"%options.hltCmsswDir
   build_command = "cd %s/src; eval `scramv1 runtime -sh`; scram b; cd -"%options.hltCmsswDir
-  execme(cmssw_command + '; ' + hlt_command + '; ' + build_command )
+
+  patch_command = "sed -i 's/+ fragment.hltDQMFileSaver//g' %s/src/HLTrigger/Configuration/python/HLT_%s_cff.py"%(options.hltCmsswDir,options.HLT)
+  patch_command2 = "sed -i 's/, fragment.DQMHistograms//g' %s/src/HLTrigger/Configuration/python/HLT_%s_cff.py"%(options.hltCmsswDir,options.HLT)
+
+  if ( is_hltGetConfigurationOK(  getCMSSWReleaseFromPath( options.hltCmsswDir ) ) ):
+    execme(cmssw_command + '; ' + hlt_command + '; ' + build_command )
+  else:
+    execme(cmssw_command + '; ' + hlt_command + '; ' + patch_command + '; ' + patch_command2 + '; ' + build_command )
+    print "\n CMSSW release for HLT doesn't allow usage of hltGetConfiguration out-of-the-box, patching configuration "
 
 def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
   details=getDriverDetails(options.Type,options.B0T,options.HIon,options.recoRelease)
