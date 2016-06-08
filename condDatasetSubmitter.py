@@ -236,7 +236,7 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
   if B0T:
     HLTBase.update({"magfield":"0T"})    # this should not be needed - it's GT-driven FIX GF
   HLTRECObase={"steps":"RAW2DIGI,L1Reco,RECO",
-               "procname":"RECO",
+               "procname":"reRECO",
                "datatier":"RAW-RECO",
                "eventcontent":"RAWRECO",
                "inputcommands":'',
@@ -269,7 +269,7 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
                       "eventcontent":"RAW",
                       "magfield":""})
     HLTRECObase={"steps":"RAW2DIGI,L1Reco,RECO,DQM",
-                "procname":"RECO",
+                "procname":"reRECO",
                  "datatier":"RECO,DQMIO",
                  "eventcontent":"RECO,DQM",
                  #"inputcommands":'keep *',
@@ -300,7 +300,7 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
   elif Type in ['PR','PR+ALCA']:
     theDetails={"reqtype":"PR",
                 "steps":"RAW2DIGI,L1Reco,RECO,DQM",
-                "procname":"RECO",
+                "procname":"reRECO",
                 "datatier":"RECO,DQMIO ",
                 "output":'',
                 "eventcontent":"RECO,DQM",
