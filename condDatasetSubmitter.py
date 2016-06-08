@@ -38,7 +38,7 @@ def createOptionParser():
   parser.add_option("--run",
                     help="the run number to be processed, can be a comma separated list")
   parser.add_option("--ds",
-                    help="dataset to be processed",tcommands":'keep *,drop *_hlt*_*_HLT,drop *_TriggerResults
+                    help="dataset to be processed",
                     default="/MinimumBias/Run2012B-PromptReco-v1/RECO")
   parser.add_option("--conds",
                     help="List of new tag,record,connection_string triplets to be tested")
