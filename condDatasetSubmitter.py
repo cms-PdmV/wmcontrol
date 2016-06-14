@@ -217,7 +217,7 @@ def getCMSSWReleaseFromPath( thePath ):
 
 def getDriverDetails(Type,B0T,HIon,recoRelease):
   HLTBase= {"reqtype":"HLT",
-            "steps":"HLT,DQM", #replaced DQM:triggerOfflineDQMSource with DQM
+            "steps":"L1REPACK:Full,HLT,DQM", #replaced DQM:triggerOfflineDQMSource with DQM
             "procname":"HLT2",
             "datatier":"RAW,DQM ",
             "eventcontent":"FEVTDEBUGHLT,DQM",
