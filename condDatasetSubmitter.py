@@ -244,7 +244,7 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
                }
 
   if options.HLT:
-    HLTBase.update({"steps":"HLT:%s,DQM"%(options.HLT),
+    HLTBase.update({"steps":"L1REPACK:Full,HLT:%s,DQM"%(options.HLT),
                     "dumppython":True}) 
   if Type=='HLT':
     return HLTBase
@@ -253,7 +253,7 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
     return HLTBase
   elif Type in ['HLT+RECO','HLT+RECO+ALCA']:
     if options.HLT:
-      HLTBase.update({"steps":"HLT:%s"%(options.HLT),
+      HLTBase.update({"steps":"L1REPACK:Full,HLT:%s"%(options.HLT),
                       "custcommands":"\ntry:\n\tif process.RatesMonitoring in process.schedule: process.schedule.remove( process.RatesMonitoring );\nexcept: pass",
                       "custconditions":"",
                       #"output":'[{"e":"RAW","t":"RAW","o":["drop FEDRawDataCollection_rawDataCollector__LHC"]}]',
@@ -262,7 +262,7 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
                       "eventcontent":"RAW",
                       "dumppython":True})
     else:
-      HLTBase.update({"steps":"HLT",
+      HLTBase.update({"steps":"L1REPACK:Full,HLT",
                       "custcommands":"\ntry:\n\tif process.RatesMonitoring in process.schedule: process.schedule.remove( process.RatesMonitoring );\nexcept: pass",
                       "custconditions":"",
                       "datatier":"RAW",
