@@ -228,7 +228,7 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
                            "process.hltTrackRefitterForSiStripMonitorTrack.src = 'generalTracks'; " +\
                            "\ntry:\n\tif process.RatesMonitoring in process.schedule: process.schedule.remove( process.RatesMonitoring );\nexcept: pass",
             "custconditions":"JetCorrectorParametersCollection_CSA14_V4_MC_AK4PF,JetCorrectionsRecord,frontier://FrontierProd/CMS_CONDITIONS,AK4PF",
-            "customise": "SLHCUpgradeSimulations/Configuration/muonCustoms.customise_csc_PostLS1", # DO WE STILL NEED THIS ? FIX FIX GF
+            #"customise": "SLHCUpgradeSimulations/Configuration/muonCustoms.customise_csc_PostLS1", # DO WE STILL NEED THIS ? FIX FIX GF
             #"customise": "SLHCUpgradeSimulations/Configuration/postLS1Customs.customisePostLS1", # this doesn't work because the default L1 menu is the 25 ns one
             "magfield":"",
             "dumppython":False,
