@@ -228,8 +228,6 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
                            "process.hltTrackRefitterForSiStripMonitorTrack.src = 'generalTracks'; " +\
                            "\ntry:\n\tif process.RatesMonitoring in process.schedule: process.schedule.remove( process.RatesMonitoring );\nexcept: pass",
             "custconditions":"JetCorrectorParametersCollection_CSA14_V4_MC_AK4PF,JetCorrectionsRecord,frontier://FrontierProd/CMS_CONDITIONS,AK4PF",
-            "customise": "SLHCUpgradeSimulations/Configuration/muonCustoms.customise_csc_PostLS1", # DO WE STILL NEED THIS ? FIX FIX GF
-            #"customise": "SLHCUpgradeSimulations/Configuration/postLS1Customs.customisePostLS1", # this doesn't work because the default L1 menu is the 25 ns one
             "magfield":"",
             "dumppython":False,
             "inclparents":"True"}
@@ -244,7 +242,7 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
                }
 
   if options.HLT:
-    HLTBase.update({"steps":"HLT:%s,DQM"%(options.HLT),
+    HLTBase.update({"steps":"L1REPACK:Full,HLT:%s,DQM"%(options.HLT),
                     "dumppython":True}) 
   if Type=='HLT':
     return HLTBase
@@ -253,7 +251,7 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
     return HLTBase
   elif Type in ['HLT+RECO','HLT+RECO+ALCA']:
     if options.HLT:
-      HLTBase.update({"steps":"HLT:%s"%(options.HLT),
+      HLTBase.update({"steps":"L1REPACK:Full,HLT:%s"%(options.HLT),
                       "custcommands":"\ntry:\n\tif process.RatesMonitoring in process.schedule: process.schedule.remove( process.RatesMonitoring );\nexcept: pass",
                       "custconditions":"",
                       #"output":'[{"e":"RAW","t":"RAW","o":["drop FEDRawDataCollection_rawDataCollector__LHC"]}]',
@@ -262,7 +260,7 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
                       "eventcontent":"RAW",
                       "dumppython":True})
     else:
-      HLTBase.update({"steps":"HLT",
+      HLTBase.update({"steps":"L1REPACK:Full,HLT",
                       "custcommands":"\ntry:\n\tif process.RatesMonitoring in process.schedule: process.schedule.remove( process.RatesMonitoring );\nexcept: pass",
                       "custconditions":"",
                       "datatier":"RAW",
@@ -277,7 +275,7 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
                  "custcommands":'',
                  "custconditions":'',
                  "customise":'',
-#                "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2Deprecated",
+                 #"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2Deprecated",
                  "era":"Run2_2016",
                  "magfield":"",
                  "dumppython":False}
@@ -309,7 +307,7 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
                 "custcommands":'',
                 "custconditions":'',        
                 "customise":'',
-#                "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2Deprecated",
+                #"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2Deprecated",
                 "era":"Run2_2016",
                 "magfield":"",
                 "dumppython":False,
@@ -406,7 +404,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
        driver_command += "--output '%s' " %details['output']  
     if details['dumppython']:
        driver_command += "--dump_python "
-    if details['customise']!="":
+    if 'customise' in details.keys() and details['customise']!='':
       driver_command += '--customise %s '%details['customise']
     if details['era']!="" :
       driver_command += "--era %s " % details['era']
@@ -455,7 +453,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                       "--no_exec " +\
                       "-n 100 "                 
 
-      if recodqm['customise']!="" :
+      if 'customise' in recodqm.keys() and recodqm['customise']!="" :
         driver_command += "--customise %s " % recodqm['customise']
       if recodqm['era']!="" :
         driver_command += "--era %s " % recodqm['era']
