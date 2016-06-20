@@ -219,7 +219,7 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
   HLTBase= {"reqtype":"HLT",
             "steps":"L1REPACK:Full,HLT,DQM", #replaced DQM:triggerOfflineDQMSource with DQM
             "procname":"HLT2",
-            "datatier":"RAW,DQM ",
+            "datatier":"FEVTDEBUGHLT,DQM ",
             "eventcontent":"FEVTDEBUGHLT,DQM",
             "inputcommands":'keep *,drop *_hlt*_*_HLT,drop *_TriggerResults_*_HLT,drop *_*_*_RECO',
             "era":'Run2_2016',
@@ -235,7 +235,7 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
     HLTBase.update({"magfield":"0T"})    # this should not be needed - it's GT-driven FIX GF
   HLTRECObase={"steps":"RAW2DIGI,L1Reco,RECO",
                "procname":"reRECO",
-               "datatier":"RAW-RECO",
+               "datatier":"RAW-RECO", # why RAW-RECO here while RECO elsewhere ?
                "eventcontent":"RAWRECO",
                "inputcommands":'',
                "custcommands":'',
@@ -256,15 +256,15 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
                       "custconditions":"",
                       #"output":'[{"e":"RAW","t":"RAW","o":["drop FEDRawDataCollection_rawDataCollector__LHC"]}]',
                       "output":'',
-                      "datatier":"RAW",
-                      "eventcontent":"RAW",
+                      #"datatier":"RAW",
+                      #"eventcontent":"RAW",
                       "dumppython":True})
     else:
       HLTBase.update({"steps":"L1REPACK:Full,HLT",
                       "custcommands":"\ntry:\n\tif process.RatesMonitoring in process.schedule: process.schedule.remove( process.RatesMonitoring );\nexcept: pass",
                       "custconditions":"",
-                      "datatier":"RAW",
-                      "eventcontent":"RAW",
+                      #"datatier":"RAW",
+                      #"eventcontent":"RAW",
                       "magfield":""})
     HLTRECObase={"steps":"RAW2DIGI,L1Reco,RECO,DQM",
                 "procname":"reRECO",
