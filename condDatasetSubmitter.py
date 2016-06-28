@@ -614,7 +614,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                        'cfg_path = %s\n'%cfgname +\
                        'req_name = %s_%s_RelVal_%s\n'%(details['reqtype'],label,options.run[0]) +\
                        'globaltag = %s\n'%(refsubgtshort) +\
-                       'step%d_output = RAWoutput\n'%task +\
+                       'step%d_output = FEVTDEBUGHLToutput\n'%task +\
                        'step%d_cfg = recodqm.py\n'%task +\
                        'step%d_lumisperjob = 1\n'%task +\
                        'step%d_globaltag = %s \n'%(task,gtshort) +\
@@ -646,7 +646,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                      'cfg_path = %s\n'%cfgname +\
                      'req_name = %s_%s_RelVal_%s\n'%(details['reqtype'],label,options.run[0]) +\
                      'globaltag = %s\n'%(subgtshort) +\
-                     'step%d_output = RAWoutput\n'%task +\
+                     'step%d_output = FEVTDEBUGHLToutput\n'%task +\
                      'step%d_cfg = recodqm.py\n'%task +\
                      'step%d_lumisperjob = 1\n'%task +\
                      'step%d_globaltag = %s \n'%(task,gtshort) +\
