@@ -373,7 +373,8 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
 
   # get processing string
   if options.string is None:
-    processing_string = str(datetime.date.today()).replace("-","_") # GF: check differentiation between steps VS step{2}_processstring
+     processing_string = str(datetime.date.today()).replace("-","_") + "_" + str(datetime.datetime.now().time()).replace(":","_")[0:5]
+    #processing_string = str(datetime.date.today()).replace("-","_") # GF: check differentiation between steps VS step{2}_processstring
   else:
     processing_string = options.string # GF: check differentiation between steps VS step{2}_processstring
 
@@ -604,7 +605,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
         task+=1
         continue
       elif recodqm:
-        label=cfgname.lower().replace('.py','')
+        label=cfgname.lower().replace('.py','')[0:3]
         wmcconf_text+='\n\n[%s_%s]\n' %(details['reqtype'],label) +\
                        'keep_step%d = True\n'%task +\
                        'time_event = 1\n' +\
@@ -636,7 +637,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
       task+=1
     elif recodqm:
       if "REFERENCE" in cfgname: continue
-      label=cfgname.lower().replace('.py','')
+      label=cfgname.lower().replace('.py','')[0:7]
       wmcconf_text+='\n\n[%s_%s]\n' %(details['reqtype'],label) +\
                      'keep_step%d = True\n'%task +\
                      'time_event = 1\n' +\
