@@ -373,7 +373,8 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
 
   # get processing string
   if options.string is None:
-    processing_string = str(datetime.date.today()).replace("-","_") # GF: check differentiation between steps VS step{2}_processstring
+     processing_string = str(datetime.date.today()).replace("-","_") + "_" + str(datetime.datetime.now().time()).replace(":","_")[0:5]
+    #processing_string = str(datetime.date.today()).replace("-","_") # GF: check differentiation between steps VS step{2}_processstring
   else:
     processing_string = options.string # GF: check differentiation between steps VS step{2}_processstring
 
@@ -585,7 +586,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                    'time_event = 10\n' +\
                    'size_memory = 3000\n' +\
                    'step1_lumisperjob = 1\n' +\
-                   'processing_string = %s_%sreference_%s \n'%(processing_string,details['reqtype'],refgtshort) +\
+                   'processing_string = %s_%sref_%s \n'%(processing_string,details['reqtype'],refgtshort) +\
                    'cfg_path = REFERENCE.py\n' +\
                    'req_name = %s_reference_RelVal_%s\n'%(details['reqtype'],options.run[0]) +\
                    'globaltag = %s\n'%(refgtshort) +\
@@ -604,7 +605,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
         task+=1
         continue
       elif recodqm:
-        label=cfgname.lower().replace('.py','')
+        label=cfgname.lower().replace('.py','')[0:3]
         wmcconf_text+='\n\n[%s_%s]\n' %(details['reqtype'],label) +\
                        'keep_step%d = True\n'%task +\
                        'time_event = 1\n' +\
@@ -636,7 +637,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
       task+=1
     elif recodqm:
       if "REFERENCE" in cfgname: continue
-      label=cfgname.lower().replace('.py','')
+      label=cfgname.lower().replace('.py','')[0:7]
       wmcconf_text+='\n\n[%s_%s]\n' %(details['reqtype'],label) +\
                      'keep_step%d = True\n'%task +\
                      'time_event = 1\n' +\
@@ -657,13 +658,13 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
         wmcconf_text+='step%d_release = %s \n'%(task,options.recoRelease)
       wmcconf_text+='harvest_cfg=step4_HARVESTING.py\n\n'
     else:
-      label=cfgname.lower().replace('.py','')
+      label=cfgname.lower().replace('.py','')[0:7]
       wmcconf_text+='\n\n[%s_%s]\n' %(details['reqtype'],label) +\
                      'keep_step1 = True\n' +\
                      'time_event = 10\n' +\
                      'size_memory = 3000\n' +\
                      'step1_lumisperjob = 1\n' +\
-                     'processing_string = %s_%s_%s \n'%(str(datetime.date.today()).replace("-","_"),details['reqtype']+label,gtshort) +\
+                     'processing_string = %s_%s_%s \n'%(processing_string,details['reqtype']+label,gtshort) +\
                      'cfg_path = %s\n'%cfgname +\
                      'req_name = %s_%s_RelVal_%s\n'%(details['reqtype'],label,options.run[0]) +\
                      'globaltag = %s\n'%(gtshort) +\
