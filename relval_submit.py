@@ -197,20 +197,26 @@ I will ask you some questions to fill the metadata file. For some of the questio
         commands = []
         try:
             if metadata['HLT_release']:            
-                commands.append('eval `scramv1 project %s`' % metadata['HLT_release'] )
+                #commands.append('eval \'scramv1 project %s\'' % metadata['HLT_release'] )
+                commands.append('scramv1 project %s' %metadata['HLT_release'])
                 commands.append('cd %s/src' % metadata['HLT_release'] )
-                commands.append('eval `scramv1 runtime -sh`')
+                #commands.append('eval \'scramv1 runtime -sh\'')
+                commands.append('cmsenv')
                 commands.append('git cms-addpkg HLTrigger/Configuration')
-                commands.append('eval `scramv1 b`')
+                #commands.append('eval \'scramv1 b\'')
+                commands.append('scramv1 b')
                 commands.append('voms-proxy-init --voms cms')
                 commands.append('source /afs/cern.ch/cms/PPD/PdmV/tools/subSetup_slc6.sh')
                 commands.append('cd -')                
                 if metadata['PR_release'] != metadata['HLT_release']:
-                    commands.append('eval `scramv1 project %s`' % metadata['PR_release'])
+                    #commands.append('eval \'scramv1 project %s\'' % metadata['PR_release'])
+                    commands.append('scramv1 project %s' % metadata['PR_release'])
         except KeyError:            
-            commands.append('eval `scramv1 project %s`' % metadata['PR_release'] )
+            #commands.append('eval \'scramv1 project %s\'' % metadata['PR_release'] )
+            commands.append('scramv1 project %s' % metadata['PR_release'])
             commands.append('cd %s/src' % metadata['PR_release'] )
-            commands.append('eval `scramv1 runtime -sh`')
+            #commands.append('eval \'scramv1 runtime -sh\'')
+            commands.append('cmsenv')
             commands.append('voms-proxy-init --voms cms')
             commands.append('source /afs/cern.ch/cms/PPD/PdmV/tools/subSetup_slc6.sh')
             commands.append('cd -')

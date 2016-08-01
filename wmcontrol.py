@@ -817,6 +817,11 @@ def build_params_dict(section,cfg):
           "Multicore": multicore
           }
 
+  for theVar in ['processing_string', 'step1_processstring','step2_processstring', 'step3_processstring']:
+      thePrStr =  cfg.get_param( theVar,'',section)
+      if len( thePrStr ) > 99:
+          raise ValueError('the variable %s ( value: %s) has a size (%d) which exceeds the limit set to 100. ERRROR.' % ( theVar, thePrStr, len( thePrStr ) ) )
+
   if wmtest:
       params["ConfigCacheUrl"] = wma.COUCH_DB_ADDRESS
       params["DbsUrl"] = "https://" + wma.WMAGENT_URL + wma.DBS3_URL
@@ -976,38 +981,53 @@ def build_params_dict(section,cfg):
       params.pop('RunBlacklist')
       params.pop('BlockWhitelist')
       params.pop('BlockBlacklist')
-      task1_dict={'SplittingAlgorithm': 'LumiBased',
-                  'SplittingArguments': {'lumis_per_job': 8},
+      task1_dict={'SplittingAlgo': 'LumiBased',
                   'TaskName':'Task1'
                   }
 
       task1_dict['GlobalTag'] = cfg.get_param('step1_globaltag',globaltag,section)
       task1_dict['ConfigCacheID'] = step1_docID
       task1_dict['KeepOutput'] = keep_step1
+      task1_dict['ProcessingString'] = cfg.get_param('processing_string',processing_string,section)
+      task1_dict['AcquisitionEra'] = cfg.get_param('step1_era',params['CMSSWVersion'],section)
+      task1_dict['LumisPerJob'] = int( cfg.get_param('step1_lumisperjob',5,section) )
       params['Task1']=task1_dict
       params['TaskChain']=1
       if step2_cfg or step2_docID:
-          task2_dict={'SplittingAlgorithm': 'LumiBased',
-                      'SplittingArguments': {'lumis_per_job': 8},
+          task2_dict={'SplittingAlgo': 'LumiBased',
                       'TaskName':'Task2'
                       }
           task2_dict['GlobalTag'] = cfg.get_param('step2_globaltag',globaltag,section)
+          task2_dict['CMSSWVersion'] = cfg.get_param('step2_release',params['CMSSWVersion'],section)
           task2_dict['ConfigCacheID'] = step2_docID
           task2_dict['InputFromOutputModule'] = step2_output
           task2_dict['InputTask'] = cfg.get_param('step2_input','Task1',section)
-          #task2_dict['KeepOutput'] = keep_step2
+          #task2_dict['KeepOutput'] = keep_step2 # THIS NEEDS BE ASSESSED!!!! GF: check with Alan's example of taskchain
+
+          # global processing_string, the value for the entire workflow,
+          # always exists in the scope of build_params_dict (could be set to ''). If step2_processstring not set, step2'll inhering the global value
+          task2_dict['ProcessingString'] = cfg.get_param('step2_processstring',processing_string,section)
+          # if not specified in .conf, AcquisitionEra is set to the CMSSW release of the current task => MUST BE DISCUSSED w/ PdmV for behaviour on MC
+          task2_dict['AcquisitionEra']   = cfg.get_param('step2_era',task2_dict['CMSSWVersion'],section)
+          task2_dict['LumisPerJob']      = int( cfg.get_param('step2_lumisperjob',1,section) )
           params['Task2']=task2_dict
           params['TaskChain']=2
+
           if step3_cfg or step3_docID:
-              task3_dict={'SplittingAlgorithm': 'LumiBased',
-                          'SplittingArguments': {'lumis_per_job': 8},
+              task3_dict={'SplittingAlgo': 'LumiBased',
                           'TaskName':'Task3'
                           }
               task3_dict['GlobalTag'] = cfg.get_param('step3_globaltag',globaltag,section)
+              task3_dict['CMSSWVersion'] = cfg.get_param('step3_release',params['CMSSWVersion'],section)
               task3_dict['ConfigCacheID'] = step3_docID
               task3_dict['InputFromOutputModule'] = step3_output
               task3_dict['InputTask'] = cfg.get_param('step3_input','Task2',section)
-              #task3_dict['KeepOutput'] = keep_step3
+              # global processing_string, the value for the entire workflow, always exists in the scope of build_params_dict (could be set to ''). If step3_processstring not set, step3'll inhering the global value
+              task3_dict['ProcessingString'] = cfg.get_param('step3_processstring',processing_string,section)
+              # if not specified in .conf, AcquisitionEra is set to the CMSSW release of the current task => MUST BE DISCUSSED w/ PdmV for behaviour on MC
+              task3_dict['AcquisitionEra']   = cfg.get_param('step3_era',task3_dict['CMSSWVersion'],section)
+              task3_dict['LumisPerJob']      = int( cfg.get_param('step3_lumisperjob',5,section) )
+              #task3_dict['KeepOutput'] = keep_step3   # ASSESS THIS ONE !!!
               params['Task3']=task3_dict
               params['TaskChain']=3
       #from pprint import pformat
@@ -1022,7 +1042,7 @@ def build_params_dict(section,cfg):
                      "Scenario": "pp",
                      "PrepID": request_id,
                      "TransientOutputModules":transient_output,
-                     "DQMUploadUrl" : "https://cmsweb.cern.ch/dqm/offline",
+                     "DQMUploadUrl" : cfg.get_param('dqmuploadurl','https://cmsweb.cern.ch/dqm/offline',section),
                      "DQMConfigCacheID" : harvest_docID})
      del (params["OpenRunningTimeout"])
 
@@ -1033,10 +1053,8 @@ def build_params_dict(section,cfg):
   if harvest_docID and request_type!="DQMHarvest":
       ##setup automatic harvesting
       params.update({"EnableHarvesting" : 0,
-                     "DQMUploadUrl" : "https://cmsweb.cern.ch/dqm/offline",
-                     #"DQMUploadUrl" : "https://cmsweb.cern.ch/dqm/offline",
+                     "DQMUploadUrl" : cfg.get_param('dqmuploadurl','https://cmsweb.cern.ch/dqm/offline',section),
                      "DQMConfigCacheID" : harvest_docID})
-
 
   ## pop any empty parameters
   for (param,value) in params.items():
@@ -1072,7 +1090,7 @@ def build_parser():
   parser = optparse.OptionParser(usage,option_class=ExtendedOption)
 
   parser.add_option('--arch', help='SCRAM_ARCH', dest='scramarch')
-  parser.add_option('--release', help='Production release', dest='release')
+  parser.add_option('--release', help='Production CMSSW release', dest='release')
   parser.add_option('--request-type', help='Request type: "MonteCarlo","MonteCarloFromGEN","ReDigi"' , dest='request_type')
   parser.add_option('--conditions', help='Conditions Global Tag' , dest='globaltag')
   parser.add_option('--request-id', help='Request identifier' , dest='request_id')
@@ -1080,15 +1098,25 @@ def build_parser():
   parser.add_option('--blocks', help='comma separated list of input blocks to be processed' , dest='blocks')  
   parser.add_option('--pileup-ds', help='Pile-Up input Data Set name' , dest='pu_dataset')
   parser.add_option('--step1-cfg', help='step 1 configuration' , dest='step1_cfg')
+  parser.add_option('--step1-era',help='AcquisitionEra for step1 in a TaskChain' ,dest='step1_era')
   parser.add_option('--step1-output', help='step 1 output' , dest='step1_output')
   parser.add_option('--keep-step1', help='step1 output keeping flag'  ,action='store_true', dest='keep_step1')
+  parser.add_option('--step1-lumisperjob',help='lumi per job of step 1 in a TaskChain' ,dest='step1_lumisperjob')
   parser.add_option('--step1-docID', help='step 1 configuration' , dest='step1_docID')
   parser.add_option('--cfg_path', help='Alias for step 1 configuration' , dest='cfg_path')
   parser.add_option('--step2-cfg',help='step 2 configuration' ,dest='step2_cfg')
+  parser.add_option('--step2-release',help='step 2 CMSSW release in a TaskChain' ,dest='step2_release')
+  parser.add_option('--step2-processstring',help='processing string for step 2 in a TaskChain - will appear in DS name' ,dest='step2_processstring')
+  parser.add_option('--step2-era',help='AcquisitionEra for step2 in a TaskChain' ,dest='step2_era')
   parser.add_option('--step2-output',help='step 2 output' ,dest='step2_output')
+  parser.add_option('--step2-lumisperjob',help='lumi per job of step 2 in a TaskChain' ,dest='step2_lumisperjob')
   parser.add_option('--keep-step2',help='step2 output keeping flag',  action='store_true',dest='keep_step2')
   parser.add_option('--step2-docID',help='step 2 configuration' ,dest='step2_docID')
   parser.add_option('--step3-cfg',help='step 3 configuration' ,dest='step3_cfg')
+  parser.add_option('--step3-release',help='step 3 CMSSW release in a TaskChain' ,dest='step3_release')
+  parser.add_option('--step3-processstring',help='processing string for step 3 in a TaskChain - will appear in DS name' ,dest='step3_processstring')
+  parser.add_option('--step3-era',help='AcquisitionEra for step3 in a TaskChain' ,dest='step3_era')
+  parser.add_option('--step3-lumisperjob',help='lumi per job of step 3 in a TaskChain' ,dest='step3_lumisperjob')
   parser.add_option('--step3-docID',help='step 3 configuration' ,dest='step3_docID')
   parser.add_option('--priority',help='priority flag' ,dest='priority')
   parser.add_option('--primary-dataset',help='primary dataset name' ,dest='primary_dataset')
@@ -1109,6 +1137,7 @@ def build_parser():
   parser.add_option('--test', help='To test things', action='store_true' , dest='test')
   parser.add_option('--wmtest', help='To inject requests to the cmsweb test bed', action='store_true' , dest='wmtest')
   parser.add_option('--wmtesturl', help='To inject to a specific testbed', dest='wmtesturl', default='cmsweb-testbed.cern.ch')
+  parser.add_option('--dqmuploadurl', help='ulr of the DQM GUI instance where DQM will be uploaded', dest='dqmuploadurl', default='https://cmsweb.cern.ch/dqm/offline')
   parser.add_option('--includeparents', help='Include parents', action='store_true' , dest='includeparents')
   parser.add_option('--req_name', help='Set the name of the request', dest='req_name')
   parser.add_option('--process-string', help='string to be added in the name of the request' , dest='process_string',default='')
