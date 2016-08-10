@@ -696,7 +696,11 @@ def printInfo(options):
     f = open(hltFilename)
     menu = f.readline()
     menu = menu.replace('\n','').replace('# ','')
-  
+    menulist = menu.split()
+    hltCmsswVersion = (options.hltCmsswDir).split('/')
+    menulist[-1] = '(%s)'%(hltCmsswVersion[-1]) 
+    menu = menulist[0] + " " + menulist[-1]
+
   matched=re.match("(.*),(.*),(.*)",options.newgt)
   if matched: 
     newgtshort=matched.group(1)
