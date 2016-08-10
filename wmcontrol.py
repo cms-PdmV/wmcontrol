@@ -1052,7 +1052,7 @@ def build_params_dict(section,cfg):
 
   if harvest_docID and request_type!="DQMHarvest":
       ##setup automatic harvesting
-      params.update({"EnableHarvesting" : 0,
+      params.update({"EnableHarvesting" : cfg.get_param('enableharvesting','0',section),
                      "DQMUploadUrl" : cfg.get_param('dqmuploadurl','https://cmsweb.cern.ch/dqm/offline',section),
                      "DQMConfigCacheID" : harvest_docID})
 
@@ -1138,6 +1138,7 @@ def build_parser():
   parser.add_option('--wmtest', help='To inject requests to the cmsweb test bed', action='store_true' , dest='wmtest')
   parser.add_option('--wmtesturl', help='To inject to a specific testbed', dest='wmtesturl', default='cmsweb-testbed.cern.ch')
   parser.add_option('--dqmuploadurl', help='ulr of the DQM GUI instance where DQM will be uploaded', dest='dqmuploadurl', default='https://cmsweb.cern.ch/dqm/offline')
+  parser.add_option('--enableharvesting', help='activate (1) or not (0) the automatic DQM harvesting', dest='enableharvesting', default='0')
   parser.add_option('--includeparents', help='Include parents', action='store_true' , dest='includeparents')
   parser.add_option('--req_name', help='Set the name of the request', dest='req_name')
   parser.add_option('--process-string', help='string to be added in the name of the request' , dest='process_string',default='')
