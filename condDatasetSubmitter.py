@@ -571,7 +571,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
   for ds in options.ds:
     wmcconf_text+='"%s" : [%s],\n '%(ds, ','.join(options.run+ map(lambda s :'"%s"'%(s),allRunsAndBlocks[ds])))
   wmcconf_text+='}\n'
-  wmcconf_text+='enableharvesting = 1\n'
+  wmcconf_text+='enableharvesting = True\n'
   wmcconf_text+='dqmuploadurl = https://cmsweb.cern.ch/dqm/relval\n\n'
 
   if base:
