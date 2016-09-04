@@ -138,15 +138,29 @@ I will ask you some questions to fill the metadata file. For some of the questio
                 if 'HLT+RECO' in type:
                     basegt = getInput('74X_dataRun2_Prompt_v1', '\nWhat is the common GT for Reco?\ne.g. 74X_dataRun2_Prompt_v1\nbasegt [74X_dataRun2_Prompt_v1]: ')
 
-                ds = getInput('/HLTPhysics/Run2015C-v1/RAW', '\nWhat is the dataset to be used?\ne.g. /HLTPhysics/Run2015C-v1/RAW\nds [/HLTPhysics/Run2015C-v1/RAW]: ')
-                
-                while True:
-                    run  = getInput('254906', '\nWhich run number?\ne.g. 254906\nhlt_menu [254906]: ')
-                    try:
-                        run = int(run)
-                        break
-                    except ValueError:
-                        logging.error('The run value has to be an integer or empty (null).')
+                ds = getInput('/HLTPhysics/Run2015C-v1/RAW', '\nWhat is the dataset to be used (comma-separated if more than one)?\ne.g. /HLTPhysics/Run2015C-v1/RAW\nds [/HLTPhysics/Run2015C-v1/RAW]: ')
+
+                run_err_mess = 'The run value has to be an integer, a dictionary or empty (null).'
+                runORrunLs  = getInput('254906', '\nWhich run number or run number+luminosity sections?\ne.g. 254906 or\n     [254906,254905] or\n     {\'256677\': [[1, 291], [293, 390]]}\nrunORrunLs [254906]: ')
+                run   = ''
+                runLs = ''
+                # do some type recognition and set run or runLs accordingly
+                try:
+                    if   isinstance(runORrunLs, str) and "{"  in runORrunLs :
+                        runLs = eval(runORrunLs)                              # turn a string into a dict and check it's valid
+                    elif isinstance(runORrunLs, dict):
+                        runLs = runORrunLs                                    # keep dict
+                    elif isinstance(runORrunLs, str) and "["  in runORrunLs :
+                        run   = eval(runORrunLs)                              # turn a string into a list and check it's valid
+                    elif isinstance(runORrunLs, str) :
+                        run = int(runORrunLs)                                 # turn string into int
+                    elif isinstance(runORrunLs, list):
+                        run = runORrunLs                                      # keep list
+                    else:
+                        raise ValueError(run_err_mess)
+                except ValueError:
+                    logging.error(run_err_mess)
+
 
                 b0T  = getInput('n', '\nIs this for B=0T?\nAnswer [n]: ')
                 
@@ -162,7 +176,11 @@ I will ask you some questions to fill the metadata file. For some of the questio
                         'run': run
                     }
                 }
-                    
+                if runLs:
+                    metadata['options']['runLs'] = runLs
+                    metadata['options'].pop('run')
+
+
                 if b0T.lower() == 'y':
                     metadata['options'].update({'B0T':''})
                 if hion.lower() == 'y':
@@ -187,8 +205,7 @@ I will ask you some questions to fill the metadata file. For some of the questio
             logging.info('Saving generated metadata in %s...', metadataFilename)
             with open(metadataFilename, 'wb') as metadataFile:
                 metadataFile.write(metadata)
-                logging.info('... metadata.txt file created.')
-
+                logging.info('...%s file created.', metadataFilename)
             
 
     with open(metadataFilename, 'rb') as metadataFile:
@@ -223,25 +240,50 @@ I will ask you some questions to fill the metadata file. For some of the questio
 
         cond_submit_command = './condDatasetSubmitter.py '
         for key, val in metadata['options'].iteritems():
-            cond_submit_command += '--%s %s ' % ( key, val )
-        
+            # cond_submit_command += '--%s %s ' % ( key, val )
+            if isinstance(val, list):
+                cond_submit_command += '--%s "' % ( key)
+                for u in val:
+                    cond_submit_command += '%s,'%u
+                cond_submit_command = cond_submit_command[:-1]
+                cond_submit_command += '" '
+            elif isinstance(val, dict):
+                cond_submit_command += '--%s "%s" ' % ( key, val)
+            else:
+                cond_submit_command += '--%s %s ' % ( key, val )
+
         commands.append('git clone git@github.com:cms-PdmV/wmcontrol.git')
         commands.append('cd wmcontrol')
         commands.append(cond_submit_command)
-        try:
-            if metadata['HLT_release']:       
-                commands.append('./wmcontrol.py --req_file HLTConditionValidation_%s_%s_%s.conf' % (metadata['HLT_release'], metadata['options']['basegt'], metadata['options']['run']) )
-        except KeyError:
-            commands.append('./wmcontrol.py --req_file PRConditionValidation_%s_%s_%s.conf' % (metadata['PR_release'], metadata['options']['newgt'], metadata['options']['run']) )
-        commands.append('rm *.couchID')
-        
 
-        
+        # compose string representing runs, Which will be part of the filename
+        # if run is int => single label; if run||runLs are list or dict, '_'-separated composite label
+        run_label_for_fn = ''
+
+        if 'run' in metadata['options'] and isinstance( metadata['options']['run'], int):
+            run_label_for_fn = metadata['options']['run']
+        else:
+            # handle the list and dictionary case with the same code snippet
+            thisRunKey = 'run'
+            if 'runLs' in metadata['options']:
+                thisRunKey = 'runLs'
+            # loop over elements of a list or keys of a dictionary
+            for oneRun in metadata['options'][thisRunKey]:
+                if run_label_for_fn != '':
+                    run_label_for_fn += '_'
+                run_label_for_fn += str(oneRun)
+
+        try:
+            if metadata['HLT_release']:
+                commands.append('./wmcontrol.py --req_file HLTConditionValidation_%s_%s_%s.conf |& tee wmcontrol.HLT.1.log' % (metadata['HLT_release'], metadata['options']['basegt'], run_label_for_fn ) )
+        except KeyError:
+            commands.append('./wmcontrol.py --req_file PRConditionValidation_%s_%s_%s.conf |& tee wmcontrol.PR.1.log' % (metadata['PR_release'], metadata['options']['newgt'], run_label_for_fn ) )
+        commands.append('rm *.couchID')
+
         dryrun = True
         # now execute commands
         for command in commands:
             execme(command,dryrun)
-            
 
 if __name__ == '__main__':
     logging.basicConfig(
@@ -250,4 +292,3 @@ if __name__ == '__main__':
     )
 
     sys.exit(main())
-

@@ -313,7 +313,7 @@ def get_dataset_runs_dict(section,cfg):
       run_list = []
       try:
         dataset_runs_dict = eval(cfg.get_param('dset_run_dict','',section))
-        for key in dataset_runs_dict.keys():
+        for key in dataset_runs_dict.keys(): # loop over PD's
             if isinstance(dataset_runs_dict[key], str):
                 if os.path.exists(dataset_runs_dict[key]):
                     try:
@@ -444,7 +444,14 @@ def loop_and_submit(cfg):
               params['BlockWhitelist']=new_blocks
 
       elif service_params['lumi_list'] != '':
-          params['LumiList'] = service_params['lumi_list']
+          lumi_list_dict = eval(service_params['lumi_list'])
+
+          if ( len(lumi_list_dict.keys()) > 0 ):
+              params['LumiList'] = eval(service_params['lumi_list'])
+              if params.has_key("RunWhitelist") and params['RunWhitelist']!=[] :
+                  print "WARNING: both lumi_list (to set LumiList) and dset_run_dict (to set RunWhitelist) are present"
+                  print "Keeping only the lumi_list option (%s) instead of dset_run_dict (%s)" % ( params['LumiList'], params['RunWhitelist'] )
+                  params.pop('RunWhitelist')
 
       params['RequestString']= make_request_string(params,service_params,section)
 
@@ -474,16 +481,13 @@ def loop_and_submit(cfg):
                   split, details = espl.run(int(__events),
                                             service_params['brute_force'],
                                             service_params['force_lumis'])
-
                   if split == 'blocks':
                       params['Task1']['BlockWhitelist'] = details
                   elif split == 'lumis':
                       params['Task1']['LumiList'] = details
                   elif split == 'dataset':
-                      print "no white listing"
                   if test_mode:
                       print "Finished in", int((time.time()-t)*1000), "\bms"
-
           if params['RunWhitelist']:
               params['Task1']['RunWhitelist'] = params['RunWhitelist']
 
@@ -491,6 +495,11 @@ def loop_and_submit(cfg):
               params.pop('RunWhitelist') #because it was set as Task parameter
           if 'InputDataset' in params:
               params.pop('InputDataset')
+
+          if params.has_key("LumiList") and params['LumiList']:
+              params['Task1']['LumiList'] = params['LumiList']
+              params.pop('LumiList') #if params has LumiList we remove it because it was set as Task1 parameter
+
       elif ('RequestNumEvents' in params and 'LumiList' not in params and
             ('RunWhitelist' not in params or params['RunWhitelist']==[])):
 
@@ -513,6 +522,7 @@ def loop_and_submit(cfg):
                   params['BlockWhitelist'] = details
               elif split == 'lumis':
                   params['LumiList'] = details
+                  params['LumiList'] = details # incomplete ?
               elif split == 'dataset':
                   print "no white listing"
 
@@ -772,14 +782,14 @@ def build_params_dict(section,cfg):
                   "step1_cfg": step1_cfg,
                   "step1_output": step1_output,
                   "keep_step1":keep_step1,
-#
+
                   "step2_cfg": step2_cfg,
                   "step2_output": step2_output,
                   "keep_step2":keep_step2,
-#
+
                   "step3_cfg": step3_cfg,
                   "step3_output": step3_output,
-                  #
+
                   'cfg_docid_dict' : cfg_docid_dict,
                   'req_name': req_name,
                   "batch": batch,
