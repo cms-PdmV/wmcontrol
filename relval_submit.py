@@ -252,7 +252,7 @@ I will ask you some questions to fill the metadata file. For some of the questio
             else:
                 cond_submit_command += '--%s %s ' % ( key, val )
 
-        commands.append('git clone git@github.com:cms-PdmV/wmcontrol.git')
+        commands.append(' git clone -b master git@github.com:cms-PdmV/wmcontrol.git  master-my-local-name    (**make sure that that PdmV master is the one you want to use**)')
         commands.append('cd wmcontrol')
         commands.append(cond_submit_command)
 

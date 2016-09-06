@@ -486,6 +486,7 @@ def loop_and_submit(cfg):
                   elif split == 'lumis':
                       params['Task1']['LumiList'] = details
                   elif split == 'dataset':
+                      print "no white listing"
                   if test_mode:
                       print "Finished in", int((time.time()-t)*1000), "\bms"
           if params['RunWhitelist']:
