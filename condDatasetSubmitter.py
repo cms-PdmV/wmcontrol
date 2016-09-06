@@ -581,6 +581,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
   if (options.runLs):
     wmcconf_text+='lumi_list=%s\n'%(options.runLs)
 
+#  wmcconf_text+='multicore=4\n'
   wmcconf_text+='enableharvesting = True\n'
   wmcconf_text+='dqmuploadurl = https://cmsweb.cern.ch/dqm/relval\n\n'
 
