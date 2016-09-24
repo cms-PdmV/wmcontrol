@@ -4,6 +4,7 @@
 
 import os
 import sys
+import ast
 
 #-------------------------------------------------------------------------------
 # Check if it is the case to start
@@ -299,7 +300,7 @@ def dump_requests(reprocfg_filename, requests):
 def read_requests(reprocfg_filename):
   ifilename=DUMPED_REQUESTS_SCHELETON %os.path.basename(reprocfg_filename)
   ifile=file(ifilename,"r")
-  requests = eval (ifile.read())
+  requests = ast.literal_eval (ifile.read())
   pprint.pprint(requests)
   ifile.close()
   print "Requests read from %s" %ifilename

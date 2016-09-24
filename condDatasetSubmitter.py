@@ -89,7 +89,7 @@ def createOptionParser():
       parser.error("options --newgt, --run, [ either: --run  or: --runLs ] and --gt  are mandatory")
 
   if (options.runLs):
-    options.runLs = eval(options.runLs)
+    options.runLs = ast.literal_eval(options.runLs)
 
 
   CMSSW_VERSION='CMSSW_VERSION'
@@ -141,7 +141,7 @@ def isPCLReady(run):
   #  if not line: continue
   #  spl=line.split()
   #  if spl[0]==str(run):
-  #    ready=eval(spl[7])
+  #    ready=ast.literal_eval(spl[7])
   #    print "\n\n\tPCL ready for ",run,"\n\n"
   #    return ready
   

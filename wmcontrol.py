@@ -23,6 +23,7 @@ import ConfigParser
 import traceback
 import re
 import time
+import ast
 
 sys.path.append(os.path.join(sys.path[0], 'modules'))
 from modules import helper
@@ -312,7 +313,7 @@ def get_dataset_runs_dict(section,cfg):
       dataset_runs_dict={}
       run_list = []
       try:
-        dataset_runs_dict = eval(cfg.get_param('dset_run_dict','',section))
+        dataset_runs_dict = ast.literal_eval(cfg.get_param('dset_run_dict','',section))
         for key in dataset_runs_dict.keys(): # loop over PD's
             if isinstance(dataset_runs_dict[key], str):
                 if os.path.exists(dataset_runs_dict[key]):

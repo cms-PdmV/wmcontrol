@@ -17,6 +17,7 @@ import logging
 import optparse
 import json
 import errno
+import ast
 
 def execme(command,dryrun=False):    
     '''Wrapper for executing commands.
@@ -147,11 +148,11 @@ I will ask you some questions to fill the metadata file. For some of the questio
                 # do some type recognition and set run or runLs accordingly
                 try:
                     if   isinstance(runORrunLs, str) and "{"  in runORrunLs :
-                        runLs = eval(runORrunLs)                              # turn a string into a dict and check it's valid
+                        runLs = ast.literal_eval(runORrunLs)                              # turn a string into a dict and check it's valid
                     elif isinstance(runORrunLs, dict):
                         runLs = runORrunLs                                    # keep dict
                     elif isinstance(runORrunLs, str) and "["  in runORrunLs :
-                        run   = eval(runORrunLs)                              # turn a string into a list and check it's valid
+                        run   = ast.literal_eval(runORrunLs)                              # turn a string into a list and check it's valid
                     elif isinstance(runORrunLs, str) :
                         run = int(runORrunLs)                                 # turn string into int
                     elif isinstance(runORrunLs, list):
