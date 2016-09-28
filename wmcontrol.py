@@ -155,9 +155,9 @@ class Configuration:
             # No section found, just rais e an exception
             raise Exception ("No section %s found in configuration." % (section))
 
-          if verbose:
-              print "I am returning the value #%s#" % (ret_val)
-          return ret_val
+        if verbose:
+            print "I am returning the value #%s#" % (ret_val)
+        return ret_val
 
 def get_runs(dset_name, minrun=-1, maxrun=-1):
     '''
@@ -340,7 +340,7 @@ def get_dataset_runs_dict(section, cfg):
     except:
         dataset_runs_dict[cfg.get_param('input_name', '', section)] = []
 
-      return  dataset_runs_dict
+    return dataset_runs_dict
 
 #-------------------------------------------------------------------------------
 def make_request_string(params, service_params, request):
@@ -597,7 +597,7 @@ def make_cfg_docid_dict(filename):
 
     cfg_db_file.close()
 
-  return cfg_docid_dict
+    return cfg_docid_dict
 
 #-------------------------------------------------------------------------------
 def get_user_group(cfg, section):
