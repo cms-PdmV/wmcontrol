@@ -445,10 +445,10 @@ def loop_and_submit(cfg):
               params['BlockWhitelist']=new_blocks
 
       elif service_params['lumi_list'] != '':
-          lumi_list_dict = eval(service_params['lumi_list'])
+          lumi_list_dict = ast.literal_eval(service_params['lumi_list'])
 
           if ( len(lumi_list_dict.keys()) > 0 ):
-              params['LumiList'] = eval(service_params['lumi_list'])
+              params['LumiList'] = ast.literal_eval(service_params['lumi_list'])
               if params.has_key("RunWhitelist") and params['RunWhitelist']!=[] :
                   print "WARNING: both lumi_list (to set LumiList) and dset_run_dict (to set RunWhitelist) are present"
                   print "Keeping only the lumi_list option (%s) instead of dset_run_dict (%s)" % ( params['LumiList'], params['RunWhitelist'] )
