@@ -4,9 +4,9 @@ import ast
 import os
 import sys
 import re
-from optparse import OptionParser
 import datetime
 import json
+from   optparse import OptionParser
 
 sys.path.append('/afs/cern.ch/cms/PPD/PdmV/tools/prod/devel/')
 from phedex import phedex
@@ -21,7 +21,7 @@ def createOptionParser():
   global DRYRUN
   usage=\
   """
-  ConditionValidation.py --gt <GT> --run <run> --conds <condition json>
+  ConditionValidation.py --gt <GT> [ either: --run <run> or: --runLs <runLumiDict>] --conds <condition json>
   """
 
   parser = OptionParser(usage)
@@ -37,6 +37,8 @@ def createOptionParser():
                     help="common global tag to base RECO+HLT/HLT+RECO submissions")
   parser.add_option("--run",
                     help="the run number to be processed, can be a comma separated list")
+  parser.add_option("--runLs",
+                    help="the dictionary of run numbers mapped to lists of lumi sections (standard CMS certification json format)")
   parser.add_option("--ds",
                     help="dataset to be processed",
                     default="/MinimumBias/Run2012B-PromptReco-v1/RECO")
@@ -77,10 +79,18 @@ def createOptionParser():
                      
   (options,args) = parser.parse_args()
 
-#  if not options.gt or not options.run or not options.conds:
-#      parser.error("options --run, --gt and --conds are mandatory")
-  if not options.newgt or not options.gt or not options.run:
-      parser.error("options --newgt, --run, and --gt  are mandatory")
+ #  print "** options args"
+ #  print options
+ #  print args
+ #  print "** options args"
+
+
+  if not options.newgt or not options.gt or not ( options.run or options.runLs):
+      parser.error("options --newgt, --run, [ either: --run  or: --runLs ] and --gt  are mandatory")
+
+  if (options.runLs):
+    options.runLs = ast.literal_eval(options.runLs)
+
 
   CMSSW_VERSION='CMSSW_VERSION'
   if not os.environ.has_key(CMSSW_VERSION):
@@ -102,23 +112,18 @@ def createOptionParser():
     DRYRUN=True
 
   options.ds=options.ds.split(',')
-  options.run = options.run.split(',')
+  if (options.run):
+    options.run = options.run.split(',')
   return options
 
 #-------------------------------------------------------------------------------
 
 def getConfCondDictionary(conditions_filename):
-  # read the tags fromt eh list
-  #newCtags=eval(open(options.conds).read())
   
   ConfCondList=[ ('REFERENCE.py',options.gt) ]
   ConfCondDictionary={
       'REFERENCE.py':options.gt
       }
-    
-  #for (i,condbunch) in enumerate(newCtags):
-  #    ConfCondDictionary['NEWCONDITIONS%s.py'%i]='%s'%('+'.join(map(lambda r : ','.join(r),condbunch)))
-  #    ConfCondList.append( ('NEWCONDITIONS%s.py'%i, '%s'%('+'.join(map(lambda r : ','.join(r),condbunch))) ) )
 
   ConfCondDictionary['NEWCONDITIONS0.py']=options.newgt
   ConfCondList.append( ('NEWCONDITIONS0.py', options.newgt ) ) 
@@ -136,7 +141,7 @@ def isPCLReady(run):
   #  if not line: continue
   #  spl=line.split()
   #  if spl[0]==str(run):
-  #    ready=eval(spl[7])
+  #    ready=ast.literal_eval(spl[7])
   #    print "\n\n\tPCL ready for ",run,"\n\n"
   #    return ready
   
@@ -150,7 +155,6 @@ def isAtSite(ds, run):
   connection = wma.init_connection('cmsweb.cern.ch')
   blockDicts = ast.literal_eval(
     wma.httpget(connection, wma.DBS3_URL+"blocks?dataset=%s&run_num=%s"%(ds,run)) ) # connection return a string which represents a list
-
 
   for blockDict in blockDicts:
       block = blockDict['block_name']
@@ -177,13 +181,6 @@ def isAtSite(ds, run):
     print "\n\n\t Block testing succeeded for %s in %s \n\n"%(run,ds)
     print blocks
     return list(set(blocks))
-
-#-------------------------------------------------------------------------------
-## decommissionned because we could run anywhere
-#def checkIsAtFnal(run, ds):
-#  if not isAtFnal (run, ds):
-#    print "Run %s of %s is not at fnal. Impossible to continue." %(run, ds)
-#    sys.exit(1)
 
 #-------------------------------------------------------------------------------
 
@@ -275,7 +272,6 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
                  "custcommands":'',
                  "custconditions":'',
                  "customise":'',
-                 #"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2Deprecated",
                  "era":"Run2_2016",
                  "magfield":"",
                  "dumppython":False}
@@ -307,7 +303,6 @@ def getDriverDetails(Type,B0T,HIon,recoRelease):
                 "custcommands":'',
                 "custconditions":'',        
                 "customise":'',
-                #"customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2Deprecated",
                 "era":"Run2_2016",
                 "magfield":"",
                 "dumppython":False,
@@ -346,9 +341,13 @@ def createHLTConfig(options):
 
   assert  os.path.exists("%s/src/HLTrigger/Configuration/"%(options.hltCmsswDir) ), "error: HLTrigger/Configuration/ is missing in the CMSSW release for HLT (set to: echo $CMSSW_VERSION ) - can't create the HLT configuration "
 
+  onerun=0
+  if      (options.run):    onerun = options.run[0]
+  elif    (options.runLs):  onerun = options.runLs.keys()[0]
+
   if options.HLT=="SameAsRun":
     hlt_command="hltGetConfiguration --unprescale --cff --offline " +\
-                "run:%s "%options.run[0] +\
+                "run:%s "%onerun +\
                 "> %s/src/HLTrigger/Configuration/python/HLT_%s_cff.py"%(options.hltCmsswDir,options.HLT)
                 
   elif options.HLT=="Custom":
@@ -569,15 +568,28 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                   'globaltag =%s \n' %gtshort
   wmcconf_text+='dset_run_dict= {'
   for ds in options.ds:
-    wmcconf_text+='"%s" : [%s],\n '%(ds, ','.join(options.run+ map(lambda s :'"%s"'%(s),allRunsAndBlocks[ds])))
+    # if options.run is not specified and runLs is, simply leave the list of runs blank
+    if (options.run): wmcconf_text+='"%s" : [%s],\n '%(ds, ','.join(options.run+ map(lambda s :'"%s"'%(s),allRunsAndBlocks[ds])))
+    else            : wmcconf_text+='"%s" : [],\n '%(ds)
   wmcconf_text+='}\n'
+
+  onerun=0
+  if      (options.run):    onerun = options.run[0]
+  elif    (options.runLs):  onerun = options.runLs.keys()[0]
+
+  # lumi_list is set as a general parameter, under the assumption that all workflows need be run on the same set of events
+  if (options.runLs):
+    wmcconf_text+='lumi_list=%s\n'%(options.runLs)
+
+#  wmcconf_text+='multicore=4\n'
   wmcconf_text+='enableharvesting = True\n'
   wmcconf_text+='dqmuploadurl = https://cmsweb.cern.ch/dqm/relval\n\n'
+
 
   if base:
     wmcconf_text+='[HLT_validation]\n'+\
                    'cfg_path = reco.py\n' +\
-                   'req_name = %s_RelVal_%s\n'%(details['reqtype'],options.run[0]) +\
+                   'req_name = %s_RelVal_%s\n'%(details['reqtype'],onerun) +\
                    '\n\n'
   elif recodqm:
     pass
@@ -589,9 +601,9 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                    'step1_lumisperjob = 1\n' +\
                    'processing_string = %s_%sref_%s \n'%(processing_string,details['reqtype'],refgtshort) +\
                    'cfg_path = REFERENCE.py\n' +\
-                   'req_name = %s_reference_RelVal_%s\n'%(details['reqtype'],options.run[0]) +\
+                   'req_name = %s_reference_RelVal_%s\n'%(details['reqtype'],onerun) +\
                    'globaltag = %s\n'%(refgtshort) +\
-                   'harvest_cfg=step4_refer_HARVESTING.py\n\n' # this is ugly and depends on [0:5]; can't be easliy fixed w/o reorganization
+                   'harvest_cfg=step4_refer_HARVESTING.py\n' # this is ugly and depends on [0:5]; can't be easliy fixed w/o reorganization
 
   task=2
   print confCondList
@@ -614,7 +626,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                        'step1_lumisperjob = 10\n' +\
                        'processing_string = %s_%s_%s \n'%(processing_string,details['reqtype']+label,refsubgtshort) +\
                        'cfg_path = %s\n'%cfgname +\
-                       'req_name = %s_%s_RelVal_%s\n'%(details['reqtype'],label,options.run[0]) +\
+                       'req_name = %s_%s_RelVal_%s\n'%(details['reqtype'],label,onerun) +\
                        'globaltag = %s\n'%(refsubgtshort) +\
                        'step%d_output = FEVTDEBUGHLToutput\n'%task +\
                        'step%d_cfg = recodqm.py\n'%task +\
@@ -625,7 +637,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                        'step%d_timeevent = 10\n'%task
         if options.recoRelease:
           wmcconf_text+='step%d_release = %s \n'%(task,options.recoRelease)
-        wmcconf_text+='harvest_cfg=step4_%s_HARVESTING.py\n\n'%label
+        wmcconf_text+='harvest_cfg=step4_%s_HARVESTING.py\n'%label
       else:
         continue
 
@@ -646,7 +658,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                      'step1_lumisperjob = 10\n' +\
                      'processing_string = %s_%s_%s \n'%(processing_string,details['reqtype']+label,subgtshort) +\
                      'cfg_path = %s\n'%cfgname +\
-                     'req_name = %s_%s_RelVal_%s\n'%(details['reqtype'],label,options.run[0]) +\
+                     'req_name = %s_%s_RelVal_%s\n'%(details['reqtype'],label,onerun) +\
                      'globaltag = %s\n'%(subgtshort) +\
                      'step%d_output = FEVTDEBUGHLToutput\n'%task +\
                      'step%d_cfg = recodqm.py\n'%task +\
@@ -667,24 +679,42 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                      'step1_lumisperjob = 1\n' +\
                      'processing_string = %s_%s_%s \n'%(processing_string,details['reqtype']+label,gtshort) +\
                      'cfg_path = %s\n'%cfgname +\
-                     'req_name = %s_%s_RelVal_%s\n'%(details['reqtype'],label,options.run[0]) +\
+                     'req_name = %s_%s_RelVal_%s\n'%(details['reqtype'],label,onerun) +\
                      'globaltag = %s\n'%(gtshort) +\
                      'harvest_cfg=step4_%s_HARVESTING.py\n\n'%label
                      
 
+  # compose string representing runs, Which will be part of the filename
+  # if run is int => single label; if run||runLs are list or dict, '_'-separated composite label
+  run_label_for_fn = ''
+
+  if options.run and isinstance( options.run, int):
+    run_label_for_fn = options.run
+  elif options.run and isinstance( options.run, list) :
+    for oneRun in options.run:
+      if run_label_for_fn != '':
+        run_label_for_fn += '_'
+      run_label_for_fn += str(oneRun)
+  elif options.runLs and isinstance( options.runLs, dict) :
+    for oneRun in options.runLs:
+      if run_label_for_fn != '':
+        run_label_for_fn += '_'
+      run_label_for_fn += str(oneRun)
+
+
   wmconf_name='%sConditionValidation_%s_%s_%s.conf'%(details['reqtype'],
                                                       options.release,
                                                       gtshort,
-                                                      options.run[0])
+                                                     run_label_for_fn) # FOLLOW NAMING CONVENTION OF FILE FROM relval_submit.py
+
+
   if not DRYRUN:
     wmcconf=open(wmconf_name,'w')    
     wmcconf.write(wmcconf_text)
     wmcconf.close()
-  
-  #execme('wmcontrol.py --test --req_file %s'%wmconf_name)
-  #print 'Now execute:\nwmcontrol.py --req_file %s'%wmconf_name  
+
   execme('./wmcontrol.py --test --req_file %s'%wmconf_name)
-  print 'Now execute:\n./wmcontrol.py --req_file %s'%wmconf_name  
+  print 'Now execute:\n./wmcontrol.py --req_file %s  |& tee wmcontrol.1.log'%wmconf_name
 
 def printInfo(options):
 
@@ -717,7 +747,9 @@ def printInfo(options):
   print ""
   print "type: %s"%options.Type
   print "dataset: %s"%",".join(options.ds)
-  print "run: %s"%",".join(options.run)
+#  print "run: %s"%",".join(options.run)
+  if (options.run):     print "run: %s"%",".join(options.run)
+  elif (options.runLs): print "run: %s"%(options.runLs)
   if "HLT" in options.Type:
     print "HLT menu: %s"%menu
     print "Target HLT GT: %s"%newgtshort
@@ -743,19 +775,25 @@ if __name__ == "__main__":
   
   # Get the options
   options = createOptionParser()
-  # Check for PCL availability
-  for run in options.run:
-    #if not isPCLReady(run):
-    #  print "The PCL is not ready for run:",run,"... ignoring for now"
-    print "The PCL is not ready for run:",run,"... ignoring for now"
+
+
+  print options.run
+  print type(options.run)
+  # this type is LIST in the normal CASE, and it's also list with a single element == dictionary in the LS-filtering case. This is a problem
+
 
   # Check if it is at FNAL
   allRunsAndBlocks={}
   if not options.noSiteCheck:
     for ds in options.ds:
       allRunsAndBlocks[ds]=[]
+      #  if run is ls-filtering, run numbers will be in lumi_list and must not be there
+      if isinstance(options.run, dict): # if run is ls-filtering, run numbers will be in lumi_list and must not be there
+        continue
+      if not options.run:               # if run is not specified in the input file, leave allRunsAndBlocks empty
+        continue
       for run in options.run:
-        newblocks=isAtSite( ds, run)
+        newblocks=isAtSite( ds, int(run))
         if newblocks==False:
           print "Cannot proceed with %s in %s (no suitable blocks found)"%(ds,run)
           sys.exit(1)
