@@ -683,7 +683,6 @@ def build_params_dict(section,cfg):
     process_string = cfg.get_param('process_string', '', section)
     processing_string = cfg.get_param('processing_string', '', section)
     batch = cfg.get_param('batch', '', section)
-    open_running_timeout = int(float(cfg.get_param('open_running_timeout', '43200', section))) # 12h is legacy
 
     # for the user and group
     user, group = get_user_group(cfg, section)
@@ -823,7 +822,6 @@ def build_params_dict(section,cfg):
             "Memory": size_memory,
             "SizePerEvent": size_event,
             "TimePerEvent": time_event,
-            "OpenRunningTimeout" : open_running_timeout,
             #"ConfigCacheUrl": wma.COUCH_DB_ADDRESS,
             #"EnableHarvesting" : False
             "ProcessingString": processing_string,
@@ -1171,8 +1169,6 @@ def build_parser():
             dest='processing_string', default='')
 
     parser.add_option('--batch', help='Include in the WF batch number', dest='batch')
-    parser.add_option('--open-running-timeout', help='how long(finite) a request should remain opened, in seconds',
-            dest='open_running_timeout', default=43200)
 
     # Param to be inline with prep wmcontrol
     parser.add_option('--campaign', help='The name of the era (was: campaign; NO LNOGER)', dest='campaign', default="")
