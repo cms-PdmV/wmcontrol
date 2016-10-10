@@ -336,10 +336,9 @@ def get_dataset_runs_dict(section, cfg):
                 else:
                     print "JSON file doesn't exists. ", os.path.join(os.getcwd(), dataset_runs_dict[key]), " Exiting..."
                     #sys.exit()
-	    return False
+                    return False
     except:
         dataset_runs_dict[cfg.get_param('input_name', '', section)] = []
-
     return dataset_runs_dict
 
 #-------------------------------------------------------------------------------
