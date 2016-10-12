@@ -419,7 +419,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
         cmssw_command = "cd %s; eval `scramv1 runtime -sh`; cd -" % (options.hltCmsswDir)
         upload_command = "wmupload.py -u %s -g PPD -l %s %s"% (os.getenv('USER'), cfgname, cfgname)
         execme(cmssw_command + '; ' + driver_command + '; ' + upload_command)
-        basegt = None
+        base = None
 
         if 'base' in details:
             base = details['base']
@@ -623,11 +623,11 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
         if "REFERENCE" in cfgname:
             if base:
                 wmcconf_text += 'step%d_output = RAWRECOoutput\n' % (task) +\
-                                'step%d_cfg = %s\n' % (task, cfgname) +\
-                                'step%d_globaltag = %s\n' % (task, refsubgtshort) +\
-                                'step%d_input = Task1\n\n' % (task)
-            task += 1
-            continue
+                    'step%d_cfg = %s\n' % (task, cfgname) +\
+                    'step%d_globaltag = %s\n' % (task, refsubgtshort) +\
+                    'step%d_input = Task1\n\n' % (task)
+                task += 1
+                continue
 
             elif recodqm:
                 label = cfgname.lower().replace('.py', '')[0:5]
