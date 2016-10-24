@@ -1042,8 +1042,6 @@ def build_params_dict(section,cfg):
                         "DQMUploadUrl": cfg.get_param('dqmuploadurl', 'https://cmsweb.cern.ch/dqm/offline', section),
                         "DQMConfigCacheID": harvest_docID})
 
-        del (params["OpenRunningTimeout"])
-
     else:
         print "Request type chose: " + str(request_type)
         raise Exception('Unknown request type, aborting')
