@@ -36,11 +36,8 @@ class ConnectionWrapper():
         # add a parameter to pass DBS3 url, in case we want to use different address
         self.connection = None
         self.connection_attempts = 3
-        ##TO-DO move back to prod after reqmgr2 migration
-        #self.wmagenturl = 'cmsweb.cern.ch'
-        #self.dbs3url = '/dbs/prod/global/DBSReader/'
-        self.wmagenturl = 'cmsweb-testbed.cern.ch'
-        self.dbs3url = '/dbs/int/global/DBSReader/'
+        self.wmagenturl = 'cmsweb.cern.ch'
+        self.dbs3url = '/dbs/prod/global/DBSReader/'
 
     def refresh_connection(self, url):
         self.connection = init_connection(url)
