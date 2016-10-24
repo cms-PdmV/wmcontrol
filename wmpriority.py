@@ -1,28 +1,31 @@
 #! /usr/bin/env python
-import urllib
 import httplib
 import sys
 import os
 import optparse
 import time
 
+from json import dumps
+
 def changePriorityWorkflow(url, workflow, priority, cert, key, retry):
-    params = {workflow + ":status": "", workflow + ":priority": str(priority)}
-    headers = {"Content-type": "application/x-www-form-urlencoded",
-               "Accept": "text/plain"}
+    params = {"RequestPriority": str(priority)}
+    headers = {"Content-type": "application/json",
+               "Accept": "application/json"}
+
     for i in range(retry):
-    	stats, data = send_message(url, cert, key, params, headers)
-    	if stats==200:
-	    break
+        stats, data = send_message(url, cert, key, workflow, params, headers)
+        if stats == 200:
+            break
         else:
+            ##uncomment for debugging
+            ##print "ReqMgr2 returned:\n%s" % (data)
             data = "Unable to change priority of workflow {0}, status code: {1}".format(workflow, stats)
-   	time.sleep(1)
+        time.sleep(1)
     print data
 
-def send_message(url, cert, key, params, headers):
+def send_message(url, cert, key, workflow, params, headers):
     conn = httplib.HTTPSConnection(url, cert_file=cert, key_file=key)
-    encodedParams = urllib.urlencode(params)
-    conn.request("PUT", "/reqmgr/view/doAdmin", encodedParams, headers)
+    conn.request("PUT", "/reqmgr2/data/request/%s" % workflow, dumps(params), headers)
     response = conn.getresponse()
     status, data = response.status, response.read()
     conn.close()

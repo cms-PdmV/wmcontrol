@@ -339,7 +339,7 @@ def execme(command):
 
 #-------------------------------------------------------------------------------
 def createHLTConfig(options):
-    assert  os.path.exists("%s/src/HLTrigger/Configuration/" % (options.hltCmsswDir)), "error: HLTrigger/Configuration/ is missing in the CMSSW release for HLT (set to: echo $CMSSW_VERSION ) - can't create the HLT configuration "
+    assert os.path.exists("%s/src/HLTrigger/Configuration/" % (options.hltCmsswDir)), "error: HLTrigger/Configuration/ is missing in the CMSSW release for HLT (set to: echo $CMSSW_VERSION ) - can't create the HLT configuration "
     onerun = 0
 
     if (options.run):
