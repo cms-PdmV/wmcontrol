@@ -821,7 +821,7 @@ def build_params_dict(section,cfg):
             "Memory": size_memory,
             "SizePerEvent": size_event,
             "TimePerEvent": time_event,
-            #"ConfigCacheUrl": wma.COUCH_DB_ADDRESS,
+            "ConfigCacheUrl": wma.COUCH_DB_ADDRESS,
             #"EnableHarvesting" : False
             "ProcessingString": processing_string,
             "Multicore": multicore}
