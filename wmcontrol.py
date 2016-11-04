@@ -1212,7 +1212,7 @@ def build_parser():
             default=1, dest='multicore')
 
     parser.add_option('--acquisition_era', help='Specify AcquisitionEra which defines part the output dataset name',
-            default=1, dest='acquisition_era')
+            default=1, dest='acquisition_era', default="FAKE") ##we set default non empty as its mandatory since 2016-11
 
     return parser
 
