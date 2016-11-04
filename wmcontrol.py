@@ -156,7 +156,7 @@ class Configuration:
             raise Exception ("No section %s found in configuration." % (section))
 
         if verbose:
-            print "I am returning the value #%s#" % (ret_val)
+            print "I am returning the value #%s# type:%s" % (ret_val, ret_val.__class__)
         return ret_val
 
 def get_runs(dset_name, minrun=-1, maxrun=-1):
@@ -818,6 +818,8 @@ def build_params_dict(section,cfg):
             "Group": group,
             "Requestor": user,
             "Campaign": campaign,
+            ##TO-DO: adding AcquisitionEra as a mandatory parameter in reqmgr2, leaving campaign for now...
+            "AcquisitionEra": campaign,
             "Memory": size_memory,
             "SizePerEvent": size_event,
             "TimePerEvent": time_event,
@@ -994,6 +996,13 @@ def build_params_dict(section,cfg):
         task1_dict['ProcessingString'] = cfg.get_param('processing_string', processing_string, section)
         task1_dict['AcquisitionEra'] = cfg.get_param('step1_era', params['CMSSWVersion'], section)
         task1_dict['LumisPerJob'] = int(cfg.get_param('step1_lumisperjob', 5, section))
+
+        ## we need to set the global ones since 2016-11
+        ##TO-DO: remove Campaign and read acquisitionEra to correct param when alca updates
+        params["ProcessingString"] = task1_dict['ProcessingString']
+        params["AcquisitionEra"] = task1_dict['AcquisitionEra']
+        params["Campaign"] = task1_dict['AcquisitionEra']
+
         params['Task1'] = task1_dict
         params['TaskChain'] = 1
         if step2_cfg or step2_docID:
@@ -1048,8 +1057,22 @@ def build_params_dict(section,cfg):
 
     if harvest_docID and request_type != "DQMHarvest":
         ##setup automatic harvesting
-        params.update({"EnableHarvesting": cfg.get_param('enableharvesting', '0', section),
-                        "DQMUploadUrl": cfg.get_param('dqmuploadurl', 'https://cmsweb.cern.ch/dqm/offline', section),
+
+        __enable_harvesting = cfg.get_param('enableharvesting', 'False', section)
+        ##checks mandatory since 2016-11 as computing expects boolean as a string or a boolean option. Was 0 or 1...
+        ##we crash in case people still set wrong/old value in config file
+
+        if __enable_harvesting.upper() == 'TRUE':
+            params["Enableharvesting"] = True
+        elif __enable_harvesting.upper() == 'FALSE':
+            params["Enableharvesting"] = False
+        else:
+            print "enableharvesting parameter given: %s. Expecting a boolean" % (
+                    __enable_harvesting)
+
+            raise Exception('enableharvesting value is wrong type')
+
+        params.update({"DQMUploadUrl": cfg.get_param('dqmuploadurl', 'https://cmsweb.cern.ch/dqm/offline', section),
                         "DQMConfigCacheID": harvest_docID})
 
     ## pop any empty parameters
@@ -1154,8 +1177,8 @@ def build_parser():
     parser.add_option('--dqmuploadurl', help='ulr of the DQM GUI instance where DQM will be uploaded',
             dest='dqmuploadurl', default='https://cmsweb.cern.ch/dqm/offline')
 
-    parser.add_option('--enableharvesting', help='activate (1) or not (0) the automatic DQM harvesting',
-            dest='enableharvesting', default='0')
+    parser.add_option('--enableharvesting', help='activate (True) or not (False) the automatic DQM harvesting',
+            dest='enableharvesting', default='False')
 
     parser.add_option('--includeparents', help='Include parents', action='store_true', dest='includeparents')
     parser.add_option('--req_name', help='Set the name of the request', dest='req_name')
@@ -1187,6 +1210,9 @@ def build_parser():
 
     parser.add_option('--num-cores', help='Number of cores we want to run our workflow',
             default=1, dest='multicore')
+
+    parser.add_option('--acquisition_era', help='Specify AcquisitionEra which defines part the output dataset name',
+            default=1, dest='acquisition_era')
 
     return parser
 
