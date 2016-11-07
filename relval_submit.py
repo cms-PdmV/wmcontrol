@@ -157,8 +157,8 @@ I will ask you some questions to fill the metadata file. For some of the questio
 
 
                 b0T = getInput('n', '\nIs this for B=0T?\nAnswer [n]: ')
-                hion = getInput('n', '\nIs this for Heavy Ions? Note B=0T is not compatible with Heavy Ions at the moment\nAnswer [n]: ')
-
+                hion = getInput('n', '\nIs this for Heavy Ions? Note B=0T is not compatible with Heavy Ions at the moment, also pA runs and Heavy Ions runs are mutually exclusive\nAnswer [n]: ')
+                pa_run   = getInput('n', '\nIs this for pA run?\nAnswer [n]:')
                 metadata = {
                     'PR_release': pr_release,
                     'options': {
@@ -177,6 +177,8 @@ I will ask you some questions to fill the metadata file. For some of the questio
                     metadata['options'].update({'B0T':''})
                 if hion.lower() == 'y':
                     metadata['options'].update({'HIon':''})
+                if pa_run.lower() == 'y':
+                    metadata['options'].update({'pA':''})
                 if 'HLT+RECO' in type:
                     metadata['HLT_release'] = hlt_release
                     metadata['options'].update({
