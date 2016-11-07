@@ -774,6 +774,9 @@ def build_params_dict(section,cfg):
     elif campaign != "" and request_id != "":
         print "Campaign and request-id are set. Using %s as campaign." % (campaign)
 
+    ##get acquisitionEra if it was passed
+    acquisition_era = cfg.get_param('acquisition_era', 'FAKE', section)
+
     time_per_campaign = wma.time_per_events(campaign)
     if time_per_campaign:
         time_event = time_per_campaign
@@ -818,8 +821,6 @@ def build_params_dict(section,cfg):
             "Group": group,
             "Requestor": user,
             "Campaign": campaign,
-            ##TO-DO: adding AcquisitionEra as a mandatory parameter in reqmgr2, leaving campaign for now...
-            "AcquisitionEra": campaign,
             "Memory": size_memory,
             "SizePerEvent": size_event,
             "TimePerEvent": time_event,
@@ -833,6 +834,13 @@ def build_params_dict(section,cfg):
         if len(thePrStr) > 99:
             raise ValueError('the variable %s ( value: %s) has a size (%d) which exceeds the limit set to 100. ERRROR.' % (
                     theVar, thePrStr, len(thePrStr)))
+
+    ##since 2016-11 we check if the acuisition_era is set ir config.
+    ##If not we set it to campaign
+    if acquisition_era == "FAKE":
+        params["AcquisitionEra"] = campaign
+    else:
+        params["AcquisitionEra"] = acquisition_era
 
     if wmtest:
         params["ConfigCacheUrl"] = wma.COUCH_DB_ADDRESS
@@ -1205,7 +1213,7 @@ def build_parser():
     parser.add_option('--num-cores', help='Number of cores we want to run our workflow',
             default=1, dest='multicore')
 
-    parser.add_option('--acquisition_era', help='Specify AcquisitionEra which defines part the output dataset name',
+    parser.add_option('--acquisition-era', help='Specify AcquisitionEra which defines part the output dataset name',
             dest='acquisition_era', default="FAKE") ##we set default non empty as its mandatory since 2016-11
 
     return parser
