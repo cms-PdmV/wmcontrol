@@ -571,6 +571,9 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                         'release=%s\n' % (options.release) +\
                         'globaltag =%s \n' % (gtshort)
 
+    wmcconf_text += 'campaign=%s\n' % (options.release) +\
+                    'acquisition_era=%s\n' % (options.release) 
+
     wmcconf_text += 'dset_run_dict= {'
     for ds in options.ds:
         # if options.run is not specified and runLs is, simply leave the list of runs blank
