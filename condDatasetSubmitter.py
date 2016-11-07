@@ -63,6 +63,10 @@ def createOptionParser():
                         default=False,
                         help="Specify HIon reconstruction",
                         action='store_true')
+    parser.add_option("--pA",
+                        default=False,
+                        help="Specify pA reconstruction",
+                        action='store_true')
     parser.add_option("--HLTCustomMenu",
                         help="Specify a custom HLT menu",
                         default=None)
@@ -206,7 +210,7 @@ def getCMSSWReleaseFromPath(thePath):
             return path
     raise ValueError('%s does not contain a slash-separated path to a CMSSW release. ERRROR.' % (thePath))
 
-def getDriverDetails(Type, B0T, HIon, recoRelease):
+def getDriverDetails(Type, B0T, HIon, pA, recoRelease):
     HLTBase = {"reqtype":"HLT",
                 "steps":"L1REPACK:Full,HLT,DQM", #replaced DQM:triggerOfflineDQMSource with DQM
                 "procname":"HLT2",
@@ -225,6 +229,9 @@ def getDriverDetails(Type, B0T, HIon, recoRelease):
 
     if B0T:
         HLTBase.update({"magfield":"0T"})    # this should not be needed - it's GT-driven FIX GF
+
+    if pA:
+        HLTBase.update({"era":"Run2_2016_pA"})
 
     HLTRECObase = {"steps":"RAW2DIGI,L1Reco,RECO",
                     "procname":"reRECO",
@@ -283,6 +290,9 @@ def getDriverDetails(Type, B0T, HIon, recoRelease):
             pass
             # HLTRECObase.update({"magfield":"0T"})
 
+        if pA:
+            HLTRECObase.update({"era":"Run2_2016_pA"})
+
         if HIon:
             raise ValueError('condDatasetSubmitter is not yet set up to run HI validations - e-tutto-lavoraccio')
 
@@ -316,6 +326,9 @@ def getDriverDetails(Type, B0T, HIon, recoRelease):
             pass
             #theDetails.update({"magfield":"0T",
             #                    "customise":"Configuration/DataProcessing/RecoTLR.customisePromptRun2DeprecatedB0T"})
+
+        if pA:
+            theDetails.update({"era":"Run2_2016_pA"})
 
         if HIon:
             raise ValueError('condDatasetSubmitter is not yet set up to run HI validations - e-tutto-lavoraccio')
@@ -370,8 +383,7 @@ def createHLTConfig(options):
         print "\n CMSSW release for HLT doesn't allow usage of hltGetConfiguration out-of-the-box, patching configuration "
 
 def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
-    details = getDriverDetails(options.Type,options.B0T, options.HIon,options.recoRelease)
-
+    details = getDriverDetails(options.Type,options.B0T, options.HIon,options.pA,options.recoRelease)
     # get processing string
     if options.string is None:
         processing_string = str(datetime.date.today()).replace("-", "_") + "_" + str(datetime.datetime.now().time()).replace(":", "_")[0:5]
