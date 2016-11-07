@@ -997,12 +997,6 @@ def build_params_dict(section,cfg):
         task1_dict['AcquisitionEra'] = cfg.get_param('step1_era', params['CMSSWVersion'], section)
         task1_dict['LumisPerJob'] = int(cfg.get_param('step1_lumisperjob', 5, section))
 
-        ## we need to set the global ones since 2016-11
-        ##TO-DO: remove Campaign and read acquisitionEra to correct param when alca updates
-        params["ProcessingString"] = task1_dict['ProcessingString']
-        params["AcquisitionEra"] = task1_dict['AcquisitionEra']
-        params["Campaign"] = task1_dict['AcquisitionEra']
-
         params['Task1'] = task1_dict
         params['TaskChain'] = 1
         if step2_cfg or step2_docID:
