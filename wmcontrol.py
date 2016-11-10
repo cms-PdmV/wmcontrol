@@ -1065,11 +1065,11 @@ def build_params_dict(section,cfg):
         ##we crash in case people still set wrong/old value in config file
 
         if __enable_harvesting.upper() == 'TRUE':
-            params["Enableharvesting"] = True
+            params["EnableHarvesting"] = True
         elif __enable_harvesting.upper() == 'FALSE':
-            params["Enableharvesting"] = False
+            params["EnableHarvesting"] = False
         else:
-            print "enableharvesting parameter given: %s. Expecting a boolean" % (
+            print "enableHarvesting parameter given: %s. Expecting a boolean" % (
                     __enable_harvesting)
 
             raise Exception('enableharvesting value is wrong type')
