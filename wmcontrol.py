@@ -856,7 +856,7 @@ def build_params_dict(section,cfg):
         service_params["pid"] = params["RequestString"]
         params["DbsUrl"] = "https://" + wma.WMAGENT_URL + wma.DBS3_URL
         params["CouchURL"] = wma.COUCH_DB_ADDRESS
-        params["ConfigCacheURL"] = wma.COUCH_DB_ADDRESS
+        params["ConfigCacheUrl"] = wma.COUCH_DB_ADDRESS
 
     elif request_type == "ReReco":
         if number_events:
