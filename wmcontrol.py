@@ -455,41 +455,47 @@ def loop_and_submit(cfg):
             if service_params['request_type'] in ['MonteCarlo','LHEStepZero']:
                 params.pop('InputDataset')
                 params.pop('RunWhitelist')
-            elif service_params['request_type'] == 'TaskChain':
+            elif service_params['request_type'] in  ['TaskChain', 'StepChain']:
+                if service_params['request_type'] == 'TaskChain':
+                    print("its a TaskChain and doing corrections to dictionary")
+                    __first_step = 'Task1'
+                elif service_params['request_type'] == 'StepChain':
+                    __first_step = 'Step1'
+
                 ##if we have a global defined input_DS we set it as Task1 input
                 if params['InputDataset']:
-                    params['Task1']['InputDataset'] = params['InputDataset']
+                    params[__first_step]['InputDataset'] = params['InputDataset']
 
                 ##if we have a taskChain and its First task has inputDS, we do splitting algo
                 ##TO-DO: move to separate method so we would not need to duplicate code
-                if 'InputDataset' in params['Task1']:
-                    if params['Task1']['InputDataset'] != '' and 'RequestNumEvents' in params['Task1'] and params['Task1']['RequestNumEvents']:
+                if 'InputDataset' in params[__first_step]:
+                    if params[__first_step]['InputDataset'] != '' and 'RequestNumEvents' in params[__first_step] and params[__first_step]['RequestNumEvents']:
                         if test_mode:
                             t = time.time()
-                        espl = helper.SubsetByLumi(params['Task1']['InputDataset'],
+                        espl = helper.SubsetByLumi(params[__first_step]['InputDataset'],
                                 float(service_params['margin']))
 
-                        if 'FilterEfficiency' in params['Task1']:
-                            __events = float(params['Task1']['RequestNumEvents']) / float(
-                                    params['Task1']['FilterEfficiency'])
+                        if 'FilterEfficiency' in params[__first_step]:
+                            __events = float(params[__first_step]['RequestNumEvents']) / float(
+                                    params[__first_step]['FilterEfficiency'])
 
                         else:
-                            __events = float(params['Task1']['RequestNumEvents'])
+                            __events = float(params[__first_step]['RequestNumEvents'])
 
                         split, details = espl.run(int(__events),
                               service_params['brute_force'], service_params['force_lumis'])
 
                         if split == 'blocks':
-                            params['Task1']['BlockWhitelist'] = details
+                            params[__first_step]['BlockWhitelist'] = details
                         elif split == 'lumis':
-                            params['Task1']['LumiList'] = details
+                            params[__first_step]['LumiList'] = details
                         elif split == 'dataset':
                             print "no white listing"
                         if test_mode:
                             print "Finished in", int((time.time()-t)*1000), "\bms"
 
                 if params['RunWhitelist']:
-                    params['Task1']['RunWhitelist'] = params['RunWhitelist']
+                    params[__first_step]['RunWhitelist'] = params['RunWhitelist']
 
                 if 'RunWhitelist' in params: #if params has key we remove it
                     params.pop('RunWhitelist') #because it was set as Task parameter
@@ -498,7 +504,7 @@ def loop_and_submit(cfg):
                     params.pop('InputDataset')
 
                 if params.has_key("LumiList") and params['LumiList']:
-                    params['Task1']['LumiList'] = params['LumiList']
+                    params[__first_step]['LumiList'] = params['LumiList']
                     params.pop('LumiList') #if params has LumiList we remove it because it was set as Task1 parameter
 
             elif ('RequestNumEvents' in params and 'LumiList' not in params and
