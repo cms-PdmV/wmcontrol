@@ -544,6 +544,13 @@ def loop_and_submit(cfg):
                     #just try a second time
                     workflow = wma.makeRequest(wma.WMAGENT_URL, params,
                             encodeDict=(service_params['request_type']=='TaskChain'))
+                if not params['DontApprove']:
+                    try:
+                        wma.approveRequest(wma.WMAGENT_URL, workflow)
+                    except:
+                        random_sleep()
+                        #just try a second time
+                        wma.approveRequest(wma.WMAGENT_URL, workflow)
                 random_sleep()
 
 #-------------------------------------------------------------------------------
@@ -730,6 +737,7 @@ def build_params_dict(section,cfg):
     brute_force = cfg.get_param('brute_force', False, section)
     margin = cfg.get_param('margin', 0.05, section)
     lumi_list = cfg.get_param('lumi_list', '', section)
+    dont_approve = cfg.get_param('DontApprove', False, section)
 
     # Upload to couch if needed or check in the cfg dict if there
     docIDs = [step1_docID, step2_docID, step3_docID]
@@ -838,7 +846,6 @@ def build_params_dict(section,cfg):
     if wmtest:
         params["ConfigCacheUrl"] = wma.COUCH_DB_ADDRESS
         params["DbsUrl"] = "https://" + wma.WMAGENT_URL + wma.DBS3_URL
-
     if url_dict != "":
         #print "This is the url",url_dict,"to get the dict from"
         params = json.loads(os.popen('curl -s --insecure %s' % (url_dict)).read())
@@ -1074,7 +1081,7 @@ def build_params_dict(section,cfg):
     for (param, value) in params.items():
         if value in ["", []]:
             params.pop(param)
-
+    params['DontApprove'] = dont_approve
     return params, service_params
 
 #-------------------------------------------------------------------------------
@@ -1208,6 +1215,8 @@ def build_parser():
 
     parser.add_option('--acquisition-era', help='Specify AcquisitionEra which defines part the output dataset name',
             dest='acquisition_era', default="FAKE") ##we set default non empty as its mandatory since 2016-11
+    parser.add_option('--dont_approve', help='Dont Approve requests immediatly after injection', dest='DontApprove',
+            action='store_true')
 
     return parser
 
