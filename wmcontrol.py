@@ -88,7 +88,7 @@ class Configuration:
 
         global test_mode
         test_mode = test_mode or options.test
-
+        self.dont_approve = options.DontApprove
         if options.wmtest:
             print "Setting to injection in cmswebtest : ", options.wmtesturl
             wma.testbed(options.wmtesturl)
@@ -550,7 +550,7 @@ def loop_and_submit(cfg):
                     #just try a second time
                     workflow = wma.makeRequest(wma.WMAGENT_URL, params,
                             encodeDict=(service_params['request_type']=='TaskChain'))
-                if not params['DontApprove']:
+                if not cfg.dont_approve:
                     try:
                         wma.approveRequest(wma.WMAGENT_URL, workflow)
                     except:
@@ -743,7 +743,6 @@ def build_params_dict(section,cfg):
     brute_force = cfg.get_param('brute_force', False, section)
     margin = cfg.get_param('margin', 0.05, section)
     lumi_list = cfg.get_param('lumi_list', '', section)
-    dont_approve = cfg.get_param('DontApprove', False, section)
 
     # Upload to couch if needed or check in the cfg dict if there
     docIDs = [step1_docID, step2_docID, step3_docID]
@@ -1087,7 +1086,6 @@ def build_params_dict(section,cfg):
     for (param, value) in params.items():
         if value in ["", []]:
             params.pop(param)
-    params['DontApprove'] = dont_approve
     return params, service_params
 
 #-------------------------------------------------------------------------------

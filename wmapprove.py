@@ -3,18 +3,22 @@ import optparse
 from modules import wma
 
 
-def setupParser():
+def getOptions():
     parser = optparse.OptionParser()
     parser.add_option('-w', '--workflows', help='Requests to be approved after batch announcement', dest='workflows', default='')
     parser.add_option('--wmtest', help='To inject requests to the cmsweb test bed', action='store_true' ,
                       dest='wmtest', default=False)
     parser.add_option('--wmtesturl', help='To inject to a specific testbed', dest='wmtesturl',
                       default='cmsweb-testbed.cern.ch')
-    return parser
+    try:
+        options,_ = parser.parse_args()
+        return options
+    except SystemExit:
+        print "Error in parsing options"
+        sys.exit(-1)
 
 
-def approveRequest(parser):
-    (options, _) = parser.parse_args()
+def approveRequest(options):
     if options.workflows == '':
         print 'No workflows found'
         exit()
@@ -33,5 +37,5 @@ def approveRequest(parser):
 
 
 if __name__ == '__main__':
-    parser = setupParser()
-    approveRequest(parser)
+    options = getOptions()
+    approveRequest(options)
