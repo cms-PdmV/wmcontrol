@@ -743,7 +743,6 @@ def build_params_dict(section,cfg):
     brute_force = cfg.get_param('brute_force', False, section)
     margin = cfg.get_param('margin', 0.05, section)
     lumi_list = cfg.get_param('lumi_list', '', section)
-    dont_approve = cfg.get_param('DontApprove', False, section)
 
     # Upload to couch if needed or check in the cfg dict if there
     docIDs = [step1_docID, step2_docID, step3_docID]
