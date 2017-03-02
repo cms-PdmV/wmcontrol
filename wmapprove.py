@@ -21,7 +21,7 @@ def getOptions():
 def approveRequest(options):
     if options.workflows == '':
         print 'No workflows found'
-        exit()
+        sys.exit(-1)
     workflows = options.workflows.split(',')
     print 'Approving requests: %s' % workflows
     if options.wmtest:
