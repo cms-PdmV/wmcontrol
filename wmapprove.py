@@ -22,18 +22,20 @@ def approveRequest(options):
     if options.workflows == '':
         print 'No workflows found'
         sys.exit(-1)
-    workflows = options.workflows.split(',')
+    workflows = set(options.workflows.split(','))
     print 'Approving requests: %s' % workflows
     if options.wmtest:
         wma.testbed(options.wmtesturl)
     for workflow in workflows:
-        try:
-            wma.approveRequest(wma.WMAGENT_URL, workflow)
-        except Exception, e:
-            random_sleep()
-            print 'Something went wrong: %s,   trying again...' % str(e)
-            # just try a second time
-            wma.approveRequest(wma.WMAGENT_URL, workflow)
+        tries = 1
+        while tries < 3:
+            try:
+                wma.approveRequest(wma.WMAGENT_URL, workflow)
+                break
+            except Exception, e:
+                random_sleep()
+                print 'Something went wrong: %s Try number: %s' % (str(e), tries)
+                tries += 1
 
 
 if __name__ == '__main__':
