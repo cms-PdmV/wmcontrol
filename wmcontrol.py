@@ -743,6 +743,7 @@ def build_params_dict(section,cfg):
     brute_force = cfg.get_param('brute_force', False, section)
     margin = cfg.get_param('margin', 0.05, section)
     lumi_list = cfg.get_param('lumi_list', '', section)
+    subrequest_type = cfg.get_param('subreq_type', '', section)
 
     # Upload to couch if needed or check in the cfg dict if there
     docIDs = [step1_docID, step2_docID, step3_docID]
@@ -1000,6 +1001,16 @@ def build_params_dict(section,cfg):
         params.pop('RunBlacklist')
         params.pop('BlockWhitelist')
         params.pop('BlockBlacklist')
+
+        ##since move to unified we do add some global parameters
+        ##in case request prepid was specified
+        if request_id:
+            params["PrepID"] = request_id
+
+        ##for now this should only be done by RelVal's for alca validation
+        if subrequest_type != '':
+            params["SubRequestType"] = subrequest_type
+
         task1_dict = {'SplittingAlgo': 'LumiBased', 'TaskName':'Task1'}
 
         task1_dict['GlobalTag'] = cfg.get_param('step1_globaltag', globaltag, section)
@@ -1007,6 +1018,7 @@ def build_params_dict(section,cfg):
         task1_dict['KeepOutput'] = keep_step1
         task1_dict['ProcessingString'] = cfg.get_param('processing_string', processing_string, section)
         task1_dict['AcquisitionEra'] = cfg.get_param('step1_era', params['CMSSWVersion'], section)
+        task1_dict['Campaign'] = cfg.get_param('campaign', params['CMSSWVersion'], section)
         task1_dict['LumisPerJob'] = int(cfg.get_param('step1_lumisperjob', 5, section))
 
         params['Task1'] = task1_dict
@@ -1025,6 +1037,7 @@ def build_params_dict(section,cfg):
             task2_dict['ProcessingString'] = cfg.get_param('step2_processstring', processing_string, section)
             # if not specified in .conf, AcquisitionEra is set to the CMSSW release of the current task => MUST BE DISCUSSED w/ PdmV for behaviour on MC
             task2_dict['AcquisitionEra'] = cfg.get_param('step2_era', task2_dict['CMSSWVersion'], section)
+            task2_dict['Campaign'] = cfg.get_param('campaign', task2_dict['CMSSWVersion'], section)
             task2_dict['LumisPerJob'] = int(cfg.get_param('step2_lumisperjob', 1, section))
             params['Task2'] = task2_dict
             params['TaskChain'] = 2
@@ -1040,6 +1053,7 @@ def build_params_dict(section,cfg):
                 task3_dict['ProcessingString'] = cfg.get_param('step3_processstring', processing_string, section)
                 # if not specified in .conf, AcquisitionEra is set to the CMSSW release of the current task => MUST BE DISCUSSED w/ PdmV for behaviour on MC
                 task3_dict['AcquisitionEra'] = cfg.get_param('step3_era', task3_dict['CMSSWVersion'], section)
+                task3_dict['Campaign'] = cfg.get_param('campaign', task3_dict['CMSSWVersion'], section)
                 task3_dict['LumisPerJob'] = int(cfg.get_param('step3_lumisperjob',5,section))
                 #task3_dict['KeepOutput'] = keep_step3   # ASSESS THIS ONE !!!
                 params['Task3'] = task3_dict
@@ -1220,6 +1234,9 @@ def build_parser():
             dest='acquisition_era', default="FAKE") ##we set default non empty as its mandatory since 2016-11
     parser.add_option('--dont_approve', help='Dont Approve requests immediatly after injection', dest='DontApprove',
             action='store_true')
+
+    parser.add_option('--subrequest-type', help='Specify subrequest type: RelVal etc.',
+            default='', dest='subreq_type')
 
     return parser
 
