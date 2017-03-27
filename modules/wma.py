@@ -140,7 +140,6 @@ def __check_request_params(params):
 #-------------------------------------------------------------------------------
 
 def approveRequest(url, workflow, encodeDict=False):
-    import json
     params = {"RequestStatus": "assignment-approved"}
     headers = {"Content-type": "application/json",
             "Accept": "application/json"}
@@ -164,6 +163,24 @@ def approveRequest(url, workflow, encodeDict=False):
     conn.close()
     print 'Approved workflow:', workflow
     return
+
+#-------------------------------------------------------------------------------
+
+def getWorkflowStatus(url, workflow):
+    headers = {"Content-type": "application/json",
+            "Accept": "application/json"}
+    conn = httplib.HTTPSConnection(url, cert_file=os.getenv('X509_USER_PROXY'),
+            key_file=os.getenv('X509_USER_PROXY'))
+    conn.request("GET", "/reqmgr2/data/request/%s" % workflow, {}, headers)
+    response = conn.getresponse().read()
+    workflow_status = ''
+    try:
+        data = json.loads(response)
+        workflow_status = data['result'][0][workflow]['RequestStatus']
+    except Exception as e:
+        print 'Error parsing workflow %s' % str(e)
+    conn.close()
+    return workflow_status
 
 #-------------------------------------------------------------------------------
 
