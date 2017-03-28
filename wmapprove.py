@@ -1,5 +1,6 @@
 import sys
 import optparse
+import time
 from modules import wma
 
 
@@ -30,10 +31,11 @@ def approveRequest(options):
         tries = 1
         while tries < 3:
             try:
-                wma.approveRequest(wma.WMAGENT_URL, workflow)
+                if(wma.getWorkflowStatus(wma.WMAGENT_URL, workflow) == 'new'):
+                    wma.approveRequest(wma.WMAGENT_URL, workflow)
                 break
             except Exception, e:
-                random_sleep()
+                time.sleep(1)
                 print 'Something went wrong: %s Try number: %s' % (str(e), tries)
                 tries += 1
 
