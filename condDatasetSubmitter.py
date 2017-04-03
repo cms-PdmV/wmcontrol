@@ -583,7 +583,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                         'release=%s\n' % (options.release) +\
                         'globaltag =%s \n' % (gtshort)
 
-    wmcconf_text += 'campaign=%s\n' % (options.release) +\
+    wmcconf_text += 'campaign=%s__ALCARELVAL-%s\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M")) +\
                     'acquisition_era=%s\n' % (options.release) 
 
     wmcconf_text += 'dset_run_dict= {'
@@ -610,7 +610,8 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
 
     #wmcconf_text+='multicore=4\n'
     wmcconf_text += 'enableharvesting = True\n'
-    wmcconf_text += 'dqmuploadurl = https://cmsweb.cern.ch/dqm/relval\n\n'
+    wmcconf_text += 'dqmuploadurl = https://cmsweb.cern.ch/dqm/relval\n'
+    wmcconf_text += 'subreq_type = RelVal\n\n'
 
     if base:
         wmcconf_text += '[HLT_validation]\n'+\
@@ -620,7 +621,11 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
     elif recodqm:
         pass
     else:
+        ds_name = ds[:1].replace("/","") + ds[1:].replace("/","_")
+        ds_name = ds_name.replace("-","_")
+        label   = cfgname.lower().replace('.py', '')[0:5]
         wmcconf_text += '[%s_reference]\n' % (details['reqtype']) +\
+                        'request_id=%s__ALCARELVAL-%s_%s_refer\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name) +\
                         'keep_step1 = True\n' +\
                         'time_event = 10\n' +\
                         'size_memory = 3000\n' +\
@@ -645,8 +650,11 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                 continue
 
             elif recodqm:
+                ds_name = ds[:1].replace("/","") + ds[1:].replace("/","_")
+                ds_name = ds_name.replace("-","_")
                 label = cfgname.lower().replace('.py', '')[0:5]
-                wmcconf_text += '\n\n[%s_%s]\n' % (details['reqtype'], label) +\
+                wmcconf_text += '\n[%s_%s]\n' % (details['reqtype'], label) +\
+                                'request_id=%s__ALCARELVAL-%s_%s_%s\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name,label) +\
                                 'keep_step%d = True\n' % (task) +\
                                 'time_event = 1\n' +\
                                 'size_memory = 3000\n' +\
@@ -679,8 +687,12 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
         elif recodqm:
             if "REFERENCE" in cfgname:
                 continue
+
+            ds_name = ds[:1].replace("/","") + ds[1:].replace("/","_")
+            ds_name = ds_name.replace("-","_")
             label = cfgname.lower().replace('.py', '')[0:5]
             wmcconf_text += '\n\n[%s_%s]\n' %(details['reqtype'], label) +\
+                            'request_id=%s__ALCARELVAL-%s_%s_%s\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name,label) +\
                             'keep_step%d = True\n' % (task) +\
                             'time_event = 1\n' +\
                             'size_memory = 3000\n' +\
@@ -700,8 +712,11 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                 wmcconf_text += 'step%d_release = %s \n' % (task,options.recoRelease)
             wmcconf_text += 'harvest_cfg=step4_%s_HARVESTING.py\n\n' % (label)
         else:
+            ds_name = ds[:1].replace("/","") + ds[1:].replace("/","_")
+            ds_name = ds_name.replace("-","_") 
             label = cfgname.lower().replace('.py', '')[0:5]
             wmcconf_text += '\n\n[%s_%s]\n' % (details['reqtype'], label) +\
+                            'request_id=%s__ALCARELVAL-%s_%s_%s\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name,label) +\
                             'keep_step1 = True\n' +\
                             'time_event = 10\n' +\
                             'size_memory = 3000\n' +\
