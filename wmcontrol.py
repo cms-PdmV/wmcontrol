@@ -823,7 +823,6 @@ def build_params_dict(section,cfg):
             "DbsUrl": dbsurl,
             "RequestType": request_type,
             "GlobalTag": globaltag,
-            "inputMode": "couchDB",
             "RequestString": "Will Be dynamically created",
             "Group": group,
             "Requestor": user,
