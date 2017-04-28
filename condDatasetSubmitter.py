@@ -587,6 +587,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                     'acquisition_era=%s\n' % (options.release) 
 
     wmcconf_text += 'dset_run_dict= {'
+    """
     for ds in options.ds:
         # if options.run is not specified and runLs is, simply leave the list of runs blank
         if (options.run):
@@ -596,7 +597,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
         else:
             wmcconf_text += '"%s" : [],\n ' % (ds)
     wmcconf_text += '}\n'
-
+    """
     onerun = 0
     if (options.run):
         onerun = options.run[0]
@@ -621,20 +622,22 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
     elif recodqm:
         pass
     else:
-        ds_name = ds[:1].replace("/","") + ds[1:].replace("/","_")
-        ds_name = ds_name.replace("-","_")
-        label   = cfgname.lower().replace('.py', '')[0:5]
-        wmcconf_text += '[%s_reference]\n' % (details['reqtype']) +\
-                        'request_id=%s__ALCARELVAL-%s_%s_refer\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name) +\
-                        'keep_step1 = True\n' +\
-                        'time_event = 10\n' +\
-                        'size_memory = 3000\n' +\
-                        'step1_lumisperjob = 1\n' +\
-                        'processing_string = %s_%sref_%s \n' % (processing_string, details['reqtype'], refgtshort) +\
-                        'cfg_path = REFERENCE.py\n' +\
-                        'req_name = %s_reference_RelVal_%s\n' % (details['reqtype'], onerun) +\
-                        'globaltag = %s\n' % (refgtshort) +\
-                        'harvest_cfg=step4_refer_HARVESTING.py\n' # this is ugly and depends on [0:5]; can't be easliy fixed w/o reorganization
+        for ds in options.ds : 
+            ds_name = ds[:1].replace("/","") + ds[1:].replace("/","_")
+            ds_name = ds_name.replace("-","_")
+            label   = cfgname.lower().replace('.py', '')[0:5]
+            wmcconf_text += '[%s_reference_%s]\n' % (details['reqtype'],ds_name) +\
+                            'input_name = %s\n' % (ds) +\
+                            'request_id = %s__ALCARELVAL-%s_%s_refer\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name) +\
+                            'keep_step1 = True\n' +\
+                            'time_event = 10\n' +\
+                            'size_memory = 3000\n' +\
+                            'step1_lumisperjob = 1\n' +\
+                            'processing_string = %s_%sref_%s \n' % (processing_string, details['reqtype'], refgtshort) +\
+                            'cfg_path = REFERENCE.py\n' +\
+                            'req_name = %s_reference_RelVal_%s\n' % (details['reqtype'], onerun) +\
+                            'globaltag = %s\n' % (refgtshort) +\
+                            'harvest_cfg=step4_refer_HARVESTING.py\n\n' # this is ugly and depends on [0:5]; can't be easliy fixed w/o reorganization
 
     task = 2
     print confCondList
@@ -650,30 +653,32 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                 continue
 
             elif recodqm:
-                ds_name = ds[:1].replace("/","") + ds[1:].replace("/","_")
-                ds_name = ds_name.replace("-","_")
-                label = cfgname.lower().replace('.py', '')[0:5]
-                wmcconf_text += '\n[%s_%s]\n' % (details['reqtype'], label) +\
-                                'request_id=%s__ALCARELVAL-%s_%s_%s\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name,label) +\
-                                'keep_step%d = True\n' % (task) +\
-                                'time_event = 1\n' +\
-                                'size_memory = 3000\n' +\
-                                'step1_lumisperjob = 10\n' +\
-                                'processing_string = %s_%s_%s \n' % (processing_string, details['reqtype']+label, refsubgtshort) +\
-                                'cfg_path = %s\n' % (cfgname) +\
-                                'req_name = %s_%s_RelVal_%s\n' % (details['reqtype'], label, onerun) +\
-                                'globaltag = %s\n' % (refsubgtshort) +\
-                                'step%d_output = FEVTDEBUGHLToutput\n' % (task) +\
-                                'step%d_cfg = recodqm.py\n' % (task) +\
-                                'step%d_lumisperjob = 1\n' % (task) +\
-                                'step%d_globaltag = %s \n' % (task, gtshort) +\
-                                'step%d_processstring = %s_%s_%s \n' % (task, processing_string, details['reqtype']+label, refsubgtshort) +\
-                                'step%d_input = Task1\n' % (task) +\
-                                'step%d_timeevent = 10\n' % (task)
+                for ds in options.ds : 
+                    ds_name = ds[:1].replace("/","") + ds[1:].replace("/","_")
+                    ds_name = ds_name.replace("-","_")
+                    label = cfgname.lower().replace('.py', '')[0:5]
+                    wmcconf_text += '\n[%s_%s_%s]\n' % (details['reqtype'], label, ds_name) +\
+                                    'input_name = %s\n' % (ds) +\
+                                    'request_id=%s__ALCARELVAL-%s_%s_%s\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name,label) +\
+                                    'keep_step%d = True\n' % (task) +\
+                                    'time_event = 1\n' +\
+                                    'size_memory = 3000\n' +\
+                                    'step1_lumisperjob = 10\n' +\
+                                    'processing_string = %s_%s_%s \n' % (processing_string, details['reqtype']+label, refsubgtshort) +\
+                                    'cfg_path = %s\n' % (cfgname) +\
+                                    'req_name = %s_%s_RelVal_%s\n' % (details['reqtype'], label, onerun) +\
+                                    'globaltag = %s\n' % (refsubgtshort) +\
+                                    'step%d_output = FEVTDEBUGHLToutput\n' % (task) +\
+                                    'step%d_cfg = recodqm.py\n' % (task) +\
+                                    'step%d_lumisperjob = 1\n' % (task) +\
+                                    'step%d_globaltag = %s \n' % (task, gtshort) +\
+                                    'step%d_processstring = %s_%s_%s \n' % (task, processing_string, details['reqtype']+label, refsubgtshort) +\
+                                    'step%d_input = Task1\n' % (task) +\
+                                    'step%d_timeevent = 10\n' % (task)
 
                 if options.recoRelease:
                     wmcconf_text += 'step%d_release = %s \n' % (task, options.recoRelease)
-                wmcconf_text += 'harvest_cfg=step4_%s_HARVESTING.py\n' %(label)
+                wmcconf_text += 'harvest_cfg=step4_%s_HARVESTING.py\n\n' %(label)
             else:
                 continue
         if base:
@@ -687,45 +692,48 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
         elif recodqm:
             if "REFERENCE" in cfgname:
                 continue
-
-            ds_name = ds[:1].replace("/","") + ds[1:].replace("/","_")
-            ds_name = ds_name.replace("-","_")
-            label = cfgname.lower().replace('.py', '')[0:5]
-            wmcconf_text += '\n\n[%s_%s]\n' %(details['reqtype'], label) +\
-                            'request_id=%s__ALCARELVAL-%s_%s_%s\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name,label) +\
-                            'keep_step%d = True\n' % (task) +\
-                            'time_event = 1\n' +\
-                            'size_memory = 3000\n' +\
-                            'step1_lumisperjob = 10\n' +\
-                            'processing_string = %s_%s_%s \n' % (processing_string, details['reqtype']+label, subgtshort) +\
-                            'cfg_path = %s\n' % (cfgname) +\
-                            'req_name = %s_%s_RelVal_%s\n' % (details['reqtype'], label, onerun) +\
-                            'globaltag = %s\n' % (subgtshort) +\
-                            'step%d_output = FEVTDEBUGHLToutput\n' % (task) +\
-                            'step%d_cfg = recodqm.py\n' % (task) +\
-                            'step%d_lumisperjob = 1\n' % (task) +\
-                            'step%d_globaltag = %s \n' % (task, gtshort) +\
-                            'step%d_processstring = %s_%s_%s \n' % (task, processing_string, details['reqtype']+label, subgtshort) +\
-                            'step%d_input = Task1\n' % (task) +\
-                            'step%d_timeevent = 10\n' % (task)
+            for ds in options.ds : 
+                ds_name = ds[:1].replace("/","") + ds[1:].replace("/","_")
+                ds_name = ds_name.replace("-","_")
+                label = cfgname.lower().replace('.py', '')[0:5]
+                wmcconf_text += '\n\n[%s_%s_%s]\n' %(details['reqtype'], label, ds_name) +\
+                                'input_name = %s\n' % (ds) +\
+                                'request_id=%s__ALCARELVAL-%s_%s_%s\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name,label) +\
+                                'keep_step%d = True\n' % (task) +\
+                                'time_event = 1\n' +\
+                                'size_memory = 3000\n' +\
+                                'step1_lumisperjob = 10\n' +\
+                                'processing_string = %s_%s_%s \n' % (processing_string, details['reqtype']+label, subgtshort) +\
+                                'cfg_path = %s\n' % (cfgname) +\
+                                'req_name = %s_%s_RelVal_%s\n' % (details['reqtype'], label, onerun) +\
+                                'globaltag = %s\n' % (subgtshort) +\
+                                'step%d_output = FEVTDEBUGHLToutput\n' % (task) +\
+                                'step%d_cfg = recodqm.py\n' % (task) +\
+                                'step%d_lumisperjob = 1\n' % (task) +\
+                                'step%d_globaltag = %s \n' % (task, gtshort) +\
+                                'step%d_processstring = %s_%s_%s \n' % (task, processing_string, details['reqtype']+label, subgtshort) +\
+                                'step%d_input = Task1\n' % (task) +\
+                                'step%d_timeevent = 10\n' % (task)
             if options.recoRelease:
                 wmcconf_text += 'step%d_release = %s \n' % (task,options.recoRelease)
             wmcconf_text += 'harvest_cfg=step4_%s_HARVESTING.py\n\n' % (label)
         else:
-            ds_name = ds[:1].replace("/","") + ds[1:].replace("/","_")
-            ds_name = ds_name.replace("-","_") 
-            label = cfgname.lower().replace('.py', '')[0:5]
-            wmcconf_text += '\n\n[%s_%s]\n' % (details['reqtype'], label) +\
-                            'request_id=%s__ALCARELVAL-%s_%s_%s\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name,label) +\
-                            'keep_step1 = True\n' +\
-                            'time_event = 10\n' +\
-                            'size_memory = 3000\n' +\
-                            'step1_lumisperjob = 1\n' +\
-                            'processing_string = %s_%s_%s \n' % (processing_string, details['reqtype']+label, gtshort) +\
-                            'cfg_path = %s\n' % (cfgname) +\
-                            'req_name = %s_%s_RelVal_%s\n' % (details['reqtype'], label, onerun) +\
-                            'globaltag = %s\n' % (gtshort) +\
-                            'harvest_cfg=step4_%s_HARVESTING.py\n\n' % (label)
+            for ds in options.ds : 
+                ds_name = ds[:1].replace("/","") + ds[1:].replace("/","_")
+                ds_name = ds_name.replace("-","_") 
+                label = cfgname.lower().replace('.py', '')[0:5]
+                wmcconf_text += '\n\n[%s_%s_%s]\n' % (details['reqtype'], label,ds_name) +\
+                                'input_name = %s\n' % (ds) +\
+                                'request_id=%s__ALCARELVAL-%s_%s_%s\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name,label) +\
+                                'keep_step1 = True\n' +\
+                                'time_event = 10\n' +\
+                                'size_memory = 3000\n' +\
+                                'step1_lumisperjob = 1\n' +\
+                                'processing_string = %s_%s_%s \n' % (processing_string, details['reqtype']+label, gtshort) +\
+                                'cfg_path = %s\n' % (cfgname) +\
+                                'req_name = %s_%s_RelVal_%s\n' % (details['reqtype'], label, onerun) +\
+                                'globaltag = %s\n' % (gtshort) +\
+                                'harvest_cfg=step4_%s_HARVESTING.py\n\n' % (label)
     ##END of FOR loop
 
     # compose string representing runs, Which will be part of the filename
