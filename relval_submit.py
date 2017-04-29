@@ -120,6 +120,9 @@ I will ask you some questions to fill the metadata file. For some of the questio
                 if 'HLT+RECO' in type:
                     hlt_release = getInput('CMSSW_7_4_9_patch1', '\nWhich CMSSW release for HLT?\ne.g. CMSSW_7_4_9_patch1\nhlt_release [CMSSW_7_4_9_patch1]: ')
 
+                if 'PR' in type:
+                    how_many_workflows = getInput('2','\nHow many workflows do you want to submit?\ntype [2] : ')
+
                 pr_release = getInput('CMSSW_7_4_11_patch1', '\nWhich CMSSW release for Prompt Reco?\ne.g. CMSSW_7_4_11_patch1\npr_release [CMSSW_7_4_11_patch1]: ')
 
                 if 'HLT+RECO' in type:
@@ -163,6 +166,7 @@ I will ask you some questions to fill the metadata file. For some of the questio
                     'PR_release': pr_release,
                     'options': {
                         'Type': type,
+                        'number_of_workflows': how_many_workflows,
                         'newgt': newgt,
                         'gt': gt,
                         'ds': ds,
