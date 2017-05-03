@@ -920,10 +920,9 @@ def build_params_dict(section,cfg):
 
     elif request_type == 'MonteCarloFromGEN':
         params.update({"TimePerEvent": time_event,
-                        "FilterEfficiency": filter_eff,
                         "ConfigCacheID": step1_docID,
-                        "PrepID": request_id,
-                        "TotalTime": 28800 })
+                        "PrepID": request_id
+                      })
 
         if primary_dataset:
             params.update({"PrimaryDataset": primary_dataset})
@@ -946,7 +945,6 @@ def build_params_dict(section,cfg):
                         "RequestNumEvents": number_events,
                         "PrimaryDataset": primary_dataset,
                         "PrepID": request_id,
-                        "TotalTime": 28800 ,
                         "EventsPerLumi":300,
                         "ProdJobSplitAlgo" : "EventBased",
                         "ProdJobSplitArgs" : {"events_per_job": int(events_per_job),
