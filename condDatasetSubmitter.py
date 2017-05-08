@@ -586,7 +586,8 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
     wmcconf_text += 'campaign=%s__ALCARELVAL-%s\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M")) +\
                     'acquisition_era=%s\n' % (options.release) 
 
-    wmcconf_text += 'dset_run_dict= {'
+    ##not-needed? and broken since #45 as dset_run_dict was not closed
+    #wmcconf_text += 'dset_run_dict= {'
     """
     for ds in options.ds:
         # if options.run is not specified and runLs is, simply leave the list of runs blank
