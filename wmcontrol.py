@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+
 
 ################################################################################
 #                                                                              #
@@ -24,6 +24,7 @@ import traceback
 import re
 import time
 import ast
+import datetime
 
 sys.path.append(os.path.join(sys.path[0], 'modules'))
 from modules import helper
@@ -542,9 +543,13 @@ def loop_and_submit(cfg):
                 pp.pprint(params)
             else: # do it for real!
                 try:
+                    if params["RequestString"].find("refer") != -1 :
+                        params["PrepID"] = params["PrepID"] + "_refer"
+                    elif params["RequestString"].find("newco") != -1: 
+                        params["PrepID"] = params["PrepID"] + "_newco"
                     workflow = wma.makeRequest(wma.WMAGENT_URL, params,
                             encodeDict=(service_params['request_type']=='TaskChain'))
-
+                     
                 except:
                     random_sleep()
                     #just try a second time
@@ -812,6 +817,16 @@ def build_params_dict(section,cfg):
                     'margin': margin}
 
     # According to the rerquest type, cook a request!
+    dataset_name = ""
+    dataset_runs_dict1 = get_dataset_runs_dict (section, cfg)
+    for dataset in sorted(dataset_runs_dict1.keys()):
+        dataset_name = dataset.replace("/","_").replace("_RAW","")
+        dataset_name = dataset_name.replace("-","_")
+        print dataset_name
+  
+    campaignstring = campaign + "__ALCARELVAL-" + str(datetime.date.today()).replace("-","_") +      "_" + str(datetime.datetime.now().time()).replace(":","_")[0:5]
+  
+    prepid_name = campaignstring + dataset_name 
     params = {"CMSSWVersion": release,
             "ScramArch": scramarch,
             "RequestPriority": priority,
@@ -826,7 +841,9 @@ def build_params_dict(section,cfg):
             "RequestString": "Will Be dynamically created",
             "Group": group,
             "Requestor": user,
-            "Campaign": campaign,
+            "Campaign": campaignstring,
+            "SubRequestType": "RelVal",
+            "PrepID": prepid_name,
             "Memory": size_memory,
             "SizePerEvent": size_event,
             "TimePerEvent": time_event,
@@ -1017,7 +1034,8 @@ def build_params_dict(section,cfg):
         task1_dict['AcquisitionEra'] = cfg.get_param('step1_era', params['CMSSWVersion'], section)
         task1_dict['Campaign'] = cfg.get_param('campaign', params['CMSSWVersion'], section)
         task1_dict['LumisPerJob'] = int(cfg.get_param('step1_lumisperjob', 5, section))
-
+        task1_dict['Campaign'] = cfg.get_param('step1_campaign', campaignstring, section)
+        
         params['Task1'] = task1_dict
         params['TaskChain'] = 1
         if step2_cfg or step2_docID:
@@ -1036,6 +1054,7 @@ def build_params_dict(section,cfg):
             task2_dict['AcquisitionEra'] = cfg.get_param('step2_era', task2_dict['CMSSWVersion'], section)
             task2_dict['Campaign'] = cfg.get_param('campaign', task2_dict['CMSSWVersion'], section)
             task2_dict['LumisPerJob'] = int(cfg.get_param('step2_lumisperjob', 1, section))
+            task2_dict['Campaign'] = cfg.get_param('step2_campaign', campaignstring, section)
             params['Task2'] = task2_dict
             params['TaskChain'] = 2
 
