@@ -851,6 +851,8 @@ def build_params_dict(section,cfg):
     if wmtest:
         params["ConfigCacheUrl"] = wma.COUCH_DB_ADDRESS
         params["DbsUrl"] = "https://" + wma.WMAGENT_URL + wma.DBS3_URL
+
+    ##if we fetch the dictionary fro 3rd party source
     if url_dict != "":
         #print "This is the url",url_dict,"to get the dict from"
         params = json.loads(os.popen('curl -s --insecure %s' % (url_dict)).read())
