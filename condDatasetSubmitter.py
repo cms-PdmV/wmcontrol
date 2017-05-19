@@ -51,6 +51,10 @@ def createOptionParser():
                         help="Defines the type of the workflow",
                         choices=['HLT','PR','PR+ALCA','RECO+HLT','HLT+RECO','HLT+RECO+ALCA'],
                         default='HLT')
+    parser.add_option("--two_WFs",
+                        default=False,
+                        help="Creates two workflows for type PR if HLT+RECO workflows are not created initially",
+                        action="store_true")
     parser.add_option("--HLT",
                         help="Specify which default HLT menu: SameAsRun uses the HLT menu corrresponding to the run, Custom lets you choose it explicitly",
                         choices=['SameAsRun','GRun','50nsGRun','Custom','25ns14e33_v3'],
@@ -586,8 +590,6 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
     wmcconf_text += 'campaign=%s__ALCARELVAL-%s\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M")) +\
                     'acquisition_era=%s\n' % (options.release) 
 
-    ##not-needed? and broken since #45 as dset_run_dict was not closed
-    #wmcconf_text += 'dset_run_dict= {'
     """
     for ds in options.ds:
         # if options.run is not specified and runLs is, simply leave the list of runs blank
@@ -719,23 +721,26 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                 wmcconf_text += 'step%d_release = %s \n' % (task,options.recoRelease)
             wmcconf_text += 'harvest_cfg=step4_%s_HARVESTING.py\n\n' % (label)
         else:
-            for ds in options.ds : 
-                ds_name = ds[:1].replace("/","") + ds[1:].replace("/","_")
-                ds_name = ds_name.replace("-","_") 
-                label = cfgname.lower().replace('.py', '')[0:5]
-                wmcconf_text += '\n\n[%s_%s_%s]\n' % (details['reqtype'], label,ds_name) +\
-                                'input_name = %s\n' % (ds) +\
-                                'request_id=%s__ALCARELVAL-%s_%s_%s\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name,label) +\
-                                'keep_step1 = True\n' +\
-                                'time_event = 10\n' +\
-                                'size_memory = 3000\n' +\
-                                'step1_lumisperjob = 1\n' +\
-                                'processing_string = %s_%s_%s \n' % (processing_string, details['reqtype']+label, gtshort) +\
-                                'cfg_path = %s\n' % (cfgname) +\
-                                'req_name = %s_%s_RelVal_%s\n' % (details['reqtype'], label, onerun) +\
-                                'globaltag = %s\n' % (gtshort) +\
-                                'harvest_cfg=step4_%s_HARVESTING.py\n\n' % (label)
-    ##END of FOR loop
+            if(options.two_WFs == True):
+                for ds in options.ds : 
+                    ds_name = ds[:1].replace("/","") + ds[1:].replace("/","_")
+                    ds_name = ds_name.replace("-","_") 
+                    label = cfgname.lower().replace('.py', '')[0:5]
+                    wmcconf_text += '\n\n[%s_%s_%s]\n' % (details['reqtype'], label,ds_name) +\
+                                    'input_name = %s\n' % (ds) +\
+                                    'request_id=%s__ALCARELVAL-%s_%s_%s\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name,label) +\
+                                    'keep_step1 = True\n' +\
+                                    'time_event = 10\n' +\
+                                    'size_memory = 3000\n' +\
+                                    'step1_lumisperjob = 1\n' +\
+                                    'processing_string = %s_%s_%s \n' % (processing_string, details['reqtype']+label, gtshort) +\
+                                    'cfg_path = %s\n' % (cfgname) +\
+                                    'req_name = %s_%s_RelVal_%s\n' % (details['reqtype'], label, onerun) +\
+                                    'globaltag = %s\n' % (gtshort) +\
+                                    'harvest_cfg=step4_%s_HARVESTING.py\n\n' % (label)
+                ##END of FOR loop
+            else:
+                continue
 
     # compose string representing runs, Which will be part of the filename
     # if run is int => single label; if run||runLs are list or dict, '_'-separated composite label
