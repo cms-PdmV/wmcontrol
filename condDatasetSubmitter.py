@@ -216,13 +216,12 @@ def getCMSSWReleaseFromPath(thePath):
 
 def getDriverDetails(Type, release, ds, B0T, HIon, pA, recoRelease):
     str_era_hlt = 'Run2_2016'
-    print "AAA=======", release
-    if release.find("9_2_0")!= -1:
+    if release.find("9_2_")!= -1:
         for ds_name in ds:
             if ds_name.find("2017")!=-1:
                 str_era_hlt="Run2_2017"
 
-    if recoRelease.find("9_2_0")!= -1:
+    if recoRelease.find("9_2_")!= -1:
         for ds_name in ds:
             if ds_name.find("2017")!=-1:
                 str_era_pr="Run2_2017"
