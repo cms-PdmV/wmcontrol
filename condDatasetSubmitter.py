@@ -214,14 +214,26 @@ def getCMSSWReleaseFromPath(thePath):
             return path
     raise ValueError('%s does not contain a slash-separated path to a CMSSW release. ERRROR.' % (thePath))
 
-def getDriverDetails(Type, B0T, HIon, pA, recoRelease):
+def getDriverDetails(Type, release, ds, B0T, HIon, pA, recoRelease):
+    str_era_hlt = 'Run2_2016'
+    print "AAA=======", release
+    if release.find("9_2_0")!= -1:
+        for ds_name in ds:
+            if ds_name.find("2017")!=-1:
+                str_era_hlt="Run2_2017"
+
+    if recoRelease.find("9_2_0")!= -1:
+        for ds_name in ds:
+            if ds_name.find("2017")!=-1:
+                str_era_pr="Run2_2017"
+
     HLTBase = {"reqtype":"HLT",
                 "steps":"L1REPACK:Full,HLT,DQM", #replaced DQM:triggerOfflineDQMSource with DQM
                 "procname":"HLT2",
                 "datatier":"FEVTDEBUGHLT,DQM ",
                 "eventcontent":"FEVTDEBUGHLT,DQM",
                 "inputcommands":'keep *,drop *_hlt*_*_HLT,drop *_TriggerResults_*_HLT,drop *_*_*_RECO',
-                "era":'Run2_2016',
+                "era":str_era_hlt,
                 #"custcommands":'process.schedule.remove( process.HLTriggerFirstPath )',
                 "custcommands":"process.load('Configuration.StandardSequences.Reconstruction_cff'); " +\
                                "process.hltTrackRefitterForSiStripMonitorTrack.src = 'generalTracks'; " +\
@@ -281,7 +293,7 @@ def getDriverDetails(Type, B0T, HIon, pA, recoRelease):
                         "custcommands":'',
                         "custconditions":'',
                         "customise":'',
-                        "era":"Run2_2016",
+                        "era":str_era_hlt,
                         "magfield":"",
                         "dumppython":False}
 
@@ -308,7 +320,7 @@ def getDriverDetails(Type, B0T, HIon, pA, recoRelease):
 
     elif Type in ['PR', 'PR+ALCA']:
         theDetails = {"reqtype":"PR",
-                        "steps":"RAW2DIGI,L1Reco,RECO,DQM",
+                        "steps":"RAW2DIGI,L1Reco,RECO,EI,PAT,DQM",
                         "procname":"reRECO",
                         "datatier":"RECO,DQMIO ",
                         "output":'',
@@ -318,7 +330,8 @@ def getDriverDetails(Type, B0T, HIon, pA, recoRelease):
                         "custcommands":'',
                         "custconditions":'',
                         "customise":'',
-                        "era":"Run2_2016",
+                        "era":str_era_pr,
+                        "runUnscheduled":'',
                         "magfield":"",
                         "dumppython":False,
                         "inclparents":"False"}
@@ -387,7 +400,7 @@ def createHLTConfig(options):
         print "\n CMSSW release for HLT doesn't allow usage of hltGetConfiguration out-of-the-box, patching configuration "
 
 def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
-    details = getDriverDetails(options.Type,options.B0T, options.HIon,options.pA,options.recoRelease)
+    details = getDriverDetails(options.Type, options.release, options.ds, options.B0T, options.HIon,options.pA,options.recoRelease)
     # get processing string
     if options.string is None:
         processing_string = str(datetime.date.today()).replace("-", "_") + "_" + str(datetime.datetime.now().time()).replace(":", "_")[0:5]
@@ -423,6 +436,9 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
             driver_command += '--customise %s ' % (details['customise'])
         if details['era'] != "":
             driver_command += "--era %s " % (details['era'])
+        if options.Type in ['PR', 'PR+ALCA']:
+            if details['runUnscheduled'] == "":
+                driver_command += "--runUnscheduled " 
         if details['magfield'] != "":
             driver_command += '--magField %s ' % (details['magfield'])
         if details['inputcommands'] != "":
@@ -588,7 +604,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                         'globaltag =%s \n' % (gtshort)
 
     wmcconf_text += 'campaign=%s__ALCARELVAL-%s\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M")) +\
-                    'acquisition_era=%s\n' % (options.release) 
+                    'acquisition_era=%s\n' % (options.release)
 
     """
     for ds in options.ds:
@@ -625,7 +641,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
     elif recodqm:
         pass
     else:
-        for ds in options.ds : 
+        for ds in options.ds :
             ds_name = ds[:1].replace("/","") + ds[1:].replace("/","_")
             ds_name = ds_name.replace("-","_")
             label   = cfgname.lower().replace('.py', '')[0:5]
@@ -656,7 +672,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                 continue
 
             elif recodqm:
-                for ds in options.ds : 
+                for ds in options.ds :
                     ds_name = ds[:1].replace("/","") + ds[1:].replace("/","_")
                     ds_name = ds_name.replace("-","_")
                     label = cfgname.lower().replace('.py', '')[0:5]
@@ -695,7 +711,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
         elif recodqm:
             if "REFERENCE" in cfgname:
                 continue
-            for ds in options.ds : 
+            for ds in options.ds :
                 ds_name = ds[:1].replace("/","") + ds[1:].replace("/","_")
                 ds_name = ds_name.replace("-","_")
                 label = cfgname.lower().replace('.py', '')[0:5]
@@ -722,9 +738,9 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
             wmcconf_text += 'harvest_cfg=step4_%s_HARVESTING.py\n\n' % (label)
         else:
             if(options.two_WFs == True):
-                for ds in options.ds : 
+                for ds in options.ds :
                     ds_name = ds[:1].replace("/","") + ds[1:].replace("/","_")
-                    ds_name = ds_name.replace("-","_") 
+                    ds_name = ds_name.replace("-","_")
                     label = cfgname.lower().replace('.py', '')[0:5]
                     wmcconf_text += '\n\n[%s_%s_%s]\n' % (details['reqtype'], label,ds_name) +\
                                     'input_name = %s\n' % (ds) +\
