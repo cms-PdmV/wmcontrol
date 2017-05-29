@@ -487,8 +487,10 @@ def loop_and_submit(cfg):
 
                         ##if we do block selection this means we need to remove the RequestNumEvents
                         # because reqmgr2 doesn't allow events with input dataset
-                        del(params['RequestNumEvents'])
-                        del(params[__first_step]['RequestNumEvents'])
+                        if 'RequestNumEvents' in params:
+                            del(params['RequestNumEvents'])
+                        if 'RequestNumEvents' in params[__first_step]:
+                            del(params[__first_step]['RequestNumEvents'])
 
                         if split == 'blocks':
                             params[__first_step]['BlockWhitelist'] = details
@@ -531,7 +533,8 @@ def loop_and_submit(cfg):
 
                     ##if we do block selection this means we need to remove the RequestNumEvents
                     # because reqmgr2 doesn't allow events with input dataset
-                    del(params['RequestNumEvents'])
+                    if 'RequestNumEvents' in params:
+                        del(params['RequestNumEvents'])
 
                     # https://github.com/dmwm/DBS/issues/280
                     # https://github.com/dmwm/DBS/issues/428
@@ -714,7 +717,7 @@ def build_params_dict(section,cfg):
             skim_docid = wma.upload_to_couch(skim_cfg, section, user, group,test_mode)
 
     # priority
-    priority = cfg.get_param('priority', default_parameters['priority'], section)
+    priority = int(cfg.get_param('priority', default_parameters['priority'], section))
 
     #blocks
     blocks = cfg.get_param('blocks', [], section)
