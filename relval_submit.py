@@ -171,8 +171,9 @@ I will ask you some questions to fill the metadata file. For some of the questio
                         'ds': ds,
                         'run': run}}
                 
-                if(is_PR_after_HLTRECO.lower() == 'n'):
-                    metadata['options'].update({'two_WFs': ''})
+                if 'PR' in type:
+                    if(is_PR_after_HLTRECO.lower() == 'n'):
+                        metadata['options'].update({'two_WFs': ''})
 
                 if runLs:
                     metadata['options']['runLs'] = runLs
