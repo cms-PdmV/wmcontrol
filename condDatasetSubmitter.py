@@ -507,7 +507,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                 filein = "%s_RAW2DIGI_L1Reco_RECO_ALCA_DQM_inDQM.root" % (details['reqtype'])
             else:
                 filein = "%s_RAW2DIGI_L1Reco_RECO_DQM_inDQM.root" % (details['reqtype'])
-            
+
             driver_command = "cmsDriver.py step4 " +\
                             "-s HARVESTING:dqmHarvesting " +\
                             "--data %s " % (scenario) +\
