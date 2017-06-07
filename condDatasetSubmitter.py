@@ -283,7 +283,7 @@ def getDriverDetails(Type, release, ds, B0T, HIon, pA, recoRelease):
                             #"eventcontent":"RAW",
                             "magfield":""})
 
-        HLTRECObase = {"steps":"RAW2DIGI,L1Reco,RECO,DQM",
+        HLTRECObase = {"steps":"RAW2DIGI,L1Reco,RECO,EI,PAT,DQM",
                         "procname":"reRECO",
                         "datatier":"RECO,DQMIO",
                         "eventcontent":"RECO,DQM",
@@ -293,6 +293,7 @@ def getDriverDetails(Type, release, ds, B0T, HIon, pA, recoRelease):
                         "custconditions":'',
                         "customise":'',
                         "era":str_era_hlt,
+                        "runUnscheduled":'',
                         "magfield":"",
                         "dumppython":False}
 
@@ -488,6 +489,8 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                 driver_command += "--customise %s " % (recodqm['customise'])
             if recodqm['era'] != "":
                 driver_command += "--era %s " % (recodqm['era'])
+            if recodqm['runUnscheduled'] == "":
+                driver_command += "--runUnscheduled "
             if recodqm['dumppython']:
                 driver_command += "--dump_python "
             if recodqm['magfield'] != "":
@@ -517,6 +520,9 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                             "--python_filename=step4_%s_HARVESTING.py " % (label) +\
                             "--no_exec " +\
                             "-n 100 "
+
+            if recodqm['era'] != "":
+                driver_command += "--era %s " % (recodqm['era'])
 
             if options.recoCmsswDir:
                 cmssw_command = "cd %s; eval `scramv1 runtime -sh`; cd -" % (options.recoCmsswDir)
