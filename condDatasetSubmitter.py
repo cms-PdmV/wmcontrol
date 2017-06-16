@@ -657,7 +657,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                             'request_id = %s__ALCARELVAL-%s_%s_refer\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name) +\
                             'keep_step1 = True\n' +\
                             'time_event = 10\n' +\
-                            'size_memory = 6600\n' +\
+                            'size_memory = 8000\n' +\
                             'step1_lumisperjob = 1\n' +\
                             'processing_string = %s_%sref_%s \n' % (processing_string, details['reqtype'], refgtshort) +\
                             'cfg_path = REFERENCE.py\n' +\
@@ -688,7 +688,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                                     'request_id=%s__ALCARELVAL-%s_%s_%s\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name,label) +\
                                     'keep_step%d = True\n' % (task) +\
                                     'time_event = 1\n' +\
-                                    'size_memory = 6600\n' +\
+                                    'size_memory = 8000\n' +\
                                     'step1_lumisperjob = 10\n' +\
                                     'processing_string = %s_%s_%s \n' % (processing_string, details['reqtype']+label, refsubgtshort) +\
                                     'cfg_path = %s\n' % (cfgname) +\
@@ -727,7 +727,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                                 'request_id=%s__ALCARELVAL-%s_%s_%s\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name,label) +\
                                 'keep_step%d = True\n' % (task) +\
                                 'time_event = 1\n' +\
-                                'size_memory = 6600\n' +\
+                                'size_memory = 8000\n' +\
                                 'step1_lumisperjob = 10\n' +\
                                 'processing_string = %s_%s_%s \n' % (processing_string, details['reqtype']+label, subgtshort) +\
                                 'cfg_path = %s\n' % (cfgname) +\
@@ -754,7 +754,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                                     'request_id=%s__ALCARELVAL-%s_%s_%s\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name,label) +\
                                     'keep_step1 = True\n' +\
                                     'time_event = 10\n' +\
-                                    'size_memory = 6600\n' +\
+                                    'size_memory = 8000\n' +\
                                     'step1_lumisperjob = 1\n' +\
                                     'processing_string = %s_%s_%s \n' % (processing_string, details['reqtype']+label, gtshort) +\
                                     'cfg_path = %s\n' % (cfgname) +\
