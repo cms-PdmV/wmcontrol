@@ -214,14 +214,25 @@ def getCMSSWReleaseFromPath(thePath):
             return path
     raise ValueError('%s does not contain a slash-separated path to a CMSSW release. ERRROR.' % (thePath))
 
-def getDriverDetails(Type, B0T, HIon, pA, recoRelease):
+def getDriverDetails(Type, release, ds, B0T, HIon, pA, recoRelease):
+    str_era_hlt = 'Run2_2016'
+    if release.find("9_2_")!= -1:
+        for ds_name in ds:
+            if ds_name.find("2017")!=-1:
+                str_era_hlt="Run2_2017"
+
+    if recoRelease.find("9_2_")!= -1:
+        for ds_name in ds:
+            if ds_name.find("2017")!=-1:
+                str_era_pr="Run2_2017"
+
     HLTBase = {"reqtype":"HLT",
                 "steps":"L1REPACK:Full,HLT,DQM", #replaced DQM:triggerOfflineDQMSource with DQM
                 "procname":"HLT2",
                 "datatier":"FEVTDEBUGHLT,DQM ",
                 "eventcontent":"FEVTDEBUGHLT,DQM",
                 "inputcommands":'keep *,drop *_hlt*_*_HLT,drop *_TriggerResults_*_HLT,drop *_*_*_RECO',
-                "era":'Run2_2016',
+                "era":str_era_hlt,
                 #"custcommands":'process.schedule.remove( process.HLTriggerFirstPath )',
                 "custcommands":"process.load('Configuration.StandardSequences.Reconstruction_cff'); " +\
                                "process.hltTrackRefitterForSiStripMonitorTrack.src = 'generalTracks'; " +\
@@ -272,7 +283,7 @@ def getDriverDetails(Type, B0T, HIon, pA, recoRelease):
                             #"eventcontent":"RAW",
                             "magfield":""})
 
-        HLTRECObase = {"steps":"RAW2DIGI,L1Reco,RECO,DQM",
+        HLTRECObase = {"steps":"RAW2DIGI,L1Reco,RECO,EI,PAT,DQM",
                         "procname":"reRECO",
                         "datatier":"RECO,DQMIO",
                         "eventcontent":"RECO,DQM",
@@ -281,7 +292,8 @@ def getDriverDetails(Type, B0T, HIon, pA, recoRelease):
                         "custcommands":'',
                         "custconditions":'',
                         "customise":'',
-                        "era":"Run2_2016",
+                        "era":str_era_hlt,
+                        "runUnscheduled":'',
                         "magfield":"",
                         "dumppython":False}
 
@@ -308,7 +320,7 @@ def getDriverDetails(Type, B0T, HIon, pA, recoRelease):
 
     elif Type in ['PR', 'PR+ALCA']:
         theDetails = {"reqtype":"PR",
-                        "steps":"RAW2DIGI,L1Reco,RECO,DQM",
+                        "steps":"RAW2DIGI,L1Reco,RECO,EI,PAT,DQM",
                         "procname":"reRECO",
                         "datatier":"RECO,DQMIO ",
                         "output":'',
@@ -318,7 +330,8 @@ def getDriverDetails(Type, B0T, HIon, pA, recoRelease):
                         "custcommands":'',
                         "custconditions":'',
                         "customise":'',
-                        "era":"Run2_2016",
+                        "era":str_era_pr,
+                        "runUnscheduled":'',
                         "magfield":"",
                         "dumppython":False,
                         "inclparents":"False"}
@@ -387,7 +400,7 @@ def createHLTConfig(options):
         print "\n CMSSW release for HLT doesn't allow usage of hltGetConfiguration out-of-the-box, patching configuration "
 
 def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
-    details = getDriverDetails(options.Type,options.B0T, options.HIon,options.pA,options.recoRelease)
+    details = getDriverDetails(options.Type, options.release, options.ds, options.B0T, options.HIon,options.pA,options.recoRelease)
     # get processing string
     if options.string is None:
         processing_string = str(datetime.date.today()).replace("-", "_") + "_" + str(datetime.datetime.now().time()).replace(":", "_")[0:5]
@@ -423,6 +436,9 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
             driver_command += '--customise %s ' % (details['customise'])
         if details['era'] != "":
             driver_command += "--era %s " % (details['era'])
+        if options.Type in ['PR', 'PR+ALCA']:
+            if details['runUnscheduled'] == "":
+                driver_command += "--runUnscheduled " 
         if details['magfield'] != "":
             driver_command += '--magField %s ' % (details['magfield'])
         if details['inputcommands'] != "":
@@ -473,6 +489,8 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                 driver_command += "--customise %s " % (recodqm['customise'])
             if recodqm['era'] != "":
                 driver_command += "--era %s " % (recodqm['era'])
+            if recodqm['runUnscheduled'] == "":
+                driver_command += "--runUnscheduled "
             if recodqm['dumppython']:
                 driver_command += "--dump_python "
             if recodqm['magfield'] != "":
@@ -503,6 +521,9 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                             "--no_exec " +\
                             "-n 100 "
 
+            if recodqm['era'] != "":
+                driver_command += "--era %s " % (recodqm['era'])
+
             if options.recoCmsswDir:
                 cmssw_command = "cd %s; eval `scramv1 runtime -sh`; cd -" % (options.recoCmsswDir)
                 upload_command = "wmupload.py -u %s -g PPD -l %s %s" % (os.getenv('USER'),
@@ -526,6 +547,8 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                             "--python_filename=step4_%s_HARVESTING.py " % (label) +\
                             "--no_exec " +\
                             "-n 100 "
+            if details['era'] != "":
+                driver_command += "--era %s " % (details['era'])
 
             execme(driver_command)
     ##END of for loop
@@ -588,7 +611,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                         'globaltag =%s \n' % (gtshort)
 
     wmcconf_text += 'campaign=%s__ALCARELVAL-%s\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M")) +\
-                    'acquisition_era=%s\n' % (options.release) 
+                    'acquisition_era=%s\n' % (options.release)
 
     """
     for ds in options.ds:
@@ -612,7 +635,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
     if (options.runLs):
         wmcconf_text += 'lumi_list=%s\n' % (options.runLs)
 
-    #wmcconf_text+='multicore=4\n'
+    wmcconf_text+='multicore=4\n'
     wmcconf_text += 'enableharvesting = True\n'
     wmcconf_text += 'dqmuploadurl = https://cmsweb.cern.ch/dqm/relval\n'
     wmcconf_text += 'subreq_type = RelVal\n\n'
@@ -625,7 +648,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
     elif recodqm:
         pass
     else:
-        for ds in options.ds : 
+        for ds in options.ds :
             ds_name = ds[:1].replace("/","") + ds[1:].replace("/","_")
             ds_name = ds_name.replace("-","_")
             label   = cfgname.lower().replace('.py', '')[0:5]
@@ -634,7 +657,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                             'request_id = %s__ALCARELVAL-%s_%s_refer\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name) +\
                             'keep_step1 = True\n' +\
                             'time_event = 10\n' +\
-                            'size_memory = 3000\n' +\
+                            'size_memory = 8000\n' +\
                             'step1_lumisperjob = 1\n' +\
                             'processing_string = %s_%sref_%s \n' % (processing_string, details['reqtype'], refgtshort) +\
                             'cfg_path = REFERENCE.py\n' +\
@@ -656,7 +679,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                 continue
 
             elif recodqm:
-                for ds in options.ds : 
+                for ds in options.ds :
                     ds_name = ds[:1].replace("/","") + ds[1:].replace("/","_")
                     ds_name = ds_name.replace("-","_")
                     label = cfgname.lower().replace('.py', '')[0:5]
@@ -665,7 +688,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                                     'request_id=%s__ALCARELVAL-%s_%s_%s\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name,label) +\
                                     'keep_step%d = True\n' % (task) +\
                                     'time_event = 1\n' +\
-                                    'size_memory = 3000\n' +\
+                                    'size_memory = 8000\n' +\
                                     'step1_lumisperjob = 10\n' +\
                                     'processing_string = %s_%s_%s \n' % (processing_string, details['reqtype']+label, refsubgtshort) +\
                                     'cfg_path = %s\n' % (cfgname) +\
@@ -695,7 +718,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
         elif recodqm:
             if "REFERENCE" in cfgname:
                 continue
-            for ds in options.ds : 
+            for ds in options.ds :
                 ds_name = ds[:1].replace("/","") + ds[1:].replace("/","_")
                 ds_name = ds_name.replace("-","_")
                 label = cfgname.lower().replace('.py', '')[0:5]
@@ -704,7 +727,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                                 'request_id=%s__ALCARELVAL-%s_%s_%s\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name,label) +\
                                 'keep_step%d = True\n' % (task) +\
                                 'time_event = 1\n' +\
-                                'size_memory = 3000\n' +\
+                                'size_memory = 8000\n' +\
                                 'step1_lumisperjob = 10\n' +\
                                 'processing_string = %s_%s_%s \n' % (processing_string, details['reqtype']+label, subgtshort) +\
                                 'cfg_path = %s\n' % (cfgname) +\
@@ -722,16 +745,16 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
             wmcconf_text += 'harvest_cfg=step4_%s_HARVESTING.py\n\n' % (label)
         else:
             if(options.two_WFs == True):
-                for ds in options.ds : 
+                for ds in options.ds :
                     ds_name = ds[:1].replace("/","") + ds[1:].replace("/","_")
-                    ds_name = ds_name.replace("-","_") 
+                    ds_name = ds_name.replace("-","_")
                     label = cfgname.lower().replace('.py', '')[0:5]
                     wmcconf_text += '\n\n[%s_%s_%s]\n' % (details['reqtype'], label,ds_name) +\
                                     'input_name = %s\n' % (ds) +\
                                     'request_id=%s__ALCARELVAL-%s_%s_%s\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name,label) +\
                                     'keep_step1 = True\n' +\
                                     'time_event = 10\n' +\
-                                    'size_memory = 3000\n' +\
+                                    'size_memory = 8000\n' +\
                                     'step1_lumisperjob = 1\n' +\
                                     'processing_string = %s_%s_%s \n' % (processing_string, details['reqtype']+label, gtshort) +\
                                     'cfg_path = %s\n' % (cfgname) +\
