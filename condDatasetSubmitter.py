@@ -702,9 +702,9 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                                     'step%d_input = Task1\n' % (task) +\
                                     'step%d_timeevent = 10\n' % (task)
 
-                if options.recoRelease:
-                    wmcconf_text += 'step%d_release = %s \n' % (task, options.recoRelease)
-                wmcconf_text += 'harvest_cfg=step4_%s_HARVESTING.py\n\n' %(label)
+                    if options.recoRelease:
+                        wmcconf_text += 'step%d_release = %s \n' % (task, options.recoRelease)
+                    wmcconf_text += 'harvest_cfg=step4_%s_HARVESTING.py\n\n' %(label)
             else:
                 continue
         if base:
@@ -740,9 +740,9 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                                 'step%d_processstring = %s_%s_%s \n' % (task, processing_string, details['reqtype']+label, subgtshort) +\
                                 'step%d_input = Task1\n' % (task) +\
                                 'step%d_timeevent = 10\n' % (task)
-            if options.recoRelease:
-                wmcconf_text += 'step%d_release = %s \n' % (task,options.recoRelease)
-            wmcconf_text += 'harvest_cfg=step4_%s_HARVESTING.py\n\n' % (label)
+                if options.recoRelease:
+                    wmcconf_text += 'step%d_release = %s \n' % (task,options.recoRelease)
+                wmcconf_text += 'harvest_cfg=step4_%s_HARVESTING.py\n\n' % (label)
         else:
             if(options.two_WFs == True):
                 for ds in options.ds :
