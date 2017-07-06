@@ -18,10 +18,7 @@ import optparse
 import json
 import errno
 import ast
-#import time
-#from time import gmtime
-#from dbs.apis.dbsClient import DbsApi
-import wma
+from modules.wma import *
 
 def execme(command, dryrun=False):
     '''Wrapper for executing commands.
