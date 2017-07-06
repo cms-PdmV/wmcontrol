@@ -18,9 +18,10 @@ import optparse
 import json
 import errno
 import ast
-import time
-from time import gmtime
-from dbs.apis.dbsClient import DbsApi
+#import time
+#from time import gmtime
+#from dbs.apis.dbsClient import DbsApi
+import wma
 
 def execme(command, dryrun=False):
     '''Wrapper for executing commands.
@@ -68,9 +69,13 @@ def getInputRepeat(prompt=''):
         logging.error('You need to provide a value.')
 
 def checkenoughEvents(DataSet, RunNumber, LumiSec):
-  api=DbsApi(url="https://cmsweb.cern.ch/dbs/prod/global/DBSReader")
+  if LumiSec == '':
+    query=DataSet+'&run_num='+RunNumber
+  else:
+    query=DataSet+'&run_num='+RunNumber+'&lumi_list='+LumiSec
+  testWMA = wma.ConnectionWrapper()
+  listFileArray_output = testWMA.api('files', 'dataset', query, True)
   nEventTot=0
-  listFileArray_output = api.listFileArray( dataset=DataSet, run_num=RunNumber, lumi_list=LumiSec, detail=True)
   for nFile in listFileArray_output:
     nEvent = nFile['event_count']
     nEventTot += nEvent
@@ -161,33 +166,60 @@ I will ask you some questions to fill the metadata file. For some of the questio
                 runORrunLs  = getInput('254906', '\nWhich run number or run number+luminosity sections?\ne.g. 254906 or\n     [254906,254905] or\n     {\'256677\': [[1, 291], [293, 390]]}\nrunORrunLs [254906]: ')
                 run = ''
                 runLs = ''
-                runLs_forcheck = ''
-                Lumisec_forcheck = []
+                Runs_forcheck = ''
+                Lumisec_forcheck = ''
                 # do some type recognition and set run or runLs accordingly
                 try:
                     if isinstance(runORrunLs, str) and "{" in runORrunLs :
                         runLs = ast.literal_eval(runORrunLs)                  # turn a string into a dict and check it's valid
-                        Runs_forcheck    = next(iter(runLs))
-                        Lumisec_forcheck = runLs[Runs_forcheck]
+                        Runs_forcheck    = str(next(iter(runLs)))
+                        lumi_tmp = runLs[Runs_forcheck]
+                        Lumisec_forcheck = '[['
+                        for i_tmp in range(len(lumi_tmp)):
+                          for j_tmp in range(len(lumi_tmp[i_tmp])):
+                            print  str(lumi_tmp[i_tmp][j_tmp])
+                            if j_tmp < (len(lumi_tmp[i_tmp])-1):
+                              Lumisec_forcheck = Lumisec_forcheck + str(lumi_tmp[i_tmp][j_tmp]) + ','
+                            elif j_tmp == (len(lumi_tmp[i_tmp])-1) and i_tmp == (len(lumi_tmp)-1):
+                              Lumisec_forcheck = Lumisec_forcheck + str(lumi_tmp[i_tmp][j_tmp]) + ']]'
+                            elif j_tmp == (len(lumi_tmp[i_tmp])-1):
+                              Lumisec_forcheck = Lumisec_forcheck + str(lumi_tmp[i_tmp][j_tmp]) + '],['
                     elif isinstance(runORrunLs, dict):
                         runLs = runORrunLs                                    # keep dict
-                        Runs_forcheck    = next(iter(runLs))
-                        Lumisec_forcheck = runLs[Runs_forcheck]
+                        Runs_forcheck    = str(next(iter(runLs)))
+                        lumi_tmp = runLs[Runs_forcheck]
+                        Lumisec_forcheck = '[['
+                        for i_tmp in range(len(lumi_tmp)):
+                          for j_tmp in range(len(lumi_tmp[i_tmp])):
+                            print  str(lumi_tmp[i_tmp][j_tmp])
+                            if j_tmp < (len(lumi_tmp[i_tmp])-1):
+                              Lumisec_forcheck = Lumisec_forcheck + str(lumi_tmp[i_tmp][j_tmp]) + ','
+                            elif j_tmp == (len(lumi_tmp[i_tmp])-1) and i_tmp == (len(lumi_tmp)-1):
+                              Lumisec_forcheck = Lumisec_forcheck + str(lumi_tmp[i_tmp][j_tmp]) + ']]'
+                            elif j_tmp == (len(lumi_tmp[i_tmp])-1):
+                              Lumisec_forcheck = Lumisec_forcheck + str(lumi_tmp[i_tmp][j_tmp]) + '],['
                     elif isinstance(runORrunLs, str) and "[" in runORrunLs :
                         run = ast.literal_eval(runORrunLs)                    # turn a string into a list and check it's valid
-                        Runs_forcheck = run
+                        Runs_forcheck = runORrunLs
                     elif isinstance(runORrunLs, str) :
                         run = int(runORrunLs)                                 # turn string into int
-                        Runs_forcheck = run
+                        Runs_forcheck = str(run)
                     elif isinstance(runORrunLs, list):
                         run = runORrunLs                                      # keep list
-                        Runs_forcheck = run
+                        Runs_forcheck = '['
+                        for i_tmp in range(len(run)):
+                          if i_tmp < len(run):
+                            Runs_forcheck = Runs_forcheck + str(run[i_tmp]) + ','
+                          else:
+                            Runs_forcheck = Runs_forcheck + str(run[i_tmp]) + ']'
                     else:
                         raise ValueError(run_err_mess)
                 except ValueError:
                     logging.error(run_err_mess)
       
                 for DataSet in ds.split(","):                                  # check if you have enough events in each dataset
+                  print Runs_forcheck
+                  print Lumisec_forcheck
                   nEvents = checkenoughEvents(DataSet, Runs_forcheck, Lumisec_forcheck)
                   checkStat_out = checkStat(DataSet, nEvents)
                   print DataSet, 'with RUN', Runs_forcheck, Lumisec_forcheck, 'contains:', nEvents, 'events'
