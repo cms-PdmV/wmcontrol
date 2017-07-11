@@ -689,7 +689,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                                     'keep_step%d = True\n' % (task) +\
                                     'time_event = 1\n' +\
                                     'size_memory = 8000\n' +\
-                                    'step1_lumisperjob = 10\n' +\
+                                    'step1_lumisperjob = 1\n' +\
                                     'processing_string = %s_%s_%s \n' % (processing_string, details['reqtype']+label, refsubgtshort) +\
                                     'cfg_path = %s\n' % (cfgname) +\
                                     'req_name = %s_%s_RelVal_%s\n' % (details['reqtype'], label, onerun) +\
@@ -728,7 +728,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                                 'keep_step%d = True\n' % (task) +\
                                 'time_event = 1\n' +\
                                 'size_memory = 8000\n' +\
-                                'step1_lumisperjob = 10\n' +\
+                                'step1_lumisperjob = 1\n' +\
                                 'processing_string = %s_%s_%s \n' % (processing_string, details['reqtype']+label, subgtshort) +\
                                 'cfg_path = %s\n' % (cfgname) +\
                                 'req_name = %s_%s_RelVal_%s\n' % (details['reqtype'], label, onerun) +\
