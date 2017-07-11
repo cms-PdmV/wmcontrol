@@ -18,7 +18,8 @@ import optparse
 import json
 import errno
 import ast
-from modules.wma import *
+sys.path.insert(0, './modules')
+import wma
 
 def execme(command, dryrun=False):
     '''Wrapper for executing commands.
