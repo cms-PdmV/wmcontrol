@@ -18,8 +18,7 @@ import optparse
 import json
 import errno
 import ast
-sys.path.insert(0, './modules')
-import wma
+from modules import wma 
 
 def execme(command, dryrun=False):
     '''Wrapper for executing commands.
@@ -222,7 +221,8 @@ I will ask you some questions to fill the metadata file. For some of the questio
                   checkStat_out = checkStat(DataSet, nEvents)
                   print DataSet, 'with RUN', Runs_forcheck, Lumisec_forcheck, 'contains:', nEvents, 'events'
                   if checkStat_out == 'TOO_LOW_STAT':
-                    print 'ERROR! The statistic is too low. I will exit the script.'; sys.exit('POOR_STATISTIC');
+                    print 'ERROR! The statistic is too low. I will exit the script.'
+                    sys.exit('POOR_STATISTIC')
                   elif checkStat_out == 'LOW_STAT':
                     print 'WARNING! The statistic is low. Please check carefully if you do not want to consider a better RUN/lumisection.'
                 b0T = getInput('n', '\nIs this for B=0T?\nAnswer [n]: ')
