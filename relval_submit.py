@@ -18,6 +18,7 @@ import optparse
 import json
 import errno
 import ast
+from modules import wma 
 
 def execme(command, dryrun=False):
     '''Wrapper for executing commands.
@@ -63,6 +64,27 @@ def getInputRepeat(prompt=''):
             return answer.strip()
 
         logging.error('You need to provide a value.')
+
+def checkenoughEvents(DataSet, RunNumber, LumiSec):
+  if LumiSec == '':
+    query=DataSet+'&run_num='+RunNumber
+  else:
+    query=DataSet+'&run_num='+RunNumber+'&lumi_list='+LumiSec
+  testWMA = wma.ConnectionWrapper()
+  listFileArray_output = testWMA.api('files', 'dataset', query, True)
+  nEventTot=0
+  for nFile in listFileArray_output:
+    nEvent = nFile['event_count']
+    nEventTot += nEvent
+  return int(nEventTot)
+
+def checkStat(DataSet, nEvents):
+  checkStat_out = ''
+  if nEvents < 30000:
+    checkStat_out = 'TOO_LOW_STAT'
+  elif nEvents < 50000:
+    checkStat_out = 'LOW_STAT'
+  return checkStat_out
 
 def main():
     '''Entry point.
@@ -141,24 +163,68 @@ I will ask you some questions to fill the metadata file. For some of the questio
                 runORrunLs  = getInput('254906', '\nWhich run number or run number+luminosity sections?\ne.g. 254906 or\n     [254906,254905] or\n     {\'256677\': [[1, 291], [293, 390]]}\nrunORrunLs [254906]: ')
                 run = ''
                 runLs = ''
+                Runs_forcheck = ''
+                Lumisec_forcheck = ''
                 # do some type recognition and set run or runLs accordingly
                 try:
                     if isinstance(runORrunLs, str) and "{" in runORrunLs :
-                        runLs = ast.literal_eval(runORrunLs)                              # turn a string into a dict and check it's valid
+                        runLs = ast.literal_eval(runORrunLs)                  # turn a string into a dict and check it's valid
+                        Runs_forcheck    = str(next(iter(runLs)))
+                        lumi_tmp = runLs[Runs_forcheck]
+                        Lumisec_forcheck = '[['
+                        for i_tmp in range(len(lumi_tmp)):
+                          for j_tmp in range(len(lumi_tmp[i_tmp])):
+                            print  str(lumi_tmp[i_tmp][j_tmp])
+                            if j_tmp < (len(lumi_tmp[i_tmp])-1):
+                              Lumisec_forcheck = Lumisec_forcheck + str(lumi_tmp[i_tmp][j_tmp]) + ','
+                            elif j_tmp == (len(lumi_tmp[i_tmp])-1) and i_tmp == (len(lumi_tmp)-1):
+                              Lumisec_forcheck = Lumisec_forcheck + str(lumi_tmp[i_tmp][j_tmp]) + ']]'
+                            elif j_tmp == (len(lumi_tmp[i_tmp])-1):
+                              Lumisec_forcheck = Lumisec_forcheck + str(lumi_tmp[i_tmp][j_tmp]) + '],['
                     elif isinstance(runORrunLs, dict):
                         runLs = runORrunLs                                    # keep dict
+                        Runs_forcheck    = str(next(iter(runLs)))
+                        lumi_tmp = runLs[Runs_forcheck]
+                        Lumisec_forcheck = '[['
+                        for i_tmp in range(len(lumi_tmp)):
+                          for j_tmp in range(len(lumi_tmp[i_tmp])):
+                            print  str(lumi_tmp[i_tmp][j_tmp])
+                            if j_tmp < (len(lumi_tmp[i_tmp])-1):
+                              Lumisec_forcheck = Lumisec_forcheck + str(lumi_tmp[i_tmp][j_tmp]) + ','
+                            elif j_tmp == (len(lumi_tmp[i_tmp])-1) and i_tmp == (len(lumi_tmp)-1):
+                              Lumisec_forcheck = Lumisec_forcheck + str(lumi_tmp[i_tmp][j_tmp]) + ']]'
+                            elif j_tmp == (len(lumi_tmp[i_tmp])-1):
+                              Lumisec_forcheck = Lumisec_forcheck + str(lumi_tmp[i_tmp][j_tmp]) + '],['
                     elif isinstance(runORrunLs, str) and "[" in runORrunLs :
-                        run   = ast.literal_eval(runORrunLs)                              # turn a string into a list and check it's valid
+                        run = ast.literal_eval(runORrunLs)                    # turn a string into a list and check it's valid
+                        Runs_forcheck = runORrunLs
                     elif isinstance(runORrunLs, str) :
                         run = int(runORrunLs)                                 # turn string into int
+                        Runs_forcheck = str(run)
                     elif isinstance(runORrunLs, list):
                         run = runORrunLs                                      # keep list
+                        Runs_forcheck = '['
+                        for i_tmp in range(len(run)):
+                          if i_tmp < len(run):
+                            Runs_forcheck = Runs_forcheck + str(run[i_tmp]) + ','
+                          else:
+                            Runs_forcheck = Runs_forcheck + str(run[i_tmp]) + ']'
                     else:
                         raise ValueError(run_err_mess)
                 except ValueError:
                     logging.error(run_err_mess)
-
-
+      
+                for DataSet in ds.split(","):                                  # check if you have enough events in each dataset
+                  print Runs_forcheck
+                  print Lumisec_forcheck
+                  nEvents = checkenoughEvents(DataSet, Runs_forcheck, Lumisec_forcheck)
+                  checkStat_out = checkStat(DataSet, nEvents)
+                  print DataSet, 'with RUN', Runs_forcheck, Lumisec_forcheck, 'contains:', nEvents, 'events'
+                  if checkStat_out == 'TOO_LOW_STAT':
+                    print 'ERROR! The statistic is too low. I will exit the script.'
+                    sys.exit('POOR_STATISTIC')
+                  elif checkStat_out == 'LOW_STAT':
+                    print 'WARNING! The statistic is low. Please check carefully if you do not want to consider a better RUN/lumisection.'
                 b0T = getInput('n', '\nIs this for B=0T?\nAnswer [n]: ')
                 hion = getInput('n', '\nIs this for Heavy Ions? Note B=0T is not compatible with Heavy Ions at the moment, also pA runs and Heavy Ions runs are mutually exclusive\nAnswer [n]: ')
                 pa_run   = getInput('n', '\nIs this for pA run?\nAnswer [n]:')
