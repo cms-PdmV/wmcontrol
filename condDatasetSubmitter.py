@@ -25,6 +25,9 @@ def createOptionParser():
     """
 
     parser = OptionParser(usage)
+    parser.add_option("--jira",
+                        dest="jira",
+                        help="jira ticket, where validation will take place")
     parser.add_option("--newgt",
                         dest="newgt",
                         help="new global tag containing tag to be tested")
@@ -438,7 +441,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
             driver_command += "--era %s " % (details['era'])
         if options.Type in ['PR', 'PR+ALCA']:
             if details['runUnscheduled'] == "":
-                driver_command += "--runUnscheduled " 
+                driver_command += "--runUnscheduled "
         if details['magfield'] != "":
             driver_command += '--magField %s ' % (details['magfield'])
         if details['inputcommands'] != "":
@@ -610,7 +613,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                         'release=%s\n' % (options.release) +\
                         'globaltag =%s \n' % (gtshort)
 
-    wmcconf_text += 'campaign=%s__ALCARELVAL-%s\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M")) +\
+    wmcconf_text += 'campaign=%s__ALCA_%s-%s\n' % (options.release,options.jira,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M")) +\
                     'acquisition_era=%s\n' % (options.release)
 
     """
@@ -654,7 +657,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
             label   = cfgname.lower().replace('.py', '')[0:5]
             wmcconf_text += '[%s_reference_%s]\n' % (details['reqtype'],ds_name) +\
                             'input_name = %s\n' % (ds) +\
-                            'request_id = %s__ALCARELVAL-%s_%s_refer\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name) +\
+                            'request_id = %s__ALCA_%s-%s_%s_refer\n' % (options.release,options.jira,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name) +\
                             'keep_step1 = True\n' +\
                             'time_event = 10\n' +\
                             'size_memory = 8000\n' +\
@@ -685,7 +688,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                     label = cfgname.lower().replace('.py', '')[0:5]
                     wmcconf_text += '\n[%s_%s_%s]\n' % (details['reqtype'], label, ds_name) +\
                                     'input_name = %s\n' % (ds) +\
-                                    'request_id=%s__ALCARELVAL-%s_%s_%s\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name,label) +\
+                                    'request_id=%s__ALCA_%s-%s_%s_%s\n' % (options.release,options.jira,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name,label) +\
                                     'keep_step%d = True\n' % (task) +\
                                     'time_event = 1\n' +\
                                     'size_memory = 8000\n' +\
@@ -724,7 +727,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                 label = cfgname.lower().replace('.py', '')[0:5]
                 wmcconf_text += '\n\n[%s_%s_%s]\n' %(details['reqtype'], label, ds_name) +\
                                 'input_name = %s\n' % (ds) +\
-                                'request_id=%s__ALCARELVAL-%s_%s_%s\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name,label) +\
+                                'request_id=%s__ALCA_%s-%s_%s_%s\n' % (options.release,options.jira,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name,label) +\
                                 'keep_step%d = True\n' % (task) +\
                                 'time_event = 1\n' +\
                                 'size_memory = 8000\n' +\
@@ -751,7 +754,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                     label = cfgname.lower().replace('.py', '')[0:5]
                     wmcconf_text += '\n\n[%s_%s_%s]\n' % (details['reqtype'], label,ds_name) +\
                                     'input_name = %s\n' % (ds) +\
-                                    'request_id=%s__ALCARELVAL-%s_%s_%s\n' % (options.release,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name,label) +\
+                                    'request_id=%s__ALCA_%s-%s_%s_%s\n' % (options.release,options.jira,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"),ds_name,label) +\
                                     'keep_step1 = True\n' +\
                                     'time_event = 10\n' +\
                                     'size_memory = 8000\n' +\

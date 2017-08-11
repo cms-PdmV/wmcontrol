@@ -18,7 +18,7 @@ import optparse
 import json
 import errno
 import ast
-from modules import wma 
+from modules import wma
 
 def execme(command, dryrun=False):
     '''Wrapper for executing commands.
@@ -151,6 +151,7 @@ I will ask you some questions to fill the metadata file. For some of the questio
                     hlt_menu = getInput('orcoff:/cdaq/physics/Run2015/25ns14e33/v3.5/HLT/V7', '\nWhich HLT menu?\ne.g. orcoff:/cdaq/physics/Run2015/25ns14e33/v3.5/HLT/V7\nhlt_menu [orcoff:/cdaq/physics/Run2015/25ns14e33/v3.5/HLT/V7]: ')
 
                 newgt = getInput('74X_dataRun2_HLTValidation_2015-09-07-08-26-15', '\nWhat is the new GT to be validated?\ne.g. 74X_dataRun2_HLTValidation_2015-09-07-08-26-15\nnewgt [74X_dataRun2_HLTValidation_2015-09-07-08-26-15]: ')
+                jira = getInput('0', '\nWhat is the JIRA ticket number?\ne.g. 10\njira [10]:')
 
                 gt = getInput('74X_dataRun2_HLT_v1', '\nWhat is the reference GT?\ne.g. 74X_dataRun2_HLT_v1\ngt [74X_dataRun2_HLT_v1]: ')
 
@@ -213,7 +214,7 @@ I will ask you some questions to fill the metadata file. For some of the questio
                         raise ValueError(run_err_mess)
                 except ValueError:
                     logging.error(run_err_mess)
-      
+
                 for DataSet in ds.split(","):                                  # check if you have enough events in each dataset
                   print Runs_forcheck
                   print Lumisec_forcheck
@@ -232,11 +233,12 @@ I will ask you some questions to fill the metadata file. For some of the questio
                     'PR_release': pr_release,
                     'options': {
                         'Type': type,
+                        'jira': jira,
                         'newgt': newgt,
                         'gt': gt,
                         'ds': ds,
                         'run': run}}
-                
+
                 if 'PR' in type:
                     if(is_PR_after_HLTRECO.lower() == 'n'):
                         metadata['options'].update({'two_WFs': ''})
