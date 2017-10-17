@@ -66,6 +66,7 @@ def getInputRepeat(prompt=''):
         logging.error('You need to provide a value.')
 
 def checkenoughEvents(DataSet, RunNumber, LumiSec):
+
   if LumiSec == '':
     query=DataSet+'&run_num='+RunNumber
   else:
@@ -113,7 +114,6 @@ def main():
     #        print "no WMCore present in your PYTHONPATH; exiting"
     #        sys.exit()
 
-
     if True:
         try:
             with open(metadataFilename, 'rb') as metadataFile:
@@ -128,6 +128,7 @@ def main():
                 return -5
             # Wizard
             while True:
+
                 print '''\nWizard for metadata
 I will ask you some questions to fill the metadata file. For some of the questions there are defaults between square brackets (i.e. []), leave empty (i.e. hit Enter) to use them.'''
 
@@ -166,6 +167,8 @@ I will ask you some questions to fill the metadata file. For some of the questio
                 runLs = ''
                 Runs_forcheck = ''
                 Lumisec_forcheck = ''
+                #subSetup_slc6.sh is required for the query
+                execme("source /afs/cern.ch/cms/PPD/PdmV/tools/subSetup_slc6.sh")
                 # do some type recognition and set run or runLs accordingly
                 try:
                     if isinstance(runORrunLs, str) and "{" in runORrunLs :
@@ -282,6 +285,9 @@ I will ask you some questions to fill the metadata file. For some of the questio
         try:
             if metadata['HLT_release']:
                 #commands.append('eval \'scramv1 project %s\'' % metadata['HLT_release'] )
+                commands.append('source /afs/cern.ch/cms/PPD/PdmV/tools/subSetup_slc6.sh')
+                commands.append('cd ..')
+                #commands.append('cd %s/..' % os.getcwd())
                 commands.append('scramv1 project %s' % (metadata['HLT_release']))
                 commands.append('cd %s/src' % (metadata['HLT_release']))
                 #commands.append('eval \'scramv1 runtime -sh\'')
@@ -289,20 +295,20 @@ I will ask you some questions to fill the metadata file. For some of the questio
                 commands.append('git cms-addpkg HLTrigger/Configuration')
                 #commands.append('eval \'scramv1 b\'')
                 commands.append('scramv1 b')
-                commands.append('voms-proxy-init --voms cms')
-                commands.append('source /afs/cern.ch/cms/PPD/PdmV/tools/subSetup_slc6.sh')
+                #commands.append('voms-proxy-init --voms cms') # it is already in subSetup_slc6.sh
                 commands.append('cd -')
                 if metadata['PR_release'] != metadata['HLT_release']:
                     #commands.append('eval \'scramv1 project %s\'' % metadata['PR_release'])
                     commands.append('scramv1 project %s' % (metadata['PR_release']))
         except KeyError:
             #commands.append('eval \'scramv1 project %s\'' % metadata['PR_release'] )
+            commands.append('source /afs/cern.ch/cms/PPD/PdmV/tools/subSetup_slc6.sh')
+            commands.append('cd ..')
             commands.append('scramv1 project %s' % (metadata['PR_release']))
             commands.append('cd %s/src' % (metadata['PR_release']))
             #commands.append('eval \'scramv1 runtime -sh\'')
             commands.append('cmsenv')
-            commands.append('voms-proxy-init --voms cms')
-            commands.append('source /afs/cern.ch/cms/PPD/PdmV/tools/subSetup_slc6.sh')
+            #commands.append('voms-proxy-init --voms cms') # it is already in subSetup_slc6.sh
             commands.append('cd -')
 
         cond_submit_command = './condDatasetSubmitter.py '
@@ -319,7 +325,13 @@ I will ask you some questions to fill the metadata file. For some of the questio
             else:
                 cond_submit_command += '--%s %s ' % (key, val)
 
-        commands.append(' git clone -b master git@github.com:cms-PdmV/wmcontrol.git  master-my-local-name    (**make sure that that PdmV master is the one you want to use**)')
+        try:
+            if metadata['HLT_release']:
+                cond_submit_command += '|& tee cond_HLT.log'
+        except KeyError:
+            cond_submit_command += '|& tee cond_PR.log'
+
+        #commands.append(' git clone -b master git@github.com:cms-PdmV/wmcontrol.git  master-my-local-name    (**make sure that that PdmV master is the one you want to use**)')
         commands.append('cd wmcontrol')
         commands.append(cond_submit_command)
 
@@ -342,10 +354,10 @@ I will ask you some questions to fill the metadata file. For some of the questio
 
         try:
             if metadata['HLT_release']:
-                commands.append('./wmcontrol.py --req_file HLTConditionValidation_%s_%s_%s.conf |& tee wmcontrol.HLT.1.log' % (
+                commands.append('./wmcontrol.py --req_file HLTConditionValidation_%s_%s_%s.conf |& tee wmc_HLT.log' % (
                         metadata['HLT_release'], metadata['options']['basegt'], run_label_for_fn))
         except KeyError:
-            commands.append('./wmcontrol.py --req_file PRConditionValidation_%s_%s_%s.conf |& tee wmcontrol.PR.1.log' % (
+            commands.append('./wmcontrol.py --req_file PRConditionValidation_%s_%s_%s.conf |& tee wmc_PR.log' % (
                         metadata['PR_release'], metadata['options']['newgt'], run_label_for_fn))
 
         commands.append('rm *.couchID')
@@ -354,6 +366,15 @@ I will ask you some questions to fill the metadata file. For some of the questio
         # now execute commands
         for command in commands:
             execme(command, dryrun)
+
+        print "\n------: EXECUTE ALL THE ABOVE COMMANDS IN ONE GO :-------\n"
+        command_comb = ''
+        for command in commands:
+            if command!=commands[-1]:
+                command_comb += command +" && "
+            else:
+                command_comb += command
+        print command_comb
 
 if __name__ == '__main__':
     logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s',
