@@ -396,6 +396,38 @@ def make_request_string(params, service_params, request):
 
     return identifier
 
+def check_keep_output(data):
+    """
+    Checks if in Task/Step dictionary we have at least one Task/Step that keeps output
+    We shouldnt submit workflows which keeps no output.
+    """
+
+    keeps_output = False
+    __type = None
+
+    if not data["RequestType"] in ['StepChain', 'TaskChain']:
+        #we do not check keep output for stand-alone requests
+        return
+
+    if data["RequestType"] == 'StepChain':
+        __type = 'Step'
+    else:
+        __type = 'Task'
+
+    for i in xrange(data["%sChain" % (__type)]):
+        if 'KeepOutput' in data["%s%s" % (__type, i+1)]:
+            if data["%s%s" % (__type, i+1)]["KeepOutput"]:
+                #we care if we keep at least one output, so we stop at first find
+                keeps_output = True
+                break
+        else:
+            #if KeepOutput is not set the default is True
+            keeps_output = True
+            break
+
+    if not keeps_output:
+        raise Exception("Workflow keeps no output. We are not submitting it")
+
 #-------------------------------------------------------------------------------
 def loop_and_submit(cfg):
     '''
@@ -553,6 +585,7 @@ def loop_and_submit(cfg):
             if test_mode:
                 pp.pprint(params)
             else: # do it for real!
+                check_keep_output(params)
                 try:
                     workflow = wma.makeRequest(wma.WMAGENT_URL, params,
                             encodeDict=(service_params['request_type']=='TaskChain'))
