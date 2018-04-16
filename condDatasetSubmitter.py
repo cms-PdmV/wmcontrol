@@ -218,16 +218,16 @@ def getCMSSWReleaseFromPath(thePath):
     raise ValueError('%s does not contain a slash-separated path to a CMSSW release. ERRROR.' % (thePath))
 
 def getDriverDetails(Type, release, ds, B0T, HIon, pA, recoRelease):
-    str_era_hlt = 'Run2_2016'
-    if release.find("9_2_")!= -1:
+    str_era_hlt = 'Run2_2018'
+    if release.find("10_")!= -1:
         for ds_name in ds:
-            if ds_name.find("2017")!=-1:
-                str_era_hlt="Run2_2017"
+            if ds_name.find("2018")!=-1:
+                str_era_hlt="Run2_2018"
 
-    if recoRelease.find("9_2_")!= -1:
+    if recoRelease.find("10_")!= -1:
         for ds_name in ds:
-            if ds_name.find("2017")!=-1:
-                str_era_pr="Run2_2017"
+            if ds_name.find("2018")!=-1:
+                str_era_pr="Run2_2018"
 
     HLTBase = {"reqtype":"HLT",
                 "steps":"L1REPACK:Full,HLT,DQM", #replaced DQM:triggerOfflineDQMSource with DQM
@@ -286,7 +286,7 @@ def getDriverDetails(Type, release, ds, B0T, HIon, pA, recoRelease):
                             #"eventcontent":"RAW",
                             "magfield":""})
 
-        HLTRECObase = {"steps":"RAW2DIGI,L1Reco,RECO,EI,PAT,DQM",
+        HLTRECObase = {"steps":"RAW2DIGI,L1Reco,RECO,EI,PAT,DQM:offlineValidationHLTSource",
                         "procname":"reRECO",
                         "datatier":"RECO,DQMIO",
                         "eventcontent":"RECO,DQM",
