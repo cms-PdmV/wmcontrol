@@ -286,7 +286,7 @@ def getDriverDetails(Type, release, ds, B0T, HIon, pA, recoRelease):
                             #"eventcontent":"RAW",
                             "magfield":""})
 
-        HLTRECObase = {"steps":"RAW2DIGI,L1Reco,RECO,EI,PAT,DQM:offlineValidationHLTSource",
+        HLTRECObase = {"steps":"RAW2DIGI,L1Reco,RECO,EI,PAT,DQM:DQMOffline+offlineValidationHLTSource",
                         "procname":"reRECO",
                         "datatier":"RECO,DQMIO",
                         "eventcontent":"RECO,DQM",
