@@ -342,6 +342,16 @@ def get_dataset_runs_dict(section, cfg):
     return dataset_runs_dict
 
 #-------------------------------------------------------------------------------
+def get_list(cfg, section, list_name='blocks'):
+    '''
+    Return list from from config
+    '''
+    try:
+        return ast.literal_eval(cfg.get_param(list_name, [], section))
+    except:
+        return []
+
+#-------------------------------------------------------------------------------
 def make_request_string(params, service_params, request):
     request_type = service_params['request_type']
     identifier = ''
@@ -449,29 +459,9 @@ def loop_and_submit(cfg):
         # Submit request!
         for dataset in sorted(dataset_runs_dict.keys()):
             params['InputDataset'] = dataset
-            runs = []
-            new_blocks = []
-            for item in dataset_runs_dict[dataset]:
-                if isinstance(item,str) and '#' in item:
-                    if item.startswith('#'):
-                       new_blocks.append(dataset + item)
-                    else:
-                        new_blocks.append(item)
-                else:
-                    runs.append(item)
-            params['RunWhitelist'] = runs
+            params['RunWhitelist'] = dataset_runs_dict[dataset]
 
-            if params.has_key("BlockWhitelist"):
-                if params['BlockWhitelist'] == []:
-                    params['BlockWhitelist'] = new_blocks
-                if params['BlockWhitelist'] != [] and new_blocks != []:
-                    print "WARNING: a different set of blocks was made available in the input dataset and in the blocks option."
-                    print "Keeping the blocks option (%s) instead of (%s)" % (str(sorted(new_blocks)),
-                            str(sorted(params['BlockWhitelist'])))
-
-                    params['BlockWhitelist'] = new_blocks
-
-            elif service_params['lumi_list'] != '':
+            if service_params['lumi_list'] != '':
                 lumi_list_dict = ast.literal_eval(service_params['lumi_list'])
                 if ( len(lumi_list_dict.keys()) > 0 ):
                     params['LumiList'] = ast.literal_eval(service_params['lumi_list'])
@@ -526,6 +516,8 @@ def loop_and_submit(cfg):
 
                         if split == 'blocks':
                             params[__first_step]['BlockWhitelist'] = details
+                        elif split == 'excluded_blocks':
+                            params[__first_step]['BlockBlackList'] = details
                         elif split == 'lumis':
                             params[__first_step]['LumiList'] = details
                         elif split == 'dataset':
@@ -572,6 +564,8 @@ def loop_and_submit(cfg):
                     # https://github.com/dmwm/DBS/issues/428
                     if split == 'blocks':
                         params['BlockWhitelist'] = details
+                    elif split == 'excluded_blocks':
+                        params['BlockBlackList'] = details
                     elif split == 'lumis':
                         params['LumiList'] = details
                         params['LumiList'] = details # incomplete ?
@@ -753,7 +747,8 @@ def build_params_dict(section,cfg):
     priority = int(cfg.get_param('priority', default_parameters['priority'], section))
 
     #blocks
-    blocks = cfg.get_param('blocks', [], section)
+    blocks = get_list(cfg, section, 'blocks')
+    excluded_blocks = get_list(cfg, section, 'excluded_blocks')
 
     # Now the service ones
     # Service
@@ -864,7 +859,7 @@ def build_params_dict(section,cfg):
             "InputDataset": 'Will Be replaced',
             "RunBlacklist": [],
             "BlockWhitelist": blocks,
-            "BlockBlacklist": [],
+            "BlockBlacklist": excluded_blocks,
             "DbsUrl": dbsurl,
             "RequestType": request_type,
             "GlobalTag": globaltag,
@@ -1179,6 +1174,7 @@ def build_parser():
     parser.add_option('--request-id', help='Request identifier', dest='request_id')
     parser.add_option('--input-ds', help='Input Data Set name', dest='input_name')
     parser.add_option('--blocks', help='comma separated list of input blocks to be processed', dest='blocks')
+    parser.add_option('--excluded_blocks', help='comma separated list of input blocks to be excluded', dest='excluded_blocks')
     parser.add_option('--pileup-ds', help='Pile-Up input Data Set name', dest='pu_dataset')
     parser.add_option('--step1-cfg', help='step 1 configuration', dest='step1_cfg')
     parser.add_option('--step1-era',help='AcquisitionEra for step1 in a TaskChain', dest='step1_era')
