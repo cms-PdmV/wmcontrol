@@ -241,6 +241,7 @@ def makeRequest(url, params, encodeDict=False):
 
 def upload_to_couch(cfg_name, section_name, user_name, group_name, test_mode=False, url=None):
     if test_mode:
+        print('*** UPLOAD TO COUCH ***\n  cfg_name: %s\n  section_name: %s\n  user_name: %s\n  group_name: %s\n  url: %s' % (cfg_name, section_name, user_name, group_name, url))
         return "00000000000000000"
 
     if not os.path.exists(cfg_name):

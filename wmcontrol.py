@@ -681,6 +681,7 @@ def build_params_dict(section,cfg):
     #wm testing
     wmtest = cfg.get_param('wmtest', False, section)
     url_dict = cfg.get_param('url_dict', "", section)
+    local_dict = cfg.get_param('local_dict', '', section)
 
     # fetch some important parameters
     #this trick is to make the uniformation smoother and be able to read old cfgfiles
@@ -812,7 +813,7 @@ def build_params_dict(section,cfg):
         harvest_docID = wma.upload_to_couch(harvest_cfg , section, user, group,test_mode)
 
     # check if the request is valid
-    if step1_docID == '' and url_dict == "" and request_type != "DQMHarvest":
+    if step1_docID == '' and url_dict == "" and local_dict == '' and request_type != "DQMHarvest":
         print "Invalid request, no docID configuration specified."
         sys.stderr.write("[wmcontrol exception] Invalid request, no docID configuration specified.")
         sys.exit(-1)
@@ -897,10 +898,26 @@ def build_params_dict(section,cfg):
         params["ConfigCacheUrl"] = wma.COUCH_DB_ADDRESS
         params["DbsUrl"] = "https://" + wma.WMAGENT_URL + wma.DBS3_URL
 
-    ##if we fetch the dictionary fro 3rd party source
-    if url_dict != "":
-        #print "This is the url",url_dict,"to get the dict from"
-        params = json.loads(os.popen('curl -s --insecure %s' % (url_dict)).read())
+    ##if we fetch the dictionary fro 3rd party source or from file
+    if url_dict != "" or local_dict != '':
+        if local_dict != '':
+            json_data=open(local_dict).read()
+            params = json.loads(json_data)
+            # Check if anything needs to be uploaded
+            task_index = 1
+            while 'Task%s' % (task_index) in params:
+               if 'ConfigCacheFilePath' in params['Task%s' % (task_index)]:
+                   params['Task%s' % (task_index)]['ConfigCacheID'] = wma.upload_to_couch(params['Task%s' % (task_index)]['ConfigCacheFilePath'], section, user, group,test_mode)
+                   del params['Task%s' % (task_index)]['ConfigCacheFilePath']
+
+               task_index += 1
+
+            if 'DQMConfigCacheFilePath' in params:
+               params['DQMConfigCacheID'] = wma.upload_to_couch(params['DQMConfigCacheFilePath'], section, user, group,test_mode)
+               del params['DQMConfigCacheFilePath']
+
+        else:
+            params = json.loads(os.popen('curl -s --insecure %s' % (url_dict)).read())
         #print params
         service_params["request_type"] = params["RequestType"]
         service_params["version"] = params["ProcessingVersion"]
@@ -1258,6 +1275,7 @@ def build_parser():
     # The config file
     parser.add_option('--req_file', help='The ini configuration to launch requests', dest='req_file')
     parser.add_option('--url-dict', help='Pickup a dict from a given url', default="", dest='url_dict')
+    parser.add_option('--local-dict', help='Pickup a dict from a given path', default="", dest='local_dict')
 
     parser.add_option('--force-lumis', help='Force lumis-based splitting',
             action='store_true', dest='force_lumis')
