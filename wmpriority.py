@@ -1,5 +1,6 @@
 #! /usr/bin/env python
-import httplib
+from __future__ import print_function
+import http.client as httplib
 import sys
 import os
 import optparse
@@ -21,7 +22,7 @@ def changePriorityWorkflow(url, workflow, priority, cert, key, retry):
             ##print "ReqMgr2 returned:\n%s" % (data)
             data = "Unable to change priority of workflow {0}, status code: {1}".format(workflow, stats)
         time.sleep(1)
-    print data
+    print(data)
 
 def send_message(url, cert, key, workflow, params, headers):
     conn = httplib.HTTPSConnection(url, cert_file=cert, key_file=key)
@@ -47,7 +48,7 @@ def main():
     parser = prepare_parser()
     options, args = parser.parse_args()
     if len(args) < 2:
-        print "usage: wmpriority.py <workflowname> <priority> [options]"
+        print("usage: wmpriority.py <workflowname> <priority> [options]")
         sys.exit(1)
     workflow = args[0]
     priority = args[1]

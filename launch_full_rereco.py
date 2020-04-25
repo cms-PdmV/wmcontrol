@@ -1,11 +1,12 @@
 #! /usr/bin/env python
 
+from __future__ import print_function
 import sys
 import os
 import optparse
 import pprint
 
-from ConfigParser import SafeConfigParser
+from configparser import SafeConfigParser
 
 sys.path.append(os.path.join(sys.path[0], 'modules'))
 from full_rereco import *
@@ -52,12 +53,12 @@ def commasep2list(string):
 def get_params(cfgfilename):
 
     if cfgfilename == None:
-        print "No configfile selected!"
+        print("No configfile selected!")
         sys.exit(1)
 
     if not os.path.exists(cfgfilename):
-        print "Configfile %s does not exist: please select an existing one!" % (
-                cfgfilename)
+        print("Configfile %s does not exist: please select an existing one!" % (
+                cfgfilename))
 
         sys.exit(1)
 
@@ -114,7 +115,7 @@ if __name__ == "__main__":
     options, args = build_parser()
     params_dict = get_params(options.reprocfg)
 
-    print "The parameters are: "
+    print("The parameters are: ")
     pprint.pprint(params_dict)
 
     if options.prepare_configs:
