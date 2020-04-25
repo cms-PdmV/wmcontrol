@@ -2,6 +2,8 @@
 
 # Originally Written by Jean-Roch Vlimant, remixed several times by others..
 
+from __future__ import print_function
+from __future__ import absolute_import
 import os
 import sys
 import ast
@@ -14,17 +16,17 @@ import pprint
 #-------------------------------------------------------------------------------
 # Check if it is the case to start
 
-if not (os.environ.has_key('WMCONTROL_USER') and os.environ.has_key('WMCONTROL_GROUP')):
-    print "The environmental variables WMCONTROL_USER or WMCONTROL_GROUP do not seem to be set. Please check."
+if not ('WMCONTROL_USER' in os.environ and 'WMCONTROL_GROUP' in os.environ):
+    print("The environmental variables WMCONTROL_USER or WMCONTROL_GROUP do not seem to be set. Please check.")
     sys.exit(1)
 
-if not os.environ.has_key('CMSSW_VERSION'):
-    print "The CMSSW environment does not seem to be set. Please check."
+if 'CMSSW_VERSION' not in os.environ:
+    print("The CMSSW environment does not seem to be set. Please check.")
     sys.exit(1)
 
 #-------------------------------------------------------------------------------
 
-import wma
+from . import wma
 
 DUMPED_REQUESTS_SCHELETON = "requests_for_%s_cache"
 
@@ -62,7 +64,7 @@ def addSkimToRequest(params, cfg):
             g_dry_run)
 
     if cfgid == None:
-        print "no id for", cfg
+        print("no id for", cfg)
         sys.exit()
 
     params['Skim%dConfigCacheID' % (nextIndex,)] = cfgid
@@ -144,17 +146,17 @@ def prepareRequest(rawdataset, options):
 
 def onePar(request, par):
     if par in request:
-        print par, request[par]
+        print(par, request[par])
         return
     for k in request:
         if par in k:
-            print k, ":", request[k]
+            print(k, ":", request[k])
 
 #-------------------------------------------------------------------------------
 
 def cat_file(filename):
     f = open(filename, "r")
-    print f.read()
+    print(f.read())
     f.close()
 
 #-------------------------------------------------------------------------------
@@ -202,7 +204,7 @@ def twikiPrint(requests):
 def prettyPrint(request):
     onePar(request, 'InputDataset')
     if len(request["RunWhitelist"]):
-        print request["RunWhitelist"]
+        print(request["RunWhitelist"])
     onePar(request, 'RequestString')
     onePar(request, 'Scenario')
     onePar(request, 'SkimName')
@@ -212,26 +214,26 @@ def prettyPrint(request):
 
 def prettyPrintRequest(requests):
     for request in requests:
-        print
+        print()
         prettyPrint(request)
         #print request
-        print
+        print()
 
 #-------------------------------------------------------------------------------
 
 def printRequest(requests):
     for request in requests:
-        print "------------------ SHOWING ----------------------"
-        print request
-        print
+        print("------------------ SHOWING ----------------------")
+        print(request)
+        print()
 
 #-------------------------------------------------------------------------------
 
 def make_requests(requests):
-    print 'Making the requests'
+    print('Making the requests')
     global dry_run
     for request in requests:
-        print " ----------------- SENDING ----------------------"
+        print(" ----------------- SENDING ----------------------")
         prettyPrint(request)
         trimmedRequest = copy.copy(request)
         for k in trimmedRequest.keys():
@@ -256,18 +258,18 @@ def makerawdatsetfromdbs(query):
 
 def runlistfromdbs(query):
     runlist = []
-    print "getting run list from dbs for the query:", query
+    print("getting run list from dbs for the query:", query)
 
     queryhash = hashlib.sha224(query).hexdigest()
     runlist = "runList_%s.list" % (queryhash,)
     try:
         dbs = open(runlist,'r')
-        print runlist, "opened for reading run list for query:", query
+        print(runlist, "opened for reading run list for query:", query)
     except:
-        print "query never done doing it"
+        print("query never done doing it")
         dbs = os.popen('dbs search --noheader --query "find run.number where %s"' % (query,))
         store = open(runlist, 'w')
-        print runlist, "opened for writing run list for query:", query
+        print(runlist, "opened for writing run list for query:", query)
         store.write('QUERY: ' + query + '\n')
         for line in dbs:
             store.write(line)
@@ -279,10 +281,10 @@ def runlistfromdbs(query):
         if 'QUERY' in line:
             querystore = (line[7:]).replace('\n', '')
             if query != querystore:
-                print "Problem:",
-                print query, "---"
-                print "different than"
-                print querystore, "---"
+                print("Problem:", end=' ')
+                print(query, "---")
+                print("different than")
+                print(querystore, "---")
                 sys.exit()
             continue
         runnumber = int(line.split()[0])
@@ -296,7 +298,7 @@ def dump_requests(reprocfg_filename, requests):
     ofile = file(ofilename, "w")
     pprint.pprint(requests, ofile)
     ofile.close()
-    print "Requests dumped in %s" % (ofilename)
+    print("Requests dumped in %s" % (ofilename))
 
 #-------------------------------------------------------------------------------
 
@@ -306,14 +308,14 @@ def read_requests(reprocfg_filename):
   requests = ast.literal_eval(ifile.read())
   pprint.pprint(requests)
   ifile.close()
-  print "Requests read from %s" % (ifilename)
+  print("Requests read from %s" % (ifilename))
 
   return requests
 
 #-------------------------------------------------------------------------------
 
 def print_and_exec(command):
-    print "Executing %s" % (command)
+    print("Executing %s" % (command))
     os.system(command)
 
 #-------------------------------------------------------------------------------
@@ -346,7 +348,7 @@ def request(rawdataset, options):
     dry_run = options.test
 
     if options.upload:
-        print 'Ready for uploading configs to couchDB'
+        print('Ready for uploading configs to couchDB')
 
         check_rawdataset(rawdataset)
 

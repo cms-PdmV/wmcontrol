@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 
+from __future__ import print_function
 __version__ = "$Revision: 1.381.2.27 $"
 __source__ = "$Source: /local/reps/CMSSW/CMSSW/Configuration/PyReleaseValidation/python/ConfigBuilder.py,v $"
 
@@ -104,9 +105,9 @@ def filesFromList(fileName,s=None):
 				s.secondaryFileNames=cms.untracked.vstring(sec)
 			else:
 				s.secondaryFileNames.extend(sec)
-	print "found files: ",prim
+	print("found files: ",prim)
 	if len(sec)!=0:
-		print "found parent files:",sec
+		print("found parent files:",sec)
 	return (prim,sec)
 	
 def filesFromDBSQuery(query,s=None):
@@ -114,7 +115,7 @@ def filesFromDBSQuery(query,s=None):
 	import FWCore.ParameterSet.Config as cms
 	prim=[]
 	sec=[]
-	print "the query is",query
+	print("the query is",query)
 	for line in os.popen('dbs search --query "%s"'%(query)):
 		if line.count(".root")>=2:
 			#two files solution...
@@ -137,9 +138,9 @@ def filesFromDBSQuery(query,s=None):
 				s.secondaryFileNames=cms.untracked.vstring(sec)
 			else:
 				s.secondaryFileNames.extend(sec)
-	print "found files: ",prim
+	print("found files: ",prim)
 	if len(sec)!=0:
-		print "found parent files:",sec
+		print("found parent files:",sec)
 	return (prim,sec)
 
 def MassReplaceInputTag(aProcess,oldT="rawDataCollector",newT="rawDataRepacker"):
@@ -319,7 +320,7 @@ class ConfigBuilder(object):
 
 	def filesFromOption(self):
 		for entry in self._options.filein.split(','):
-			print "entry",entry
+			print("entry",entry)
 			if entry.startswith("filelist:"):
 				filesFromList(entry[9:],self.process.source)
 			elif entry.startswith("dbs:"):
@@ -330,7 +331,7 @@ class ConfigBuilder(object):
 			if not hasattr(self.process.source,"secondaryFileNames"):
 				raise Exception("--secondfilein not compatible with "+self._options.filetype+"input type")
 			for entry in self._options.secondfilein.split(','):
-				print "entry",entry
+				print("entry",entry)
 				if entry.startswith("filelist:"):
 					self.process.source.secondaryFileNames.extend((filesFromList(entry[9:]))[0])
 				elif entry.startswith("dbs:"):
@@ -353,7 +354,7 @@ class ConfigBuilder(object):
 			   #list the article directory automatically
 			   args=self._options.filein.split(':')
 			   article=args[1]
-			   print 'LHE input from article ',article
+			   print('LHE input from article ',article)
 			   location='/store/lhe/'
 			   import os
 			   textOfFiles=os.popen('cmsLHEtoEOSManager.py -l '+article)
@@ -431,7 +432,7 @@ class ConfigBuilder(object):
 	result=""
 	if self._options.outputDefinition:
 		if self._options.datatier:
-			print "--datatier & --eventcontent options ignored"
+			print("--datatier & --eventcontent options ignored")
 			
 		def anyOf(listOfKeys,dict,opt=None):
 			for k in listOfKeys:
@@ -607,7 +608,7 @@ class ConfigBuilder(object):
 		if 'file:' in pileupSpec:
 			#the file is local
 			self.process.load(mixingDict['file'])
-			print "inlining mixing module configuration"
+			print("inlining mixing module configuration")
 			self._options.inlineObjets+=',mix'
 		else:
 			self.loadAndRemember(mixingDict['file'])
@@ -634,7 +635,7 @@ class ConfigBuilder(object):
 				if self.geometryDBLabel:
 					self.executeAndRemember('process.XMLFromDBSource.label = cms.string("%s")'%(self.geometryDBLabel))
         except ImportError:
-                print "Geometry option",self._options.geometry,"unknown."
+                print("Geometry option",self._options.geometry,"unknown.")
                 raise
 
 	if len(self.stepMap):
@@ -643,7 +644,7 @@ class ConfigBuilder(object):
 
 	for stepName in self.stepKeys:
 		stepSpec = self.stepMap[stepName]
-		print "Step:", stepName,"Spec:",stepSpec
+		print("Step:", stepName,"Spec:",stepSpec)
 		if stepName.startswith('re'):
 			##add the corresponding input content
 			if stepName[2:] not in self._options.donotDropOnInput:
@@ -714,7 +715,7 @@ class ConfigBuilder(object):
 	if not self._options.conditions: return
 	
 	if 'FrontierConditions_GlobalTag' in self._options.conditions:
-		print 'using FrontierConditions_GlobalTag in --conditions is not necessary anymore and will be deprecated soon. please update your command line'
+		print('using FrontierConditions_GlobalTag in --conditions is not necessary anymore and will be deprecated soon. please update your command line')
 		self._options.conditions = self._options.conditions.replace("FrontierConditions_GlobalTag,",'')
 						
         self.loadAndRemember(self.ConditionsDefaultCFF)
@@ -778,7 +779,7 @@ class ConfigBuilder(object):
 		else:
 			final_snippet += 'from %s import %s \n'%(packageName,','.join(custMap[f]))
 		for fcn in custMap[f]:
-			print "customising the process with",fcn,"from",f
+			print("customising the process with",fcn,"from",f)
 			if not hasattr(package,fcn):
 				#bound to fail at run time
 				raise Exception("config "+f+" has no function "+fcn)
@@ -810,8 +811,8 @@ class ConfigBuilder(object):
         if len(self.stepMap):
 		self.loadAndRemember('Configuration/StandardSequences/Services_cff')
         if self._options.particleTable not in defaultOptions.particleTableList:
-            print 'Invalid particle table provided. Options are:'
-            print defaultOptions.particleTable
+            print('Invalid particle table provided. Options are:')
+            print(defaultOptions.particleTable)
             sys.exit(-1)
         else:
 	    if len(self.stepMap):
@@ -914,7 +915,7 @@ class ConfigBuilder(object):
             self.DQMDefaultSeq='DQMOfflineCosmics'
 
         if self._options.himix:
-                print "From the presence of the himix option, we have determined that this is heavy ions and will use '--scenario HeavyIons'."
+                print("From the presence of the himix option, we have determined that this is heavy ions and will use '--scenario HeavyIons'.")
                 self._options.scenario='HeavyIons'
 
         if self._options.scenario=='HeavyIons':
@@ -947,7 +948,7 @@ class ConfigBuilder(object):
         # the magnetic field
 	if self._options.isData:
 		if self._options.magField==defaultOptions.magField:
-			print "magnetic field option forced to: AutoFromDBCurrent"
+			print("magnetic field option forced to: AutoFromDBCurrent")
 		self._options.magField='AutoFromDBCurrent'
         self.magFieldCFF = 'Configuration/StandardSequences/MagneticField_'+self._options.magField.replace('.','')+'_cff'
         self.magFieldCFF = self.magFieldCFF.replace("__",'_')
@@ -981,7 +982,7 @@ class ConfigBuilder(object):
 		if (geoms[0].startswith('DB:')):
 			self.SimGeometryCFF='Configuration/StandardSequences/GeometrySimDB_cff'
 			self.geometryDBLabel=geoms[0][3:]
-			print "with DB:"
+			print("with DB:")
 		else:
 			if '/' in geoms[0] or '_cff' in geoms[0]:
 								self.SimGeometryCFF=geoms[0]
@@ -997,7 +998,7 @@ class ConfigBuilder(object):
 		self.SIMDefaultCFF="Configuration/StandardSequences/SimIdeal_cff"
 
         if self._options.scenario=='nocoll' or self._options.scenario=='cosmics':
-	    print simGeometry
+	    print(simGeometry)
             self.SIMDefaultCFF="Configuration/StandardSequences/SimNOBEAM_cff"
             self._options.beamspot='NoSmear'
 
@@ -1102,8 +1103,8 @@ class ConfigBuilder(object):
                     l=self.loadAndRemember(sequence.split('.')[0])
                     sequence=sequence.split('.')[1]
             else:
-                    print "sub sequence configuration must be of the form dir/subdir/cff.a+b+c or cff.a"
-                    print sequence,"not recognized"
+                    print("sub sequence configuration must be of the form dir/subdir/cff.a+b+c or cff.a")
+                    print(sequence,"not recognized")
                     raise
             return l
 
@@ -1195,8 +1196,8 @@ class ConfigBuilder(object):
                         alcastream = getattr(alcaConfig,name)
                         if isinstance(alcastream,cms.FilteredStream):
                                 available.append(name.replace('ALCARECOStream',''))
-                print "The following alcas could not be found "+str(alcaList)
-                print "available ",available
+                print("The following alcas could not be found "+str(alcaList))
+                print("available ",available)
                 #print "verify your configuration, ignoring for now"
                 raise Exception("The following alcas could not be found "+str(alcaList))
 
@@ -1204,7 +1205,7 @@ class ConfigBuilder(object):
 	    #load the fragment
 	    ##make it loadable
 	    loadFragment = self._options.evt_type.replace('.py','',).replace('.','_').replace('python/','').replace('/','.')
-	    print "Loading lhe fragment from",loadFragment
+	    print("Loading lhe fragment from",loadFragment)
 	    __import__(loadFragment)
 	    self.process.load(loadFragment)
 	    ##inline the modules
@@ -1229,7 +1230,7 @@ class ConfigBuilder(object):
         else:
                 loadFragment=loadFragment.replace('/','.')
 	try:
-		print "Loading generator fragment from",loadFragment
+		print("Loading generator fragment from",loadFragment)
 		__import__(loadFragment)
 	except:
 		loadFailure=True
@@ -1361,7 +1362,7 @@ class ConfigBuilder(object):
     def prepare_L1REPACK(self, sequence = None):
             """ Enrich the schedule with the L1 simulation step, running the L1 emulator on data unpacked from the RAW collection, and repacking the result in a new RAW collection"""
             if sequence is not 'GT':
-                  print 'Running the full L1 emulator is not supported yet'
+                  print('Running the full L1 emulator is not supported yet')
                   raise Exception('unsupported feature')
             if sequence is 'GT':
                   self.loadAndRemember('Configuration/StandardSequences/SimL1EmulatorRepack_GT_cff')
@@ -1373,7 +1374,7 @@ class ConfigBuilder(object):
     def prepare_HLT(self, sequence = None):
         """ Enrich the schedule with the HLT simulation step"""
         if not sequence:
-                print "no specification of the hlt menu has been given, should never happen"
+                print("no specification of the hlt menu has been given, should never happen")
                 raise  Exception('no HLT sequence provided')
 
         if '@' in sequence:
@@ -1430,7 +1431,7 @@ class ConfigBuilder(object):
                     seqReco=sequence.split(',')[1]
                     seqDigi=sequence.split(',')[0]
             else:
-                    print "RAW2RECO requires two specifications",sequence,"insufficient"
+                    print("RAW2RECO requires two specifications",sequence,"insufficient")
 
 	    self.prepare_RAW2DIGI(seqDigi)
 	    self.prepare_RECO(seqReco)
@@ -1447,7 +1448,7 @@ class ConfigBuilder(object):
         ''' Enrich the schedule with L1 HW validation '''
         self.loadDefaultOrSpecifiedCFF(sequence,self.L1HwValDefaultCFF)
 	#self.scheduleSequence(sequence.split('.')[-1],'l1hwval_step')
-	print '\n\n\n DEPRECATED this has no action \n\n\n'
+	print('\n\n\n DEPRECATED this has no action \n\n\n')
         return
 
     def prepare_L1Reco(self, sequence = "L1Reco"):
@@ -1535,7 +1536,7 @@ class ConfigBuilder(object):
 
 
         if (skimlist.__len__()!=0 and sequence!="all"):
-                print 'WARNING, possible typo with SKIM:'+'+'.join(skimlist)
+                print('WARNING, possible typo with SKIM:'+'+'.join(skimlist))
                 raise Exception('WARNING, possible typo with SKIM:'+'+'.join(skimlist))
 
     def prepare_USER(self, sequence = None):
@@ -1620,7 +1621,7 @@ class ConfigBuilder(object):
                                         for (i,ps) in enumerate(value): self.doIt(ps, "%s.%s[%d]"%(base,name,i) )
                                     elif type in ('cms.string', 'cms.untracked.string'):
                                         if value.value() == self._paramSearch:
-                                            if self._verbose: print "set string process name %s.%s %s ==> %s"% (base, name, value, self._paramReplace)
+                                            if self._verbose: print("set string process name %s.%s %s ==> %s"% (base, name, value, self._paramReplace))
                                             setattr(pset, name,self._paramReplace)
                                     elif type in ('cms.VInputTag', 'cms.untracked.VInputTag'):
                                             for (i,n) in enumerate(value):
@@ -1628,7 +1629,7 @@ class ConfigBuilder(object):
                                                             n=cms.InputTag(n)
                                                     if n.processName == self._paramSearch:
                                                             # VInputTag can be declared as a list of strings, so ensure that n is formatted correctly
-                                                            if self._verbose:print "set process name %s.%s[%d] %s ==> %s " % (base, name, i, n, self._paramReplace)
+                                                            if self._verbose:print("set process name %s.%s[%d] %s ==> %s " % (base, name, i, n, self._paramReplace))
                                                             setattr(n,"processName",self._paramReplace)
                                                             value[i]=n
 				    elif type in ('cms.vstring', 'cms.untracked.vstring'):
@@ -1637,7 +1638,7 @@ class ConfigBuilder(object):
 							    getattr(pset,name)[i]=self._paramReplace
 				    elif type in ('cms.InputTag', 'cms.untracked.InputTag'):
                                             if value.processName == self._paramSearch:
-                                                    if self._verbose: print "set process name %s.%s %s ==> %s " % (base, name, value, self._paramReplace)
+                                                    if self._verbose: print("set process name %s.%s %s ==> %s " % (base, name, value, self._paramReplace))
                                                     setattr(getattr(pset, name),"processName",self._paramReplace)
 
             def enter(self,visitee):
@@ -1655,7 +1656,7 @@ class ConfigBuilder(object):
 
     #visit a sequence to repalce all input tags
     def renameInputTagsInSequence(self,sequence,oldT="rawDataCollector",newT="rawDataRepacker"):
-	    print "Replacing all InputTag %s => %s"%(oldT,newT)
+	    print("Replacing all InputTag %s => %s"%(oldT,newT))
 	    from PhysicsTools.PatAlgos.tools.helpers import massSearchReplaceAnyInputTag
 	    massSearchReplaceAnyInputTag(getattr(self.process,sequence),oldT,newT)
 	    loadMe='from PhysicsTools.PatAlgos.tools.helpers import massSearchReplaceAnyInputTag'
@@ -1671,7 +1672,7 @@ class ConfigBuilder(object):
 		    proc=self.process.name_()
 	    if proc==HLTprocess:    return
             # look up all module in dqm sequence
-            print "replacing %s process name - sequence %s will use '%s'" % (HLTprocess,sequence, proc)
+            print("replacing %s process name - sequence %s will use '%s'" % (HLTprocess,sequence, proc))
             getattr(self.process,sequence).visit(ConfigBuilder.MassSearchReplaceProcessNameVisitor(HLTprocess,proc,whitelist = ("subSystemFolder",)))
             if 'from Configuration.PyReleaseValidation.ConfigBuilder import ConfigBuilder' not in self.additionalCommands:
                     self.additionalCommands.append('from Configuration.PyReleaseValidation.ConfigBuilder import ConfigBuilder')
@@ -1707,7 +1708,7 @@ class ConfigBuilder(object):
 	
 	if len(set(sequenceList))!=len(sequenceList):
 		sequenceList=list(set(sequenceList))
-		print "Duplicate entries for DQM:, using",sequenceList
+		print("Duplicate entries for DQM:, using",sequenceList)
 	pathName='dqmoffline_step'
 	
 	for (i,sequence) in enumerate(sequenceList):
@@ -1746,11 +1747,11 @@ class ConfigBuilder(object):
 	
 	if len(set(harvestingList))!=len(harvestingList):
 		harvestingList=list(set(harvestingList))
-		print "Duplicate entries for HARVESTING, using",harvestingList
+		print("Duplicate entries for HARVESTING, using",harvestingList)
 
 	for name in harvestingList:
 		if not name in harvestingConfig.__dict__:
-			print name,"is not a possible harvesting type. Available are",harvestingConfig.__dict__.keys()
+			print(name,"is not a possible harvesting type. Available are",harvestingConfig.__dict__.keys())
 			continue
 		harvestingstream = getattr(harvestingConfig,name)
 		if isinstance(harvestingstream,cms.Path):
@@ -1782,7 +1783,7 @@ class ConfigBuilder(object):
 	self.schedule.append(lastStep)
 	
         if len(harvestingList) != 0 and 'dummyHarvesting' not in harvestingList :
-            print "The following harvesting could not be found : ", harvestingList
+            print("The following harvesting could not be found : ", harvestingList)
             raise Exception("The following harvesting could not be found : "+str(harvestingList))
 
 
@@ -1823,7 +1824,7 @@ class ConfigBuilder(object):
             # now the additional commands we need to make the config work
             self.executeAndRemember("process.VolumeBasedMagneticFieldESProducer.useParametrizedTrackerField = True")
         else:
-             print "FastSim setting", sequence, "unknown."
+             print("FastSim setting", sequence, "unknown.")
              raise ValueError
 
         if 'Flat' in self._options.beamspot:
@@ -1921,7 +1922,7 @@ class ConfigBuilder(object):
                 if not object:
                         continue
                 if not hasattr(self.process,object):
-                        print 'cannot inline -'+object+'- : not known'
+                        print('cannot inline -'+object+'- : not known')
                 else:
                         self.pythonCfgCode +='\n'
                         self.pythonCfgCode +=dumpPython(self.process,object)
@@ -2062,7 +2063,7 @@ def addOutputModule(process, tier, content):
 
     Function to add an output module to a given process with given data tier and event content
     """
-    print "WARNING. this method will not be supported any more SOON, please use --eventcontent --datatier field to drive the output module definitions"
+    print("WARNING. this method will not be supported any more SOON, please use --eventcontent --datatier field to drive the output module definitions")
 
     moduleName = "output%s%s" % (tier, content)
     pathName = "%sPath" % moduleName
@@ -2077,7 +2078,7 @@ def addOutputModule(process, tier, content):
                                ),
                            )
             )
-    print getattr(process,moduleName)
+    print(getattr(process,moduleName))
     # put it in an EndPath and put the EndPath into the schedule
     setattr(process, pathName, cms.EndPath(getattr(process,moduleName)) )
     process.schedule.append(getattr(process, pathName))

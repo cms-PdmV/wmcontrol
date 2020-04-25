@@ -10,6 +10,7 @@
 #                                                                              #
 ################################################################################
 
+from __future__ import print_function
 import os
 import urllib
 import sys
@@ -19,7 +20,7 @@ import random
 import optparse
 import json
 import pprint
-import ConfigParser
+import configparser as ConfigParser
 import traceback
 import re
 import time
@@ -82,7 +83,7 @@ class Configuration:
         try:
             options,args = parser.parse_args()
         except SystemExit:
-            print "Error in parsing options"
+            print("Error in parsing options")
             sys.stderr.write("[wmcontrol exception] Error in parsing options")
             sys.exit(-1)
 
@@ -90,15 +91,15 @@ class Configuration:
         test_mode = test_mode or options.test
         self.dont_approve = options.DontApprove
         if options.wmtest:
-            print "Setting to injection in cmswebtest : ", options.wmtesturl
+            print("Setting to injection in cmswebtest : ", options.wmtesturl)
             wma.testbed(options.wmtesturl)
 
         if options.req_file != '' and options.req_file != None:
             cfg_filename = options.req_file
-            print "We have a configfile: %s." % (cfg_filename)
+            print("We have a configfile: %s." % (cfg_filename))
             self.configparser.read(cfg_filename)
         else: # ... otherwise, we have to convert the command line option parser to a .conf, and populate self.configparser
-            print "We have a commandline."
+            print("We have a commandline.")
             self.__fill_configparser(options)
 
     def __fill_configparser(self, options):
@@ -124,8 +125,8 @@ class Configuration:
         '''
         ret_val = None
         if verbose:
-            print "I am looking for section %s and option %s, the default is #%s#" % (
-                    name, section, default)
+            print("I am looking for section %s and option %s, the default is #%s#" % (
+                    name, section, default))
 
         if self.configparser.has_section(section):
             if self.configparser.has_option(section,name):
@@ -134,8 +135,8 @@ class Configuration:
                 # We had a cfg file and the default was not given
                 if ret_val == "__NOT-DEFINED__":
                     if verbose:
-                        print "I was reading parameter %s and I put the default %s" % (
-                                name, default)
+                        print("I was reading parameter %s and I put the default %s" % (
+                                name, default))
 
                     ret_val = default
                 # we have both: read and return!
@@ -156,19 +157,19 @@ class Configuration:
             raise Exception ("No section %s found in configuration." % (section))
 
         if verbose:
-            print "I am returning the value #%s# type:%s" % (ret_val, ret_val.__class__)
+            print("I am returning the value #%s# type:%s" % (ret_val, ret_val.__class__))
         return ret_val
 
 def get_runs(dset_name, minrun=-1, maxrun=-1):
     '''
     Get the runs from the DBS via the DBS interface
     '''
-    print "Looking for runs in DBS for %s" % (dset_name)
+    print("Looking for runs in DBS for %s" % (dset_name))
     minrun = int(minrun)
     maxrun = int(maxrun)
 
     # check if cmssw is set up for the dbs command
-    if not os.environ.has_key("CMSSW_BASE"):
+    if "CMSSW_BASE" not in os.environ:
         raise Exception("No CMSSW environment set. You need it to query dbs.")
 
     return_data = json.loads(wma.generic_get(wma.WMAGENT_URL, wma.DBS3_URL + "runs?dataset=%s" % (dset_name)))
@@ -220,7 +221,7 @@ def custodial(datasetpath):
     try:
         result = json.load(urllib.urlopen(url))
     except:
-        print 'Problems with url', url
+        print('Problems with url', url)
 
     try:
         for block in result['phedex']['block']:
@@ -241,7 +242,7 @@ def custodial(datasetpath):
                         else :
                             non_custodial[site] += int(files)
     except:
-        print 'Problems with dataset:', datasetpath
+        print('Problems with dataset:', datasetpath)
 
     custodial_sites = custodial.keys()
     non_custodial_sites = non_custodial.keys()
@@ -273,7 +274,7 @@ def custodial(datasetpath):
         custsites = custsites[:-1]
 
     #if lfn == None:
-    print 'dataset:',datasetpath,'custodial:',custsites,'non-custodial:',sites
+    print('dataset:',datasetpath,'custodial:',custsites,'non-custodial:',sites)
     # else :
     # print 'lfn:',lfn,'custodial:',custsites,'non-custodial:',sites
 
@@ -324,8 +325,8 @@ def get_dataset_runs_dict(section, cfg):
                         json_info = json.load(json_file)
                         json_file.close()
                     except ValueError:
-                        print "Error in JSON file: ", dataset_runs_dict[key], " Exiting..."
-                        print traceback.format_exc()
+                        print("Error in JSON file: ", dataset_runs_dict[key], " Exiting...")
+                        print(traceback.format_exc())
                         #sys.exit()
                         return False
                     for run_number in json_info:
@@ -334,7 +335,7 @@ def get_dataset_runs_dict(section, cfg):
                     dataset_runs_dict[key] = run_list
                     run_list = []
                 else:
-                    print "JSON file doesn't exists. ", os.path.join(os.getcwd(), dataset_runs_dict[key]), " Exiting..."
+                    print("JSON file doesn't exists. ", os.path.join(os.getcwd(), dataset_runs_dict[key]), " Exiting...")
                     #sys.exit()
                     return False
     except:
@@ -461,13 +462,13 @@ def loop_and_submit(cfg):
                     runs.append(item)
             params['RunWhitelist'] = runs
 
-            if params.has_key("BlockWhitelist"):
+            if "BlockWhitelist" in params:
                 if params['BlockWhitelist'] == []:
                     params['BlockWhitelist'] = new_blocks
                 if params['BlockWhitelist'] != [] and new_blocks != []:
-                    print "WARNING: a different set of blocks was made available in the input dataset and in the blocks option."
-                    print "Keeping the blocks option (%s) instead of (%s)" % (str(sorted(new_blocks)),
-                            str(sorted(params['BlockWhitelist'])))
+                    print("WARNING: a different set of blocks was made available in the input dataset and in the blocks option.")
+                    print("Keeping the blocks option (%s) instead of (%s)" % (str(sorted(new_blocks)),
+                            str(sorted(params['BlockWhitelist']))))
 
                     params['BlockWhitelist'] = new_blocks
 
@@ -475,10 +476,10 @@ def loop_and_submit(cfg):
                 lumi_list_dict = ast.literal_eval(service_params['lumi_list'])
                 if ( len(lumi_list_dict.keys()) > 0 ):
                     params['LumiList'] = ast.literal_eval(service_params['lumi_list'])
-                    if params.has_key("RunWhitelist") and params['RunWhitelist'] != []:
-                        print "WARNING: both lumi_list (to set LumiList) and dset_run_dict (to set RunWhitelist) are present"
-                        print "Keeping only the lumi_list option (%s) instead of dset_run_dict (%s)" % (
-                                params['LumiList'], params['RunWhitelist'])
+                    if "RunWhitelist" in params and params['RunWhitelist'] != []:
+                        print("WARNING: both lumi_list (to set LumiList) and dset_run_dict (to set RunWhitelist) are present")
+                        print("Keeping only the lumi_list option (%s) instead of dset_run_dict (%s)" % (
+                                params['LumiList'], params['RunWhitelist']))
 
                         params.pop('RunWhitelist')
 
@@ -529,9 +530,9 @@ def loop_and_submit(cfg):
                         elif split == 'lumis':
                             params[__first_step]['LumiList'] = details
                         elif split == 'dataset':
-                            print "no white listing"
+                            print("no white listing")
                         if test_mode:
-                            print "Finished in", int((time.time()-t)*1000), "\bms"
+                            print("Finished in", int((time.time()-t)*1000), "\bms")
 
                 if params['RunWhitelist']:
                     params[__first_step]['RunWhitelist'] = params['RunWhitelist']
@@ -542,7 +543,7 @@ def loop_and_submit(cfg):
                 if 'InputDataset' in params:
                     params.pop('InputDataset')
 
-                if params.has_key("LumiList") and params['LumiList']:
+                if "LumiList" in params and params['LumiList']:
                     params[__first_step]['LumiList'] = params['LumiList']
                     params.pop('LumiList') #if params has LumiList we remove it because it was set as Task1 parameter
 
@@ -576,10 +577,10 @@ def loop_and_submit(cfg):
                         params['LumiList'] = details
                         params['LumiList'] = details # incomplete ?
                     elif split == 'dataset':
-                        print "no white listing"
+                        print("no white listing")
                         pass
                     if test_mode:
-                        print "Finished in", int((time.time()-t)*1000), "\bms"
+                        print("Finished in", int((time.time()-t)*1000), "\bms")
 
             # just print the parameters of the request you would have injected
             if test_mode:
@@ -618,7 +619,7 @@ def make_cfg_docid_dict(filename):
     if filename == '':
         return {}
 
-    print "Building a cfg-docID dictionary.."
+    print("Building a cfg-docID dictionary..")
 
     cfg_db_file = None
 
@@ -642,7 +643,7 @@ def make_cfg_docid_dict(filename):
         # split the line
         cfg_name,docid = line.split(' ')
         if test_mode:
-            print "Name, DocID in file %s: %s %s" % (filename, cfg_name,docid)
+            print("Name, DocID in file %s: %s %s" % (filename, cfg_name,docid))
         cfg_docid_dict[cfg_name] = docid
 
     cfg_db_file.close()
@@ -657,9 +658,9 @@ def get_user_group(cfg, section):
     user_default = ''
     group_default = ''
 
-    if os.environ.has_key(user_env_name):
+    if user_env_name in os.environ:
         user_default = os.environ[user_env_name]
-    if os.environ.has_key(group_env_name):
+    if group_env_name in os.environ:
         group_default = os.environ[group_env_name]
 
     #print os.environ.has_key(user_env_name)
@@ -744,7 +745,7 @@ def build_params_dict(section,cfg):
     skim_input = cfg.get_param('skim_input', 'RECOoutput', section)
 
     if not skim_docid and skim_cfg:
-        if cfg_docid_dict.has_key(skim_cfg):
+        if skim_cfg in cfg_docid_dict:
             skim_docid = cfg_docid_dict[skim_cfg]
         else:
             skim_docid = wma.upload_to_couch(skim_cfg, section, user, group,test_mode)
@@ -800,11 +801,11 @@ def build_params_dict(section,cfg):
         if step_cfg_name != '' and step_docid == '':
             #print step_cfg_name, step_docid
             # try to see if it is in the cfg name dict
-            if cfg_docid_dict.has_key(step_cfg_name):
-                print "Using the one in the cfg-docid dictionary."
+            if step_cfg_name in cfg_docid_dict:
+                print("Using the one in the cfg-docid dictionary.")
                 docIDs[step] = cfg_docid_dict[step_cfg_name]
             else:
-                print "No DocId found for section %s. Uploading the cfg to the couch." % (section)
+                print("No DocId found for section %s. Uploading the cfg to the couch." % (section))
                 docIDs[step] = wma.upload_to_couch(step_cfg_name, section, user, group,test_mode)
 
     step1_docID, step2_docID, step3_docID = docIDs
@@ -813,18 +814,18 @@ def build_params_dict(section,cfg):
 
     # check if the request is valid
     if step1_docID == '' and url_dict == "" and request_type != "DQMHarvest":
-        print "Invalid request, no docID configuration specified."
+        print("Invalid request, no docID configuration specified.")
         sys.stderr.write("[wmcontrol exception] Invalid request, no docID configuration specified.")
         sys.exit(-1)
 
     # Extract Campaign from PREP-ID if necessary
     campaign = cfg.get_param('campaign', '', section)
     if campaign == "" and request_id == "":
-        print "Campaign and request-id are not set. Provide at least the Campaign."
+        print("Campaign and request-id are not set. Provide at least the Campaign.")
     elif campaign == "" and request_id != "":
         campaign = re.match(".*-(.*)-.*", request_id).group(1)
     elif campaign != "" and request_id != "":
-        print "Campaign and request-id are set. Using %s as campaign." % (campaign)
+        print("Campaign and request-id are set. Using %s as campaign." % (campaign))
 
     ##get acquisitionEra if it was passed
     acquisition_era = cfg.get_param('acquisition_era', 'FAKE', section)
@@ -913,9 +914,9 @@ def build_params_dict(section,cfg):
         if number_events:
             if blocks:
                 ## cannot perform automatic block selection
-                print "\n\n\n WARNING number_events is not functionnal because you specified blocks in input\n\n\n"
+                print("\n\n\n WARNING number_events is not functionnal because you specified blocks in input\n\n\n")
             else:
-                print "\n\n\n WARNING automated block selection performed \n\n\n"
+                print("\n\n\n WARNING automated block selection performed \n\n\n")
                 params.update({"RequestNumEvents": number_events})
 
         params.update({"ConfigCacheID": step1_docID,
@@ -926,7 +927,7 @@ def build_params_dict(section,cfg):
                         "Multicore": multicore})
 
         if skim_docid != '':
-            print "This is a skim"
+            print("This is a skim")
             params.update({"SkimName1": skim_name,
                         "SkimInput1": skim_input,
                         "Skim1ConfigCacheID": skim_docid,
@@ -952,7 +953,7 @@ def build_params_dict(section,cfg):
 
         if params["LheInputFiles"] == 'True' or params["LheInputFiles"] == True:
             #max out to 500K for "lhe step zero"
-            print "Setting events per job here !!!!",type(params["LheInputFiles"]),params["LheInputFiles"]
+            print("Setting events per job here !!!!",type(params["LheInputFiles"]),params["LheInputFiles"])
             events_per_job = 500000
             if wmtest:
                 events_per_job = 15000
@@ -1008,9 +1009,9 @@ def build_params_dict(section,cfg):
         if number_events:
             if blocks:
                 ## cannot perform automatic block selection
-                print "\n\n\n WARNING number_events is not functionnal because you specified blocks in input\n\n\n"
+                print("\n\n\n WARNING number_events is not functionnal because you specified blocks in input\n\n\n")
             else:
-                print "\n\n\n WARNING automated block selection performed \n\n\n"
+                print("\n\n\n WARNING automated block selection performed \n\n\n")
                 params.update({"RequestNumEvents" : number_events})
 
         params.update({"RequestString": identifier,
@@ -1034,11 +1035,11 @@ def build_params_dict(section,cfg):
                 params['StepThreeConfigCacheID'] = step3_docID
             else:
                 if not keep_step2:
-                    print 'Request not keeping its step 2 output'
+                    print('Request not keeping its step 2 output')
                     raise Exception("The request has a second step, no third step and not keeping it's second output")
         else:
             if not keep_step1:
-                print 'Request not keeping anything'
+                print('Request not keeping anything')
                 raise Exception('The request has one step and not keeping anything')
 
     elif request_type == 'TaskChain':
@@ -1116,7 +1117,7 @@ def build_params_dict(section,cfg):
                         "DQMConfigCacheID": harvest_docID})
 
     else:
-        print "Request type chose: " + str(request_type)
+        print("Request type chose: " + str(request_type))
         raise Exception('Unknown request type, aborting')
 
     if harvest_docID and request_type != "DQMHarvest":
@@ -1131,8 +1132,8 @@ def build_params_dict(section,cfg):
         elif __enable_harvesting.upper() == 'FALSE':
             params["EnableHarvesting"] = False
         else:
-            print "enableHarvesting parameter given: %s. Expecting a boolean" % (
-                    __enable_harvesting)
+            print("enableHarvesting parameter given: %s. Expecting a boolean" % (
+                    __enable_harvesting))
 
             raise Exception('enableharvesting value is wrong type')
 
@@ -1294,7 +1295,7 @@ banner = \
 
 if __name__ == "__main__":
 
-    print banner
+    print(banner)
 
     # Build a parser
     # https://docs.python.org/2/library/optparse.html
