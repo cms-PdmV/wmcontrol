@@ -7,11 +7,6 @@ from __future__ import absolute_import
 import os
 import sys
 import ast
-try:
-    import httplib
-except ImportError:
-    import http.client as httplib
-
 import copy
 import hashlib
 import pprint
@@ -298,7 +293,7 @@ def runlistfromdbs(query):
 #fixme do not assume absence of abspath!!!
 def dump_requests(reprocfg_filename, requests):
     ofilename = DUMPED_REQUESTS_SCHELETON % (os.path.basename(reprocfg_filename))
-    ofile = file(ofilename, "w")
+    ofile = open(ofilename, "w")
     pprint.pprint(requests, ofile)
     ofile.close()
     print("Requests dumped in %s" % (ofilename))
@@ -307,7 +302,7 @@ def dump_requests(reprocfg_filename, requests):
 
 def read_requests(reprocfg_filename):
   ifilename = DUMPED_REQUESTS_SCHELETON % (os.path.basename(reprocfg_filename))
-  ifile = file(ifilename, "r")
+  ifile = open(ifilename, "r")
   requests = ast.literal_eval(ifile.read())
   pprint.pprint(requests)
   ifile.close()

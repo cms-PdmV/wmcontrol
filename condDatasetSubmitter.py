@@ -6,7 +6,6 @@ import os
 import sys
 import re
 import datetime
-import json
 
 from optparse import OptionParser
 
@@ -858,7 +857,7 @@ if __name__ == "__main__":
 
     for object in newlist:
         if substring in object:
-            raise ValueError("couchID file exists, please remove it");
+            raise ValueError("couchID file exists, please remove it")
 
     # Get the options
     options = createOptionParser()

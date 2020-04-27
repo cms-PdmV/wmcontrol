@@ -34,8 +34,12 @@ def execme(command, dryrun=False):
 def getInput(default, prompt=''):
     '''Like raw_input() but with a default and automatic strip().
     '''
+    try:
+        input = raw_input
+    except NameError:
+        pass
 
-    answer = raw_input(prompt)
+    answer = input(prompt)
     if answer:
         return answer.strip()
 
@@ -59,8 +63,13 @@ def getInputRepeat(prompt=''):
     '''Like raw_input() but repeats if nothing is provided and automatic strip().
     '''
 
+    try:
+        input = raw_input
+    except NameError:
+        pass
+
     while True:
-        answer = raw_input(prompt)
+        answer = input(prompt)
         if answer:
             return answer.strip()
 
@@ -69,23 +78,23 @@ def getInputRepeat(prompt=''):
 def checkenoughEvents(DataSet, RunNumber, LumiSec):
 
   if LumiSec == '':
-    query=DataSet+'&run_num='+RunNumber
+      query=DataSet+'&run_num='+RunNumber
   else:
-    query=DataSet+'&run_num='+RunNumber+'&lumi_list='+LumiSec
+      query=DataSet+'&run_num='+RunNumber+'&lumi_list='+LumiSec
   testWMA = wma.ConnectionWrapper()
   listFileArray_output = testWMA.api('files', 'dataset', query, True)
   nEventTot=0
   for nFile in listFileArray_output:
-    nEvent = nFile['event_count']
-    nEventTot += nEvent
+      nEvent = nFile['event_count']
+      nEventTot += nEvent
   return int(nEventTot)
 
 def checkStat(DataSet, nEvents):
   checkStat_out = ''
   if nEvents < 30000:
-    checkStat_out = 'TOO_LOW_STAT'
+      checkStat_out = 'TOO_LOW_STAT'
   elif nEvents < 50000:
-    checkStat_out = 'LOW_STAT'
+      checkStat_out = 'LOW_STAT'
   return checkStat_out
 
 def main():

@@ -14,7 +14,6 @@ from __future__ import print_function
 import os
 import urllib
 import sys
-import subprocess
 import time
 import random
 import optparse
@@ -27,7 +26,6 @@ except ImportError:
 
 import traceback
 import re
-import time
 import ast
 
 sys.path.append(os.path.join(sys.path[0], 'modules'))
@@ -582,7 +580,6 @@ def loop_and_submit(cfg):
                         params['LumiList'] = details # incomplete ?
                     elif split == 'dataset':
                         print("no white listing")
-                        pass
                     if test_mode:
                         print("Finished in", int((time.time()-t)*1000), "\bms")
 

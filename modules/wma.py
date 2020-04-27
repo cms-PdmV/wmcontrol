@@ -6,7 +6,6 @@ Credit and less than optimal code has to be spreaded among lots of people.
 '''
 from __future__ import print_function
 import os
-import urllib
 try:
     import httplib
 except ImportError:
@@ -209,7 +208,6 @@ def __loadConfig(configPath):
 # DP leave this untouched even if less than optimal!
 def makeRequest(url, params, encodeDict=False):
     ##TO-DO import json somewhere else globally. for now this fix is wmcontrol submission
-    import json
     __check_request_params(params)
 
     headers = {"Content-type": "application/json",

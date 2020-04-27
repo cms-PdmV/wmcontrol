@@ -2,9 +2,7 @@
 
 from __future__ import print_function
 from __future__ import absolute_import
-import json
 from . import subset
-import urllib
 from . import wma
 from collections import defaultdict
 
