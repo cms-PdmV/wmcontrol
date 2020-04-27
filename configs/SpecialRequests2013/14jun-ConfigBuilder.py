@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 
+from __future__ import print_function
 __version__ = "$Revision: 1.303.2.11 $"
 __source__ = "$Source: /local/reps/CMSSW/CMSSW/Configuration/PyReleaseValidation/python/ConfigBuilder.py,v $"
 
@@ -90,9 +91,9 @@ def filesFromList(fileName,s=None):
 				s.secondaryFileNames=cms.untracked.vstring(sec)
 			else:
 				s.secondaryFileNames.extend(sec)
-	print "found files: ",prim
+	print("found files: ",prim)
 	if len(sec)!=0:
-		print "found parent files:",sec
+		print("found parent files:",sec)
 	return (prim,sec)
 
 def filesFromDBSQuery(query,s=None):
@@ -100,7 +101,7 @@ def filesFromDBSQuery(query,s=None):
 	import FWCore.ParameterSet.Config as cms
 	prim=[]
 	sec=[]
-	print "the query is",query
+	print("the query is",query)
 	for line in os.popen('dbs search --query "%s"'%(query)):
 		if line.count(".root")>=2:
 			#two files solution...
@@ -123,9 +124,9 @@ def filesFromDBSQuery(query,s=None):
 				s.secondaryFileNames=cms.untracked.vstring(sec)
 			else:
 				s.secondaryFileNames.extend(sec)
-	print "found files: ",prim
+	print("found files: ",prim)
 	if len(sec)!=0:
-		print "found parent files:",sec
+		print("found parent files:",sec)
 	return (prim,sec)
 
 
@@ -235,7 +236,7 @@ class ConfigBuilder(object):
 
 	def filesFromOption(self):
 		for entry in self._options.filein.split(','):
-			print "entry",entry
+			print("entry",entry)
 			if entry.startswith("filelist:"):
 				filesFromList(entry[9:],self.process.source)
 			elif entry.startswith("dbs:"):
@@ -246,7 +247,7 @@ class ConfigBuilder(object):
 			if not hasattr(self.process.source,"secondaryFileNames"):
 				raise Exception("--secondfilein not compatible with "+self._options.filetype+"input type")
 			for entry in self._options.secondfilein.split(','):
-				print "entry",entry
+				print("entry",entry)
 				if entry.startswith("filelist:"):
 					self.process.source.secondaryFileNames.extend((filesFromList(entry[9:]))[0])
 				elif entry.startswith("dbs:"):
@@ -263,7 +264,7 @@ class ConfigBuilder(object):
                self.process.source=cms.Source("LHESource", fileNames = cms.untracked.vstring())
 	       #provided by article number
 	       if self._options.filein.startswith("lhe:"):
-		       print 'LHE input from article',self._options.filein
+		       print('LHE input from article',self._options.filein)
 		       #list the article directory automatically
 		       args=self._options.filein.split(':')
 		       article=args[1]
@@ -285,7 +286,7 @@ class ConfigBuilder(object):
 	if self._options.dbsquery!='':
                self.process.source=cms.Source("PoolSource", fileNames = cms.untracked.vstring(),secondaryFileNames = cms.untracked.vstring())
                import os
-               print "the query is",self._options.dbsquery
+               print("the query is",self._options.dbsquery)
                for line in os.popen('dbs search --query "%s"'%(self._options.dbsquery,)):
                        if line.count(".root")>=2:
                                #two files solution...
@@ -299,9 +300,9 @@ class ConfigBuilder(object):
 			       entry=line.replace("\n","")
 			       if not entry in self.process.source.fileNames.value():
 				       self.process.source.fileNames.append(entry)
-               print "found files: ",self.process.source.fileNames.value()
+               print("found files: ",self.process.source.fileNames.value())
                if self.process.source.secondaryFileNames.__len__()!=0:
-                       print "found parent files:",self.process.source.secondaryFileNames.value()
+                       print("found parent files:",self.process.source.secondaryFileNames.value())
 
 	if self._options.inputCommands:
 		self.process.source.inputCommands = cms.untracked.vstring()
@@ -337,7 +338,7 @@ class ConfigBuilder(object):
 		raise Exception("number of event content arguments does not match number of datatier arguments")
 	if self._options.outputDefinition:
 		if self._options.datatier:
-			print "--datatier & --eventcontent options ignored"
+			print("--datatier & --eventcontent options ignored")
 			
 		def anyOf(listOfKeys,dict,opt=None):
 			for k in listOfKeys:
@@ -502,7 +503,7 @@ class ConfigBuilder(object):
         try:
                 self.loadAndRemember(self.GeometryCFF)
         except ImportError:
-                print "Geometry option",self._options.geometry,"unknown."
+                print("Geometry option",self._options.geometry,"unknown.")
                 raise
 
         self.loadAndRemember(self.magFieldCFF)
@@ -518,7 +519,7 @@ class ConfigBuilder(object):
         for step in self._options.step.split(","):
             if step == "":
                 continue
-            print step
+            print(step)
             stepParts = step.split(":")   # for format STEP:alternativeSequence
             stepName = stepParts[0]
             if stepName not in stepList:
@@ -591,7 +592,7 @@ class ConfigBuilder(object):
 				if i<2: untracked=''
 				else: untracked='untracked.'
 				payloadSpecToAppend+='%s=cms.%sstring("%s"),'%(item,untracked,payloadSpec[item])
-			print 'customising the GlogalTag with:',payloadSpecToAppend
+			print('customising the GlogalTag with:',payloadSpecToAppend)
 			self.executeAndRemember('process.GlobalTag.toGet.append(cms.PSet(%s))'%(payloadSpecToAppend,))
 						
 
@@ -644,7 +645,7 @@ class ConfigBuilder(object):
 		else:
 			final_snippet += 'from %s import %s \n'%(packageName,','.join(custMap[f]))
 		for fcn in custMap[f]:
-			print "customising the process with",fcn,"from",f
+			print("customising the process with",fcn,"from",f)
 			if not hasattr(package,fcn):
 				#bound to fail at run time
 				raise Exception("config "+f+" has no function "+fcn)
@@ -661,14 +662,14 @@ class ConfigBuilder(object):
     #----------------------------------------------------------------------------
     def define_Configs(self):
         if ( self._options.scenario not in defaultOptions.scenarioOptions):
-                print 'Invalid scenario provided. Options are:'
-                print defaultOptions.scenarioOptions
+                print('Invalid scenario provided. Options are:')
+                print(defaultOptions.scenarioOptions)
                 sys.exit(-1)
 
         self.loadAndRemember('Configuration/StandardSequences/Services_cff')
         if self._options.particleTable not in defaultOptions.particleTableList:
-            print 'Invalid particle table provided. Options are:'
-            print defaultOptions.particleTable
+            print('Invalid particle table provided. Options are:')
+            print(defaultOptions.particleTable)
             sys.exit(-1)
         else:
             self.loadAndRemember('SimGeneral.HepPDTESSource.'+self._options.particleTable+'_cfi')
@@ -772,7 +773,7 @@ class ConfigBuilder(object):
             self.eventcontent='FEVT'
 
         if self._options.himix:
-                print "From the presence of the himix option, we have determined that this is heavy ions and will use '--scenario HeavyIons'."
+                print("From the presence of the himix option, we have determined that this is heavy ions and will use '--scenario HeavyIons'.")
                 self._options.scenario='HeavyIons'
 
         if self._options.scenario=='HeavyIons':
@@ -906,8 +907,8 @@ class ConfigBuilder(object):
                     l=self.loadAndRemember(sequence.split('.')[0])
                     sequence=sequence.split('.')[1]
             else:
-                    print "sub sequence configuration must be of the form dir/subdir/cff.a+b+c or cff.a"
-                    print sequence,"not recognized"
+                    print("sub sequence configuration must be of the form dir/subdir/cff.a+b+c or cff.a")
+                    print(sequence,"not recognized")
                     raise
             return l
 
@@ -1003,8 +1004,8 @@ class ConfigBuilder(object):
                         alcastream = getattr(alcaConfig,name)
                         if isinstance(alcastream,cms.FilteredStream):
                                 available.append(name.replace('ALCARECOStream',''))
-                print "The following alcas could not be found "+str(alcaList)
-                print "available ",available
+                print("The following alcas could not be found "+str(alcaList))
+                print("available ",available)
                 #print "verify your configuration, ignoring for now"
                 raise Exception("The following alcas could not be found "+str(alcaList))
 
@@ -1146,7 +1147,7 @@ class ConfigBuilder(object):
                 fastSim=True
                 loadDir='FastSimulation'
         if not sequence:
-                print "no specification of the hlt menu has been given, should never happen"
+                print("no specification of the hlt menu has been given, should never happen")
                 raise  Exception('no HLT sequence provided')
         else:
                 if ',' in sequence:
@@ -1156,7 +1157,7 @@ class ConfigBuilder(object):
                         optionsForHLT['data'] = self._options.isData
                         optionsForHLT['type'] = 'GRun'
                         if self._options.scenario == 'HeavyIons': optionsForHLT['type'] = 'HIon'
-                        optionsForHLTConfig = ', '.join('%s=%s' % (key, repr(val)) for (key, val) in optionsForHLT.iteritems())
+                        optionsForHLTConfig = ', '.join('%s=%s' % (key, repr(val)) for (key, val) in optionsForHLT.items())
                         self.executeAndRemember('process.loadHltConfiguration("%s",%s)'%(sequence.replace(',',':'),optionsForHLTConfig))
                 else:
                         dataSpec=''
@@ -1175,7 +1176,7 @@ class ConfigBuilder(object):
                     seqReco=sequence.split(',')[1]
                     seqDigi=sequence.split(',')[0]
             else:
-                    print "RAW2RECO requires two specifications",sequence,"insufficient"
+                    print("RAW2RECO requires two specifications",sequence,"insufficient")
 
 	    self.prepare_RAW2DIGI(seqDigi)
 	    self.prepare_RECO(seqReco)
@@ -1251,7 +1252,7 @@ class ConfigBuilder(object):
 
 
         if (skimlist.__len__()!=0 and sequence!="all"):
-                print 'WARNING, possible typo with SKIM:'+'+'.join(skimlist)
+                print('WARNING, possible typo with SKIM:'+'+'.join(skimlist))
                 raise Exception('WARNING, possible typo with SKIM:'+'+'.join(skimlist))
 
     def prepare_POSTRECO(self, sequence = None):
@@ -1327,7 +1328,7 @@ class ConfigBuilder(object):
                                         for (i,ps) in enumerate(value): self.doIt(ps, "%s.%s[%d]"%(base,name,i) )
                                     elif type in ('cms.string', 'cms.untracked.string'):
                                         if value.value() == self._paramSearch:
-                                            if self._verbose: print "set string process name %s.%s %s ==> %s"% (base, name, value, self._paramReplace)
+                                            if self._verbose: print("set string process name %s.%s %s ==> %s"% (base, name, value, self._paramReplace))
                                             setattr(pset, name,self._paramReplace)
                                     elif type in ('cms.VInputTag', 'cms.untracked.VInputTag'):
                                             for (i,n) in enumerate(value):
@@ -1335,7 +1336,7 @@ class ConfigBuilder(object):
                                                             n=cms.InputTag(n)
                                                     if n.processName == self._paramSearch:
                                                             # VInputTag can be declared as a list of strings, so ensure that n is formatted correctly
-                                                            if self._verbose:print "set process name %s.%s[%d] %s ==> %s " % (base, name, i, n, self._paramReplace)
+                                                            if self._verbose:print("set process name %s.%s[%d] %s ==> %s " % (base, name, i, n, self._paramReplace))
                                                             setattr(n,"processName",self._paramReplace)
                                                             value[i]=n
 				    elif type in ('cms.vstring', 'cms.untracked.vstring'):
@@ -1344,7 +1345,7 @@ class ConfigBuilder(object):
 							    getattr(pset,name)[i]=self._paramReplace
 				    elif type in ('cms.InputTag', 'cms.untracked.InputTag'):
                                             if value.processName == self._paramSearch:
-                                                    if self._verbose: print "set process name %s.%s %s ==> %s " % (base, name, value, self._paramReplace)
+                                                    if self._verbose: print("set process name %s.%s %s ==> %s " % (base, name, value, self._paramReplace))
                                                     setattr(getattr(pset, name),"processName",self._paramReplace)
 
             def enter(self,visitee):
@@ -1368,7 +1369,7 @@ class ConfigBuilder(object):
 		    proc=self.process.name_()
 	    if proc==HLTprocess:    return
             # look up all module in dqm sequence
-            print "replacing %s process name - sequence %s will use '%s'" % (HLTprocess,sequence, proc)
+            print("replacing %s process name - sequence %s will use '%s'" % (HLTprocess,sequence, proc))
             getattr(self.process,sequence).visit(ConfigBuilder.MassSearchReplaceProcessNameVisitor(HLTprocess,proc,whitelist = ("subSystemFolder",)))
             if 'from Configuration.PyReleaseValidation.ConfigBuilder import ConfigBuilder' not in self.additionalCommands:
                     self.additionalCommands.append('from Configuration.PyReleaseValidation.ConfigBuilder import ConfigBuilder')
@@ -1422,7 +1423,7 @@ class ConfigBuilder(object):
             harvestingList.remove('alcaHarvesting')
 
         if len(harvestingList) != 0 and 'dummyHarvesting' not in harvestingList :
-            print "The following harvesting could not be found : ", harvestingList
+            print("The following harvesting could not be found : ", harvestingList)
             raise
 
         self.scheduleSequence('DQMSaver','dqmsave_step')
@@ -1447,7 +1448,7 @@ class ConfigBuilder(object):
 	self.schedule.append(lastStep)
 	
         if len(harvestingList) != 0 and 'dummyHarvesting' not in harvestingList :
-            print "The following harvesting could not be found : ", harvestingList
+            print("The following harvesting could not be found : ", harvestingList)
             raise
 
 
@@ -1488,7 +1489,7 @@ class ConfigBuilder(object):
             # now the additional commands we need to make the config work
             self.executeAndRemember("process.VolumeBasedMagneticFieldESProducer.useParametrizedTrackerField = True")
         else:
-             print "FastSim setting", sequence, "unknown."
+             print("FastSim setting", sequence, "unknown.")
              raise ValueError
 
         if 'Flat' in self._options.beamspot:
@@ -1582,7 +1583,7 @@ class ConfigBuilder(object):
                 if not object:
                         continue
                 if not hasattr(self.process,object):
-                        print 'cannot inline -'+object+'- : not known'
+                        print('cannot inline -'+object+'- : not known')
                 else:
                         self.pythonCfgCode +='\n'
                         self.pythonCfgCode +=dumpPython(self.process,object)
@@ -1707,7 +1708,7 @@ def addOutputModule(process, tier, content):
 
     Function to add an output module to a given process with given data tier and event content
     """
-    print "WARNING. this method will not be supported any more SOON, please use --eventcontent --datatier field to drive the output module definitions"
+    print("WARNING. this method will not be supported any more SOON, please use --eventcontent --datatier field to drive the output module definitions")
 
     moduleName = "output%s%s" % (tier, content)
     pathName = "%sPath" % moduleName
@@ -1722,7 +1723,7 @@ def addOutputModule(process, tier, content):
                                ),
                            )
             )
-    print getattr(process,moduleName)
+    print(getattr(process,moduleName))
     # put it in an EndPath and put the EndPath into the schedule
     setattr(process, pathName, cms.EndPath(getattr(process,moduleName)) )
     process.schedule.append(getattr(process, pathName))

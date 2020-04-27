@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Auto generated configuration file
 # using: 
 # Revision: 1.381.2.13 
@@ -119,8 +120,8 @@ def customiseCosmicMC(process):
         
 ##############################################################################
 def customiseVALSKIM(process):
-    print "WARNING"
-    print "this method is outdated, please use RecoTLR.customisePPData"
+    print("WARNING")
+    print("this method is outdated, please use RecoTLR.customisePPData")
     process= customisePPData(process)
     return process
                 

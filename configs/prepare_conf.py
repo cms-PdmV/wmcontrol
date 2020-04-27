@@ -1,3 +1,4 @@
+from __future__ import print_function
 #
 # eval `scramv1 runtime -csh`
 # if we don't source subSetupAuto we need grid proxy and crab env:
@@ -14,8 +15,8 @@ from Configuration.AlCa.autoAlca import autoAlca
 ##TO-DO add option to use local instance
 # for now comented out
 #from autoAlca import autoAlca
-print autoSkim
-print autoAlca
+print(autoSkim)
+print(autoAlca)
 
 DBS3_CONNECT = ConnectionWrapper()
 
@@ -54,7 +55,7 @@ theDatasetsToProcess = []
 for mydataset in theDatasetsAOD:
     tempdataset = mydataset['dataset']
     theDatasetsToProcessAOD.append((tempdataset.split('/'))[1])
-print theDatasetsToProcessAOD
+print(theDatasetsToProcessAOD)
 
 nd = 0
 
@@ -140,7 +141,7 @@ for oneDS in theDatasets:
 
 # cmsDriver to make reco cfg
             reco_command = 'cmsDriver.py RECO -s RAW2DIGI,L1Reco,RECO,'+alcaseq+'EI,PAT,DQM:@standardDQM+@miniAODDQM --runUnscheduled --nThreads '+num_core+ ' --data --scenario pp --conditions %s --eventcontent %sAOD,MINIAOD,DQM --datatier %sAOD,MINIAOD,DQMIO --customise Configuration/DataProcessing/RecoTLR.%s --filein blah.root -n 100 --python_filename=reco_%s_%s.py --no_exec'%(GT, recotier, recotier, customera[campaign], campaign, datasetstr)
-            print reco_command
+            print(reco_command)
             os.system(reco_command)
 
 # write the skim parameters in conf file
@@ -152,12 +153,12 @@ for oneDS in theDatasets:
 
 # cmsDriver to make skim cfg
                 skim_command='cmsDriver.py skim -s SKIM:%s --data --no_output --conditions %s --runUnscheduled --nThreads %s --python_filename skim_%s_%s.py --no_exec'%(autoSkim[datasetstr],GT,num_core,campaign,datasetstr)
-                print skim_command
+                print(skim_command)
                 os.system(skim_command)
 
 # write the requestID for the workflow in the conf file
             master.write("request_id=ReReco-"+campaign+"-"+proc_string+"-"+(format(nd, '04d'))+ "\n")
 
-print
-print
-print "\n".join(theDatasetsToProcess)
+print()
+print()
+print("\n".join(theDatasetsToProcess))

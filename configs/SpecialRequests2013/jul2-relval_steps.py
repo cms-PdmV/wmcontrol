@@ -1,10 +1,11 @@
+from __future__ import print_function
 
 
 class Matrix(dict):
     def __setitem__(self,key,value):
         if key in self:
-            print "ERROR in Matrix"
-            print "overwritting",key,"not allowed"
+            print("ERROR in Matrix")
+            print("overwritting",key,"not allowed")
             import sys
             sys.exit(-9)
         else:
@@ -15,8 +16,8 @@ class Matrix(dict):
 class Steps(dict):
     def __setitem__(self,key,value):
         if key in self:
-            print "ERROR in Step"
-            print "overwritting",key,"not allowed"
+            print("ERROR in Step")
+            print("overwritting",key,"not allowed")
             import sys
             sys.exit(-9) 
         else:
@@ -26,7 +27,7 @@ class Steps(dict):
 
     def overwrite(self,keypair):
         value=self[keypair[1]]
-        print "overwritting step",keypair[0],"with",keypair[1],str(value)
+        print("overwritting step",keypair[0],"with",keypair[1],str(value))
         self.update({keypair[0]:value})
         
 class WF(list):
@@ -85,13 +86,13 @@ class InputInfo(object):
 def merge(dictlist,TELL=False):
     import copy
     last=len(dictlist)-1
-    if TELL: print last,dictlist
+    if TELL: print(last,dictlist)
     if last==0:
         # ONLY ONE ITEM LEFT
         return copy.copy(dictlist[0])
     else:
         reducedlist=dictlist[0:max(0,last-1)]
-        if TELL: print reducedlist
+        if TELL: print(reducedlist)
         # make a copy of the last item
         d=copy.copy(dictlist[last])
         # update with the last but one item

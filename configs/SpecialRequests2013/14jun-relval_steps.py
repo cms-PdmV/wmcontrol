@@ -1,3 +1,4 @@
+from __future__ import print_function
 
 class InputInfo(object):
     def __init__(self,label,dataSet,run=0,files=1000,events=2000000,location='CAF') :
@@ -29,13 +30,13 @@ class InputInfo(object):
 def merge(dictlist,TELL=False):
     import copy
     last=len(dictlist)-1
-    if TELL: print last,dictlist
+    if TELL: print(last,dictlist)
     if last==0:
         # ONLY ONE ITEM LEFT
         return copy.copy(dictlist[0])
     else:
         reducedlist=dictlist[0:max(0,last-1)]
-        if TELL: print reducedlist
+        if TELL: print(reducedlist)
         # make a copy of the last item
         d=copy.copy(dictlist[last])
         # update with the last but one item
@@ -534,7 +535,7 @@ def updateme(aDict, anotherOne):
         if not new_key in aDict:
             aDict[new_key] = anotherOne[new_key]
         else:
-            print "Redefininig %s ? ==> no"%(new_key)
+            print("Redefininig %s ? ==> no"%(new_key))
     
 updateme(steps,step1)
 updateme(steps,step2)
