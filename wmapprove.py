@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys
 import optparse
 import time
@@ -15,16 +16,16 @@ def getOptions():
         options,_ = parser.parse_args()
         return options
     except SystemExit:
-        print "Error in parsing options"
+        print("Error in parsing options")
         sys.exit(-1)
 
 
 def approveRequest(options):
     if options.workflows == '':
-        print 'No workflows found'
+        print('No workflows found')
         sys.exit(-1)
     workflows = set(options.workflows.split(','))
-    print 'Approving requests: %s' % workflows
+    print('Approving requests: %s' % workflows)
     if options.wmtest:
         wma.testbed(options.wmtesturl)
     for workflow in workflows:
@@ -34,9 +35,9 @@ def approveRequest(options):
                 if(wma.getWorkflowStatus(wma.WMAGENT_URL, workflow) == 'new'):
                     wma.approveRequest(wma.WMAGENT_URL, workflow)
                 break
-            except Exception, e:
+            except Exception as e:
                 time.sleep(1)
-                print 'Something went wrong: %s Try number: %s' % (str(e), tries)
+                print('Something went wrong: %s Try number: %s' % (str(e), tries))
                 tries += 1
 
 

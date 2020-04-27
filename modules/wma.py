@@ -4,9 +4,14 @@
 Module containing the functions necessary to interact with the wma.
 Credit and less than optimal code has to be spreaded among lots of people.
 '''
+from __future__ import print_function
 import os
 import urllib
-import httplib
+try:
+    import httplib
+except ImportError:
+    import http.client as httplib
+
 import imp
 import sys
 import time
@@ -16,7 +21,7 @@ try:
     from PSetTweaks.WMTweak import makeTweak
     from WMCore.Cache.WMConfigCache import ConfigCache
 except:
-    print "Probably no WMClient was set up. Trying to proceed anyway..."
+    print("Probably no WMClient was set up. Trying to proceed anyway...")
 
 URL = 'https://cmsweb.cern.ch'
 DBS_URL = URL + '/dbs/prod/global/DBSReader'
@@ -100,8 +105,8 @@ def httpget(conn, query):
     except httplib.BadStatusLine:
         raise RuntimeError('Something is really wrong')
     if response.status != 200:
-        print "Problems quering DBS3 RESTAPI with %s: %s" % (
-            conn.host + query.replace('#', '%23'), response.read())
+        print("Problems quering DBS3 RESTAPI with %s: %s" % (
+            conn.host + query.replace('#', '%23'), response.read()))
 
         return None
     return response.read()
@@ -114,27 +119,27 @@ def httppost(conn, where, params):
     except httplib.BadStatusLine:
         raise RuntimeError('Something is really wrong')
     if response.status != 200:
-        print "Problems quering DBS3 RESTAPI with %s: %s" % (
-            params, response.read())
+        print("Problems quering DBS3 RESTAPI with %s: %s" % (
+            params, response.read()))
 
         return None
     return response.read()
 
 def __check_GT(gt):
     if not gt.endswith("::All"):
-        print ("It seemslike the name of the GT '%s' has a typo in it, "
+        print(("It seemslike the name of the GT '%s' has a typo in it, "
                 "missing the final ::All which will crash your job. "
-                "If insted you're using CondDBv2, you're fine.") % gt
+                "If insted you're using CondDBv2, you're fine.") % gt)
 
 def __check_input_dataset(dataset):
     if dataset and dataset.count('/')!=3:
       raise Exception ("Malformed dataset name %s!" %dataset)
 
 def __check_request_params(params):
-    if params.has_key('GlobalTag'):
+    if 'GlobalTag' in params:
       __check_GT(params['GlobalTag'])
     for inputdataset in ('MCPileup','DataPileup','InputDataset'):
-        if params.has_key(inputdataset):
+        if inputdataset in params:
             __check_input_dataset(params[inputdataset])
 
 #-------------------------------------------------------------------------------
@@ -150,18 +155,18 @@ def approveRequest(url, workflow, encodeDict=False):
     conn.request("PUT", "/reqmgr2/data/request/%s" % workflow, json.dumps(params), headers)
     response = conn.getresponse()
     if response.status != 200:
-        print 'could not approve request with following parameters:'
+        print('could not approve request with following parameters:')
         for item in params.keys():
-            print item + ": " + str(params[item])
-        print 'Response from http call:'
-        print 'Status:', response.status, 'Reason:', response.reason
-        print 'Explanation:'
+            print(item + ": " + str(params[item]))
+        print('Response from http call:')
+        print('Status:', response.status, 'Reason:', response.reason)
+        print('Explanation:')
         data = response.read()
-        print data
-        print "Exiting!"
+        print(data.decode('utf-8'))
+        print("Exiting!")
         sys.exit(1)
     conn.close()
-    print 'Approved workflow:', workflow
+    print('Approved workflow:', workflow)
     return
 
 #-------------------------------------------------------------------------------
@@ -178,7 +183,7 @@ def getWorkflowStatus(url, workflow):
         data = json.loads(response)
         workflow_status = data['result'][0][workflow]['RequestStatus']
     except Exception as e:
-        print 'Error parsing workflow %s' % str(e)
+        print('Error parsing workflow %s' % str(e))
     conn.close()
     return workflow_status
 
@@ -190,14 +195,14 @@ def __loadConfig(configPath):
 
     Import a config.
     """
-    print "Importing the config, this may take a while...",
+    print("Importing the config, this may take a while...", end=' ')
     sys.stdout.flush()
     cfgBaseName = os.path.basename(configPath).replace(".py", "")
     cfgDirName = os.path.dirname(configPath)
     modPath = imp.find_module(cfgBaseName, [cfgDirName])
     loadedConfig = imp.load_module(cfgBaseName, modPath[0],modPath[1], modPath[2])
 
-    print "done."
+    print("done.")
     return loadedConfig
 
 #-------------------------------------------------------------------------------
@@ -215,24 +220,24 @@ def makeRequest(url, params, encodeDict=False):
 
     ##TO-DO do we move it to top of file?
     __service_url  = "/reqmgr2/data/request"
-    print "Will do POST request to:%s%s" % (url, __service_url)
+    print("Will do POST request to:%s%s" % (url, __service_url))
     conn.request("POST", __service_url, json.dumps(params), headers)
     response = conn.getresponse()
     data = response.read()
 
     if response.status != 200:
-        print 'could not post request with following parameters:'
-        print json.dumps(params, indent=4)
-        print
-        print 'Response from http call:'
-        print 'Status:', response.status, 'Reason:', response.reason
-        print 'Explanation:'
-        print data
-        print "Exiting!"
+        print('could not post request with following parameters:')
+        print(json.dumps(params, indent=4))
+        print()
+        print('Response from http call:')
+        print('Status:', response.status, 'Reason:', response.reason)
+        print('Explanation:')
+        print(data.decode('utf-8'))
+        print("Exiting!")
         sys.exit(1)
 
     workflow = json.loads(data)['result'][0]['request']
-    print 'Injected workflow:', workflow
+    print('Injected workflow:', workflow)
 
     conn.close()
     return workflow
@@ -253,7 +258,7 @@ def upload_to_couch(cfg_name, section_name, user_name, group_name, test_mode=Fal
         f = open(oldID)
         the_id = f.readline().replace('\n','')
         f.close()
-        print cfg_name, 'already uploaded with ID', the_id, 'from', oldID
+        print(cfg_name, 'already uploaded with ID', the_id, 'from', oldID)
         return the_id
 
     try:
@@ -275,9 +280,9 @@ def upload_to_couch(cfg_name, section_name, user_name, group_name, test_mode=Fal
     configCache.setDescription(section_name)
     configCache.save()
 
-    print "Added file to the config cache:"
-    print "  DocID:    %s" % configCache.document["_id"]
-    print "  Revision: %s" % configCache.document["_rev"]
+    print("Added file to the config cache:")
+    print("  DocID:    %s" % configCache.document["_id"])
+    print("  Revision: %s" % configCache.document["_rev"])
 
     f = open(oldID,"w")
     f.write(configCache.document["_id"])

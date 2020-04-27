@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 
+from __future__ import print_function
 import ast
 import os
 import sys
@@ -98,8 +99,8 @@ def createOptionParser():
 
 
     CMSSW_VERSION = 'CMSSW_VERSION'
-    if not os.environ.has_key(CMSSW_VERSION):
-        print "\n CMSSW not properly set. Exiting"
+    if CMSSW_VERSION not in os.environ:
+        print("\n CMSSW not properly set. Exiting")
         sys.exit(1)
 
     options.release = os.getenv(CMSSW_VERSION)
@@ -180,11 +181,11 @@ def isAtSite(ds, run):
         blocks.append('#' + block.split('#')[-1])
 
     if len(blocks) == 0:
-        print "No possible block for %s in %s" % (run, ds)
+        print("No possible block for %s in %s" % (run, ds))
         return False
     else:
-        print "\n\n\t Block testing succeeded for %s in %s \n\n" % (run, ds)
-        print blocks
+        print("\n\n\t Block testing succeeded for %s in %s \n\n" % (run, ds))
+        print(blocks)
         return list(set(blocks))
 
 #-------------------------------------------------------------------------------
@@ -363,12 +364,12 @@ def getDriverDetails(Type, release, ds, B0T, HIon, pA, recoRelease):
 
 def execme(command):
     if DRYRUN:
-        print command
+        print(command)
     else:
-        print " * Executing: %s..." % command
+        print(" * Executing: %s..." % command)
         ##TO-DO: rewrite to subprocess!
         os.system(command)
-        print " * Executed!"
+        print(" * Executed!")
 
 #-------------------------------------------------------------------------------
 def createHLTConfig(options):
@@ -400,7 +401,7 @@ def createHLTConfig(options):
         execme(cmssw_command + '; ' + hlt_command + '; ' + build_command)
     else:
         execme(cmssw_command + '; ' + hlt_command + '; ' + patch_command + '; ' + patch_command2 + '; ' + build_command)
-        print "\n CMSSW release for HLT doesn't allow usage of hltGetConfiguration out-of-the-box, patching configuration "
+        print("\n CMSSW release for HLT doesn't allow usage of hltGetConfiguration out-of-the-box, patching configuration ")
 
 def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
     details = getDriverDetails(options.Type, options.release, options.ds, options.B0T, options.HIon,options.pA,options.recoRelease)
@@ -418,7 +419,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
     # Create the drivers
     for c in confCondList:
         (cfgname,custgt) = c
-        print "\n\n\tCreating for", cfgname, "\n\n"
+        print("\n\n\tCreating for", cfgname, "\n\n")
         driver_command = "cmsDriver.py %s " % (details['reqtype'])+\
                 "-s %s " % (details['steps']) +\
                 "--processName %s " % (details['procname']) +\
@@ -669,7 +670,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
                             'harvest_cfg=step4_refer_HARVESTING.py\n\n' # this is ugly and depends on [0:5]; can't be easliy fixed w/o reorganization
 
     task = 2
-    print confCondList
+    print(confCondList)
     for (i, c) in enumerate(confCondList):
         cfgname = c[0]
         if "REFERENCE" in cfgname:
@@ -795,7 +796,7 @@ def createCMSSWConfigs(options,confCondDictionary,allRunsAndBlocks):
         wmcconf.close()
 
     execme('./wmcontrol.py --test --req_file %s' % (wmconf_name))
-    print 'Now execute:\n./wmcontrol.py --req_file %s  |& tee wmcontrol.1.log' % (wmconf_name)
+    print('Now execute:\n./wmcontrol.py --req_file %s  |& tee wmcontrol.1.log' % (wmconf_name))
 
 def printInfo(options):
     if "HLT" in options.Type:
@@ -826,24 +827,24 @@ def printInfo(options):
     else:
         gtshort = options.gt
 
-    print ""
-    print "type: %s" % (options.Type)
-    print "dataset: %s" % (",".join(options.ds))
+    print("")
+    print("type: %s" % (options.Type))
+    print("dataset: %s" % (",".join(options.ds)))
     #print "run: %s" % (",".join(options.run))
     if (options.run):
-        print "run: %s" % (",".join(options.run))
+        print("run: %s" % (",".join(options.run)))
     elif (options.runLs):
-        print "run: %s" % (options.runLs)
+        print("run: %s" % (options.runLs))
 
     if "HLT" in options.Type:
-        print "HLT menu: %s" % (menu)
-        print "Target HLT GT: %s" % (newgtshort)
-        print "Reference HLT GT: %s" % (gtshort)
+        print("HLT menu: %s" % (menu))
+        print("Target HLT GT: %s" % (newgtshort))
+        print("Reference HLT GT: %s" % (gtshort))
     if "HLT" in options.Type and "RECO" in options.Type:
-        print "Common Prompt GT: %s" % (options.basegt)
+        print("Common Prompt GT: %s" % (options.basegt))
     if "PR" in options.Type:
-        print "Target Prompt GT: %s" % (newgtshort)
-        print "Reference Prompt GT: %s" % (gtshort)
+        print("Target Prompt GT: %s" % (newgtshort))
+        print("Reference Prompt GT: %s" % (gtshort))
 
 #-------------------------------------------------------------------------------
 
@@ -852,7 +853,7 @@ if __name__ == "__main__":
     import subprocess
     p = subprocess.Popen("ls", stdout=subprocess.PIPE, shell=True)
     out = p.stdout.read().strip()
-    newlist = out.split('\n')
+    newlist = out.decode('utf-8').split('\n')
     substring = ".couchID"
 
     for object in newlist:
@@ -861,8 +862,8 @@ if __name__ == "__main__":
 
     # Get the options
     options = createOptionParser()
-    print options.run
-    print type(options.run)
+    print(options.run)
+    print(type(options.run))
     # this type is LIST in the normal CASE,
     # and it's also list with a single element == dictionary in the LS-filtering case. This is a problem
 
@@ -881,7 +882,7 @@ if __name__ == "__main__":
             for run in options.run:
                 newblocks = isAtSite(ds, int(run))
                 if newblocks == False:
-                    print "Cannot proceed with %s in %s (no suitable blocks found)" % (ds, run)
+                    print("Cannot proceed with %s in %s (no suitable blocks found)" % (ds, run))
                     sys.exit(1)
                 else:
                     allRunsAndBlocks[ds].extend(newblocks)
