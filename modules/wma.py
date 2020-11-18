@@ -5,6 +5,7 @@ Module containing the functions necessary to interact with the wma.
 Credit and less than optimal code has to be spreaded among lots of people.
 '''
 from __future__ import print_function
+from __future__ import absolute_import
 import os
 try:
     import httplib
@@ -15,12 +16,11 @@ import imp
 import sys
 import time
 import json
+# Lightweight helpers for upload to ReqMgr2
+from modules.tweak_maker_lite import TweakMakerLite
+from modules.config_cache_lite import ConfigCacheLite
+print('Using TweakMakerLite and ConfigCacheLite!')
 
-try:
-    from PSetTweaks.WMTweak import makeTweak
-    from WMCore.Cache.WMConfigCache import ConfigCache
-except:
-    print("Probably no WMClient was set up. Trying to proceed anyway...")
 
 URL = 'https://cmsweb.cern.ch'
 DBS_URL = URL + '/dbs/prod/global/DBSReader'
@@ -266,26 +266,30 @@ def upload_to_couch(cfg_name, section_name, user_name, group_name, test_mode=Fal
         time.sleep(2)
         loadedConfig = __loadConfig(cfg_name)
 
-    where = COUCH_DB_ADDRESS
+    couchdb_url = COUCH_DB_ADDRESS
     if url:
-        where = url
+        couchdb_url = url
 
-    configCache = ConfigCache(where, DATABASE_NAME)
-    configCache.createUserGroup(group_name, user_name)
-    configCache.addConfig(cfg_name)
-    configCache.setPSetTweaks(makeTweak(loadedConfig.process).jsondictionary())
-    configCache.setLabel(section_name)
-    configCache.setDescription(section_name)
-    configCache.save()
+    tweak_maker = TweakMakerLite()
+    tweaks_dict = tweak_maker.make(process=loadedConfig.process, add_parameters_list=True)
+
+    couchdb_url = couchdb_url.replace('https://', '').split('/', 1)[0]
+    config_cache = ConfigCacheLite(couchdb_url)
+    config_cache.set_user_group(user_name, group_name)
+    config_cache.add_config(cfg_name)
+    config_cache.set_PSet_tweaks(tweaks_dict)
+    config_cache.set_label(section_name)
+    config_cache.set_description(section_name)
+    config_cache.save()
 
     print("Added file to the config cache:")
-    print("  DocID:    %s" % configCache.document["_id"])
-    print("  Revision: %s" % configCache.document["_rev"])
+    print("  DocID:    %s" % config_cache.document["_id"])
+    print("  Revision: %s" % config_cache.document["_rev"])
 
     f = open(oldID,"w")
-    f.write(configCache.document["_id"])
+    f.write(config_cache.document["_id"])
     f.close()
-    return configCache.document["_id"]
+    return config_cache.document["_id"]
 
 #-------------------------------------------------------------------------------
 
