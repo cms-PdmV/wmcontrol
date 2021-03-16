@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 '''Script that submits relval workflows for AlCa@HLT,Prompt condition validation
 '''
+from __future__ import print_function
 
 __author__ = 'Javier Duarte'
 __copyright__ = 'Copyright 2012, CERN CMS'
@@ -24,17 +25,21 @@ def execme(command, dryrun=False):
     '''Wrapper for executing commands.
     '''
     if dryrun:
-        print command
+        print(command)
     else:
-        print " * Executing: %s..." % (command)
+        print(" * Executing: %s..." % (command))
         os.system(command)
-        print " * Executed!"
+        print(" * Executed!")
 
 def getInput(default, prompt=''):
     '''Like raw_input() but with a default and automatic strip().
     '''
+    try:
+        input = raw_input
+    except NameError:
+        pass
 
-    answer = raw_input(prompt)
+    answer = input(prompt)
     if answer:
         return answer.strip()
 
@@ -58,8 +63,13 @@ def getInputRepeat(prompt=''):
     '''Like raw_input() but repeats if nothing is provided and automatic strip().
     '''
 
+    try:
+        input = raw_input
+    except NameError:
+        pass
+
     while True:
-        answer = raw_input(prompt)
+        answer = input(prompt)
         if answer:
             return answer.strip()
 
@@ -68,23 +78,23 @@ def getInputRepeat(prompt=''):
 def checkenoughEvents(DataSet, RunNumber, LumiSec):
 
   if LumiSec == '':
-    query=DataSet+'&run_num='+RunNumber
+      query=DataSet+'&run_num='+RunNumber
   else:
-    query=DataSet+'&run_num='+RunNumber+'&lumi_list='+LumiSec
+      query=DataSet+'&run_num='+RunNumber+'&lumi_list='+LumiSec
   testWMA = wma.ConnectionWrapper()
   listFileArray_output = testWMA.api('files', 'dataset', query, True)
   nEventTot=0
   for nFile in listFileArray_output:
-    nEvent = nFile['event_count']
-    nEventTot += nEvent
+      nEvent = nFile['event_count']
+      nEventTot += nEvent
   return int(nEventTot)
 
 def checkStat(DataSet, nEvents):
   checkStat_out = ''
   if nEvents < 30000:
-    checkStat_out = 'TOO_LOW_STAT'
+      checkStat_out = 'TOO_LOW_STAT'
   elif nEvents < 50000:
-    checkStat_out = 'LOW_STAT'
+      checkStat_out = 'LOW_STAT'
   return checkStat_out
 
 def main():
@@ -129,14 +139,14 @@ def main():
             # Wizard
             while True:
 
-                print '''\nWizard for metadata
-I will ask you some questions to fill the metadata file. For some of the questions there are defaults between square brackets (i.e. []), leave empty (i.e. hit Enter) to use them.'''
+                print('''\nWizard for metadata
+I will ask you some questions to fill the metadata file. For some of the questions there are defaults between square brackets (i.e. []), leave empty (i.e. hit Enter) to use them.''')
 
                 typeList = ['HLT+RECO', 'PR', 'HLT+RECO+ALCA', 'PR+ALCA']
 
-                print '\nTypes of workflow submissions'
+                print('\nTypes of workflow submissions')
                 for (index, type) in enumerate(typeList):
-                        print '   %s) %s' % (index, type)
+                        print('   %s) %s' % (index, type))
 
                 type = getInputChoose(typeList, '0', '\nWhich type of workflow submission\ntype [0]: ')
 
@@ -178,7 +188,7 @@ I will ask you some questions to fill the metadata file. For some of the questio
                         Lumisec_forcheck = '[['
                         for i_tmp in range(len(lumi_tmp)):
                           for j_tmp in range(len(lumi_tmp[i_tmp])):
-                            print  str(lumi_tmp[i_tmp][j_tmp])
+                            print(str(lumi_tmp[i_tmp][j_tmp]))
                             if j_tmp < (len(lumi_tmp[i_tmp])-1):
                               Lumisec_forcheck = Lumisec_forcheck + str(lumi_tmp[i_tmp][j_tmp]) + ','
                             elif j_tmp == (len(lumi_tmp[i_tmp])-1) and i_tmp == (len(lumi_tmp)-1):
@@ -192,7 +202,7 @@ I will ask you some questions to fill the metadata file. For some of the questio
                         Lumisec_forcheck = '[['
                         for i_tmp in range(len(lumi_tmp)):
                           for j_tmp in range(len(lumi_tmp[i_tmp])):
-                            print  str(lumi_tmp[i_tmp][j_tmp])
+                            print(str(lumi_tmp[i_tmp][j_tmp]))
                             if j_tmp < (len(lumi_tmp[i_tmp])-1):
                               Lumisec_forcheck = Lumisec_forcheck + str(lumi_tmp[i_tmp][j_tmp]) + ','
                             elif j_tmp == (len(lumi_tmp[i_tmp])-1) and i_tmp == (len(lumi_tmp)-1):
@@ -219,16 +229,16 @@ I will ask you some questions to fill the metadata file. For some of the questio
                     logging.error(run_err_mess)
 
                 for DataSet in ds.split(","):                                  # check if you have enough events in each dataset
-                  print Runs_forcheck
-                  print Lumisec_forcheck
+                  print(Runs_forcheck)
+                  print(Lumisec_forcheck)
                   nEvents = checkenoughEvents(DataSet, Runs_forcheck, Lumisec_forcheck)
                   checkStat_out = checkStat(DataSet, nEvents)
-                  print DataSet, 'with RUN', Runs_forcheck, Lumisec_forcheck, 'contains:', nEvents, 'events'
+                  print(DataSet, 'with RUN', Runs_forcheck, Lumisec_forcheck, 'contains:', nEvents, 'events')
                   if checkStat_out == 'TOO_LOW_STAT':
-                    print 'ERROR! The statistic is too low. I will exit the script.'
+                    print('ERROR! The statistic is too low. I will exit the script.')
                     sys.exit('POOR_STATISTIC')
                   elif checkStat_out == 'LOW_STAT':
-                    print 'WARNING! The statistic is low. Please check carefully if you do not want to consider a better RUN/lumisection.'
+                    print('WARNING! The statistic is low. Please check carefully if you do not want to consider a better RUN/lumisection.')
                 b0T = getInput('n', '\nIs this for B=0T?\nAnswer [n]: ')
                 hion = getInput('n', '\nIs this for Heavy Ions? Note B=0T is not compatible with Heavy Ions at the moment, also pA runs and Heavy Ions runs are mutually exclusive\nAnswer [n]: ')
                 pa_run   = getInput('n', '\nIs this for pA run?\nAnswer [n]:')
@@ -268,7 +278,7 @@ I will ask you some questions to fill the metadata file. For some of the questio
                         metadata['options']['recoCmsswDir'] = '../%s/' % (pr_release)
 
                 metadata = json.dumps(metadata, sort_keys=True, indent=4)
-                print '\nThis is the generated metadata:\n%s' % (metadata)
+                print('\nThis is the generated metadata:\n%s' % (metadata))
 
                 if getInput('n', '\nIs it fine (i.e. save in %s)?\nAnswer [n]: ' % (metadataFilename)).lower() == 'y':
                     break
@@ -280,7 +290,7 @@ I will ask you some questions to fill the metadata file. For some of the questio
 
     with open(metadataFilename, 'rb') as metadataFile:
         metadata = json.loads(metadataFile.read())
-        print '\nexecute the following commands:\n'
+        print('\nexecute the following commands:\n')
         commands = []
         try:
             if metadata['HLT_release']:
@@ -312,7 +322,7 @@ I will ask you some questions to fill the metadata file. For some of the questio
             commands.append('cd -')
 
         cond_submit_command = './condDatasetSubmitter.py '
-        for key, val in metadata['options'].iteritems():
+        for key, val in metadata['options'].items():
             # cond_submit_command += '--%s %s ' % ( key, val )
             if isinstance(val, list):
                 cond_submit_command += '--%s "' % (key)
@@ -367,14 +377,14 @@ I will ask you some questions to fill the metadata file. For some of the questio
         for command in commands:
             execme(command, dryrun)
 
-        print "\n------: EXECUTE ALL THE ABOVE COMMANDS IN ONE GO :-------\n"
+        print("\n------: EXECUTE ALL THE ABOVE COMMANDS IN ONE GO :-------\n")
         command_comb = ''
         for command in commands:
             if command!=commands[-1]:
                 command_comb += command +" && "
             else:
                 command_comb += command
-        print command_comb
+        print(command_comb)
 
 if __name__ == '__main__':
     logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s',

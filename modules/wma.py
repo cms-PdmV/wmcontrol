@@ -4,19 +4,23 @@
 Module containing the functions necessary to interact with the wma.
 Credit and less than optimal code has to be spreaded among lots of people.
 '''
+from __future__ import print_function
+from __future__ import absolute_import
 import os
-import urllib
-import httplib
+try:
+    import httplib
+except ImportError:
+    import http.client as httplib
+
 import imp
 import sys
 import time
 import json
+# Lightweight helpers for upload to ReqMgr2
+from modules.tweak_maker_lite import TweakMakerLite
+from modules.config_cache_lite import ConfigCacheLite
+print('Using TweakMakerLite and ConfigCacheLite!')
 
-try:
-    from PSetTweaks.WMTweak import makeTweak
-    from WMCore.Cache.WMConfigCache import ConfigCache
-except:
-    print "Probably no WMClient was set up. Trying to proceed anyway..."
 
 URL = 'https://cmsweb.cern.ch'
 DBS_URL = URL + '/dbs/prod/global/DBSReader'
@@ -100,8 +104,8 @@ def httpget(conn, query):
     except httplib.BadStatusLine:
         raise RuntimeError('Something is really wrong')
     if response.status != 200:
-        print "Problems quering DBS3 RESTAPI with %s: %s" % (
-            conn.host + query.replace('#', '%23'), response.read())
+        print("Problems quering DBS3 RESTAPI with %s: %s" % (
+            conn.host + query.replace('#', '%23'), response.read()))
 
         return None
     return response.read()
@@ -114,27 +118,27 @@ def httppost(conn, where, params):
     except httplib.BadStatusLine:
         raise RuntimeError('Something is really wrong')
     if response.status != 200:
-        print "Problems quering DBS3 RESTAPI with %s: %s" % (
-            params, response.read())
+        print("Problems quering DBS3 RESTAPI with %s: %s" % (
+            params, response.read()))
 
         return None
     return response.read()
 
 def __check_GT(gt):
     if not gt.endswith("::All"):
-        print ("It seemslike the name of the GT '%s' has a typo in it, "
+        print(("It seemslike the name of the GT '%s' has a typo in it, "
                 "missing the final ::All which will crash your job. "
-                "If insted you're using CondDBv2, you're fine.") % gt
+                "If insted you're using CondDBv2, you're fine.") % gt)
 
 def __check_input_dataset(dataset):
     if dataset and dataset.count('/')!=3:
       raise Exception ("Malformed dataset name %s!" %dataset)
 
 def __check_request_params(params):
-    if params.has_key('GlobalTag'):
+    if 'GlobalTag' in params:
       __check_GT(params['GlobalTag'])
     for inputdataset in ('MCPileup','DataPileup','InputDataset'):
-        if params.has_key(inputdataset):
+        if inputdataset in params:
             __check_input_dataset(params[inputdataset])
 
 #-------------------------------------------------------------------------------
@@ -150,18 +154,18 @@ def approveRequest(url, workflow, encodeDict=False):
     conn.request("PUT", "/reqmgr2/data/request/%s" % workflow, json.dumps(params), headers)
     response = conn.getresponse()
     if response.status != 200:
-        print 'could not approve request with following parameters:'
+        print('could not approve request with following parameters:')
         for item in params.keys():
-            print item + ": " + str(params[item])
-        print 'Response from http call:'
-        print 'Status:', response.status, 'Reason:', response.reason
-        print 'Explanation:'
+            print(item + ": " + str(params[item]))
+        print('Response from http call:')
+        print('Status:', response.status, 'Reason:', response.reason)
+        print('Explanation:')
         data = response.read()
-        print data
-        print "Exiting!"
+        print(data.decode('utf-8'))
+        print("Exiting!")
         sys.exit(1)
     conn.close()
-    print 'Approved workflow:', workflow
+    print('Approved workflow:', workflow)
     return
 
 #-------------------------------------------------------------------------------
@@ -178,7 +182,7 @@ def getWorkflowStatus(url, workflow):
         data = json.loads(response)
         workflow_status = data['result'][0][workflow]['RequestStatus']
     except Exception as e:
-        print 'Error parsing workflow %s' % str(e)
+        print('Error parsing workflow %s' % str(e))
     conn.close()
     return workflow_status
 
@@ -190,21 +194,20 @@ def __loadConfig(configPath):
 
     Import a config.
     """
-    print "Importing the config, this may take a while...",
+    print("Importing the config, this may take a while...", end=' ')
     sys.stdout.flush()
     cfgBaseName = os.path.basename(configPath).replace(".py", "")
     cfgDirName = os.path.dirname(configPath)
     modPath = imp.find_module(cfgBaseName, [cfgDirName])
     loadedConfig = imp.load_module(cfgBaseName, modPath[0],modPath[1], modPath[2])
 
-    print "done."
+    print("done.")
     return loadedConfig
 
 #-------------------------------------------------------------------------------
 # DP leave this untouched even if less than optimal!
 def makeRequest(url, params, encodeDict=False):
     ##TO-DO import json somewhere else globally. for now this fix is wmcontrol submission
-    import json
     __check_request_params(params)
 
     headers = {"Content-type": "application/json",
@@ -215,24 +218,24 @@ def makeRequest(url, params, encodeDict=False):
 
     ##TO-DO do we move it to top of file?
     __service_url  = "/reqmgr2/data/request"
-    print "Will do POST request to:%s%s" % (url, __service_url)
+    print("Will do POST request to:%s%s" % (url, __service_url))
     conn.request("POST", __service_url, json.dumps(params), headers)
     response = conn.getresponse()
     data = response.read()
 
     if response.status != 200:
-        print 'could not post request with following parameters:'
-        print json.dumps(params, indent=4)
-        print
-        print 'Response from http call:'
-        print 'Status:', response.status, 'Reason:', response.reason
-        print 'Explanation:'
-        print data
-        print "Exiting!"
+        print('could not post request with following parameters:')
+        print(json.dumps(params, indent=4))
+        print()
+        print('Response from http call:')
+        print('Status:', response.status, 'Reason:', response.reason)
+        print('Explanation:')
+        print(data.decode('utf-8'))
+        print("Exiting!")
         sys.exit(1)
 
     workflow = json.loads(data)['result'][0]['request']
-    print 'Injected workflow:', workflow
+    print('Injected workflow:', workflow)
 
     conn.close()
     return workflow
@@ -253,7 +256,7 @@ def upload_to_couch(cfg_name, section_name, user_name, group_name, test_mode=Fal
         f = open(oldID)
         the_id = f.readline().replace('\n','')
         f.close()
-        print cfg_name, 'already uploaded with ID', the_id, 'from', oldID
+        print(cfg_name, 'already uploaded with ID', the_id, 'from', oldID)
         return the_id
 
     try:
@@ -263,26 +266,30 @@ def upload_to_couch(cfg_name, section_name, user_name, group_name, test_mode=Fal
         time.sleep(2)
         loadedConfig = __loadConfig(cfg_name)
 
-    where = COUCH_DB_ADDRESS
+    couchdb_url = COUCH_DB_ADDRESS
     if url:
-        where = url
+        couchdb_url = url
 
-    configCache = ConfigCache(where, DATABASE_NAME)
-    configCache.createUserGroup(group_name, user_name)
-    configCache.addConfig(cfg_name)
-    configCache.setPSetTweaks(makeTweak(loadedConfig.process).jsondictionary())
-    configCache.setLabel(section_name)
-    configCache.setDescription(section_name)
-    configCache.save()
+    tweak_maker = TweakMakerLite()
+    tweaks_dict = tweak_maker.make(process=loadedConfig.process, add_parameters_list=True)
 
-    print "Added file to the config cache:"
-    print "  DocID:    %s" % configCache.document["_id"]
-    print "  Revision: %s" % configCache.document["_rev"]
+    couchdb_url = couchdb_url.replace('https://', '').split('/', 1)[0]
+    config_cache = ConfigCacheLite(couchdb_url)
+    config_cache.set_user_group(user_name, group_name)
+    config_cache.add_config(cfg_name)
+    config_cache.set_PSet_tweaks(tweaks_dict)
+    config_cache.set_label(section_name)
+    config_cache.set_description(section_name)
+    config_cache.save()
+
+    print("Added file to the config cache:")
+    print("  DocID:    %s" % config_cache.document["_id"])
+    print("  Revision: %s" % config_cache.document["_rev"])
 
     f = open(oldID,"w")
-    f.write(configCache.document["_id"])
+    f.write(config_cache.document["_id"])
     f.close()
-    return configCache.document["_id"]
+    return config_cache.document["_id"]
 
 #-------------------------------------------------------------------------------
 

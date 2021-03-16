@@ -1,9 +1,9 @@
 #! /usr/bin/env python
 
-import json
-import subset
-import urllib
-import wma
+from __future__ import print_function
+from __future__ import absolute_import
+from . import subset
+from . import wma
 from collections import defaultdict
 
 class SubsetByLumi():
@@ -67,7 +67,7 @@ class SubsetByLumi():
                 for d in data:
                     res.append(d['name'])
                 return ('blocks', map(lambda x: x.encode('ascii'), res))
-            print "Block based splitting not enough. Trying with lumis."
+            print("Block based splitting not enough. Trying with lumis.")
 
         # get files per dataset
         files = self.DBS3.api('files', 'dataset', self.dataset, True)
@@ -118,7 +118,7 @@ class SubsetByLumi():
         # get a list of lumis (full list added)
         rep = defaultdict(list)
         if len(data):
-            print "using data"
+            print("using data")
             res = self.DBS3.api('filelumis', 'logical_file_name',
                            [d['name'] for d in data if d not
                             in extended['data']], post=True)
@@ -128,7 +128,7 @@ class SubsetByLumi():
 
         # get extended list of lumis (only some will be added)
         if len(extended['data']):
-            print "using extended"
+            print("using extended")
             ext = extended['data']
             res = self.DBS3.api('filelumis', 'logical_file_name',
                            [e['name'] for e in ext], post=True)
@@ -157,7 +157,7 @@ class SubsetByLumi():
                    "Perhaps try brute force. Proceeding anyway")
 
         # generate ranges
-        for run, lumis in rep.iteritems():
+        for (run, lumis) in rep.items():
             current = None
             sections = []
             for l in sorted(lumis):
