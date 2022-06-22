@@ -123,7 +123,11 @@ class SubsetByLumi():
                            [d['name'] for d in data if d not
                             in extended['data']], post=True)
             for r in res:
-                rep[str(r['run_num'])].extend(r['lumi_section_num'])
+                lumi_section_num = r['lumi_section_num']
+                if not isinstance(lumi_section_num, list):
+                    lumi_section_num = [lumi_section_num]
+
+                rep[str(r['run_num'])].extend(lumi_section_num)
 
 
         # get extended list of lumis (only some will be added)
@@ -132,6 +136,11 @@ class SubsetByLumi():
             ext = extended['data']
             res = self.DBS3.api('filelumis', 'logical_file_name',
                            [e['name'] for e in ext], post=True)
+
+            for r in res:
+                lumi_section_num = r['lumi_section_num']
+                if not isinstance(lumi_section_num, list):
+                    r['lumi_section_num'] = [lumi_section_num]
 
             for i, e in enumerate(ext):
                 for r in res:
