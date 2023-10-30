@@ -30,6 +30,7 @@ import ast
 
 sys.path.append(os.path.join(sys.path[0], 'modules'))
 from modules import helper
+from modules import http_client
 from modules import wma # here u have all the components to interact with the wma
 
 #-------------------------------------------------------------------------------
@@ -902,7 +903,7 @@ def build_params_dict(section,cfg):
     ##if we fetch the dictionary fro 3rd party source
     if url_dict != "":
         #print "This is the url",url_dict,"to get the dict from"
-        params = json.loads(os.popen('curl -s --insecure %s' % (url_dict)).read())
+        params = http_client.http_request(url=url_dict, method="GET")
         #print params
         service_params["request_type"] = params["RequestType"]
         service_params["version"] = params["ProcessingVersion"]
