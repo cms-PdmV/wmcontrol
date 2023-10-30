@@ -34,12 +34,17 @@ class BaseTest(unittest.TestCase):
             "/mcm/public/restapi/requests/get_dict/B2G-RunIISummer20UL17NanoAODv9-03570"
         )
         self.http_url = 'http://info.cern.ch/hypertext/WWW/TheProject.html'
+        self.chain_req_url = (
+            "https://cms-pdmv-prod.web.cern.ch"
+            "/mcm/public/restapi/chained_requests/get_dict/BPH-Run3Summer23GS-00013"
+        )
         self.headers_for_bytes_response = {
             'Content-type': 'application/json'
         }
         self.headers_for_plain_response = {
             'Content-type': 'text/html'
         }
+        
     
     def test_public_resource(self):
         """
@@ -63,6 +68,36 @@ class BaseTest(unittest.TestCase):
             expected_group, 
             response.get("Group", ""), 
             "The 'Group' field doesn't match"
+        )
+
+
+    def test_public_chain_req(self):
+        """
+        Retrieve the task dictionary for a chain request.
+        """
+        response = http_client.http_request(url=self.chain_req_url, method="GET")
+        expected_requestor = "pdmvserv"
+        expected_group = "ppd"
+        expected_global_tag = "130X_mcRun3_2023_realistic_v14"
+        self.assertIsInstance(
+            response, 
+            dict, 
+            "The response content has not the type required"
+        )
+        self.assertEqual(
+            expected_requestor, 
+            response.get("Requestor", ""), 
+            "The 'Requestor' field doesn't match"
+        )
+        self.assertEqual(
+            expected_group, 
+            response.get("Group", ""), 
+            "The 'Group' field doesn't match"
+        )
+        self.assertEqual(
+            expected_global_tag, 
+            response.get("GlobalTag", ""), 
+            "The 'GlobalTag' field doesn't match"
         )
 
 

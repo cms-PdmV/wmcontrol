@@ -91,7 +91,6 @@ def http_request(
     """
     MAX_ATTEMPTS_TO_DICT = 5
     default_headers = {
-        'Content-type': 'application/json',
         'Accept': 'application/json'
     }
     req_headers = default_headers if not headers else headers
@@ -103,6 +102,7 @@ def http_request(
     req_data = None if not data else data
     if req_data:
         if isinstance(req_data, dict):
+            req_headers["Content-Type"] = "application/json"
             req_data = json.dumps(req_data)
         if not isinstance(req_data, str):
             error_msg = (
