@@ -30,13 +30,13 @@ def approveRequest(options):
         wma.testbed(options.wmtesturl)
     for workflow in workflows:
         tries = 1
-        while tries < 3:
+        while tries < 16:
             try:
                 if(wma.getWorkflowStatus(wma.WMAGENT_URL, workflow) == 'new'):
                     wma.approveRequest(wma.WMAGENT_URL, workflow)
                 break
             except Exception as e:
-                time.sleep(1)
+                time.sleep(5)
                 print('Something went wrong: %s Try number: %s' % (str(e), tries))
                 tries += 1
 
