@@ -15,6 +15,7 @@ except ImportError:
 import imp
 import sys
 import time
+import codecs
 import json
 # Lightweight helpers for upload to ReqMgr2
 from modules.tweak_maker_lite import TweakMakerLite
@@ -298,7 +299,7 @@ def tweaks_to_file(cfg_name):
     """
     path = tweak_file_path(cfg_name)
     tweaks_dict = tweaks_from_configuration(cfg_name)
-    with open(path, "w", encoding="utf-8") as file:
+    with codecs.open(path, "w", encoding="utf-8") as file:
         json.dump(tweaks_dict, file, indent=2, ensure_ascii=False)
 
 
@@ -315,7 +316,7 @@ def from_tweaks_file(cfg_name):
             "Error: Unable to load tweaks from %s" % (path)
         )
 
-    with open(path, "r", encoding="utf-8") as file:
+    with codecs.open(path, "r", encoding="utf-8") as file:
         return json.load(file)
 
 
