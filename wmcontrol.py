@@ -517,15 +517,15 @@ def loop_and_submit(cfg):
                         else:
                             __events = float(params[__first_step]['RequestNumEvents'])
 
-                        split, details = espl.run(int(__events),
-                              service_params['brute_force'], service_params['force_lumis'])
-
                         ##if we do block selection this means we need to remove the RequestNumEvents
                         # because reqmgr2 doesn't allow events with input dataset
                         if 'RequestNumEvents' in params:
                             del(params['RequestNumEvents'])
                         if 'RequestNumEvents' in params[__first_step]:
                             del(params[__first_step]['RequestNumEvents'])
+
+                        split, details = espl.run(int(__events),
+                              service_params['brute_force'], service_params['force_lumis'])
 
                         if split == 'blocks':
                             params[__first_step]['BlockWhitelist'] = details

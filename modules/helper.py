@@ -43,6 +43,8 @@ class SubsetByLumi():
         brute -- if brute force
         only_lumis -- skip trying to split by block
         """
+        if events <= 0:
+            return ('dataset', self.dataset)
 
         if not only_lumis:
             # try with blocks first
