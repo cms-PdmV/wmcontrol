@@ -68,7 +68,7 @@ class SubsetByLumi():
                 res = []
                 for d in data:
                     res.append(d['name'])
-                return ('blocks', map(lambda x: x.encode('ascii'), res))
+                return ('blocks', list(map(lambda x: x.encode('ascii'), res)))
             print("Block based splitting not enough. Trying with lumis.")
 
         # get files per dataset
