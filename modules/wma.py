@@ -17,6 +17,7 @@ import sys
 import time
 import codecs
 import json
+import traceback
 # Lightweight helpers for upload to ReqMgr2
 from modules.tweak_maker_lite import TweakMakerLite
 from modules.config_cache_lite import ConfigCacheLite
@@ -78,6 +79,7 @@ class ConnectionWrapper():
             except Exception:
                 # most likely connection terminated
                 self.refresh_connection(self.wmagenturl)
+                traceback.print_exc()
         try:
             return json.loads(res)
         except:
