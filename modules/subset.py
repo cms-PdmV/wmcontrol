@@ -13,6 +13,9 @@ class Generate():
 
     def run(self, data, target, approx=0.00):
         data = sorted(data, key=lambda e: e['events'], reverse=True)
+        if len(data)> 10000 and not self.brute_force:
+            print("Too many elements to handle for subset, resorting to brute force algorithm")
+            self.brute_force = True
         if self.brute_force:
             return self.knapsack_variant(data, target, approx)
         else:
@@ -55,7 +58,8 @@ class Generate():
         """Solution based on first fit decreasing algo
         """
         bins = []
-        for d in dataset:
+        import tqdm
+        for d in tqdm.tqdm(dataset):
             create_new = True
             # sort bins started with the fullest one
             bins = sorted(bins, key=lambda e: e['space'], reverse=True)
