@@ -42,8 +42,12 @@ def main():
         if options.create_tweak:
             wma.tweaks_to_file(cfg_name)
         else:
+            # INFO: The tweak file was created using the original
+            # configuration file in a previous execution.
             tweaks = wma.from_tweaks_file(cfg_name) if options.from_tweak else {}
-            wma.upload_to_couch(cfg_name, options.label, options.user, options.group, tweaks=tweaks)
+            patched_config_file = wma.patch_configuration_file(cfg_name)
+            config_file = patched_config_file if patched_config_file else cfg_name
+            wma.upload_to_couch(config_file, options.label, options.user, options.group, tweaks=tweaks)
 
 if __name__ == "__main__":
     main()

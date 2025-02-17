@@ -78,8 +78,18 @@ _TweakParams = [
     "process.RandomNumberGeneratorService.*.initialSeed",
     "process.GlobalTag.globaltag",
 
+    # mix
+    "process.mix.input.fileNames",
+    "process.mixData.input.fileNames",
 ]
 
+FilterFilesFrom = [
+    "process.source.fileNames",
+    "process.mix.input.fileNames",
+    "process.mixData.input.fileNames"
+]
+
+MaxFilesToKeep = 5
 
 class TweakMakerLite():
     """
@@ -89,6 +99,63 @@ class TweakMakerLite():
     def __init__(self, process_params=None, output_modules_params=None):
         self.process_level = process_params or _TweakParams
         self.output_modules_level = output_modules_params or _TweakOutputModules
+
+    def _get_source_type(self, process):
+        """
+        Get the source type related to the process.
+
+        Args:
+            process (cms.Process): Process type.
+
+        Returns:
+            str | None: Source type, e.g: "LHESource", "PoolSource".
+                Returns `None` in case the attribute is not available
+                or if its type is not `<cls: str>`.
+        """
+        if not hasattr(process, 'source'):
+            return None
+
+        source = getattr(process, 'source')
+        source_type_attribute = '_TypedParameterizable__type'
+        if not hasattr(source, source_type_attribute):
+            return None
+
+        source_type = getattr(source, source_type_attribute)
+        if not isinstance(source_type, str):
+            return None
+        
+        return source_type
+
+    def _filter_files_from_parameters(self, source_type, expanded_params):
+        """
+        Filter the list of files for a subset of parameters.
+
+        Args:
+            source_type (str): `cms.Source` type
+            expanded_params (dict): Process arguments flattened in
+                a Python dictionary. This argument is mutated by this
+                function.
+        """
+        files_filtered = 0
+
+        print("TweakMakerLite: Process source type: %s" % (source_type))
+        print("TweakMakerLite: Filtering file names as they are not required...")
+        for param in FilterFilesFrom:
+            if param in expanded_params:
+                value = expanded_params.get(param)
+                if not isinstance(value, list):
+                    print(
+                        "TweakMakerLite: Parameter '%s' is not `<cls: list>`, it is: %s. Leaving untouched..."
+                        % (param, type(value))
+                    )
+                    continue
+                
+                filtered = max(len(value) - MaxFilesToKeep, 0)
+                files_filtered += filtered
+                expanded_params[param] = value[:MaxFilesToKeep]
+                print("TweakMakerLite: Files filtered for attribute '%s': %s" % (param, filtered))
+
+        print("TweakMakerLite: Files filtered in total: %s" % (files_filtered))
 
     def make(self, process, add_parameters_list=False):
         """
@@ -110,6 +177,12 @@ class TweakMakerLite():
                 if self.has_parameter(output_module, param):
                     expanded_params[full_path] = self.get_parameter(process, full_path)
 
+        # Check if the file names could be filtered.
+        source_types_to_keep = ["LHESource"]
+        source_type = self._get_source_type(process)
+        if source_type and source_type not in source_types_to_keep:
+            self._filter_files_from_parameters(source_type, expanded_params)
+        
         # Print all expanded parameters before expand dict
         # for k in sorted(expanded_params):
         #     print('%s %s' % (k, expanded_params[k]))
