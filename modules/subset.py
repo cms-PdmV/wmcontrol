@@ -58,8 +58,7 @@ class Generate():
         """Solution based on first fit decreasing algo
         """
         bins = []
-        import tqdm
-        for d in tqdm.tqdm(dataset):
+        for d in dataset:
             create_new = True
             # sort bins started with the fullest one
             bins = sorted(bins, key=lambda e: e['space'], reverse=True)
