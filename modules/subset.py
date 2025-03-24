@@ -13,6 +13,9 @@ class Generate():
 
     def run(self, data, target, approx=0.00):
         data = sorted(data, key=lambda e: e['events'], reverse=True)
+        if len(data)> 10000 and not self.brute_force:
+            # Too many elements to handle for subset, resorting to brute force algorithm
+            self.brute_force = True
         if self.brute_force:
             return self.knapsack_variant(data, target, approx)
         else:
