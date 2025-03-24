@@ -64,7 +64,7 @@ class ConnectionWrapper():
                     params = {}
                     params[field] = value
                     res = httppost(self.connection, self.dbs3url +
-                            method, params).replace("'", '"')
+                            method, params)
 
                 else:
                     if detail:
